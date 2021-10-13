@@ -24,8 +24,9 @@ if not os.path.exists("%s/pickle"%(out_dir)): os.makedirs("%s/pickle"%(out_dir))
 
 plots = [
 
-["3 Mu Invariant Mass","m3l","m3l",83,0,83,"GeV"],
-["Lower Mass diMu Pair","mass2","M2",160,0,80,"GeV"],
+#[Title,save name,variable plotted,nBins,low,high,unit,plot data]
+["3 Mu Invariant Mass","m3l","m3l",83,0,83,"GeV",True],
+["Lower Mass diMu Pair","mass2","M2",160,0,80,"GeV",False],
 
 ]
 
@@ -68,4 +69,4 @@ for i in range(len(samples)):
 
 # Make Plots
 for p in plots:
-	plot(data,p,samples,False)
+	plot(data,p,samples,False,out_dir)
