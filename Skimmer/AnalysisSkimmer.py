@@ -25,4 +25,4 @@ def skim(data):
 	selection, eff["Iso < 0.1"]			= cut((data['IsoL1'] < 0.1)  & (data['IsoL2'] < 0.1)  & (data['IsoL3'] < 0.1), selection)
 	selection, eff["medId True"]		= cut((data['medIdL1'] == 1) & (data['medIdL2'] == 1) & (data['medIdL3'] == 1), selection)
 
-	return selection
+	return selection, eff

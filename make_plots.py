@@ -5,6 +5,9 @@ import sys
 import matplotlib.pyplot as plt
 import os
 import pickle
+from tqdm import tqdm
+from prettytable import PrettyTable
+
 from Utils.combXS import *
 from Datasets.Signal.Wto3l import *
 from Datasets.Run2017.Data import *
@@ -31,6 +34,7 @@ plots = [
 ]
 
 xs, sumW = combXS(xs_sig,sumW_sig,xs_bkg,sumW_bkg)
+effs = {}
 for i in range(len(samples)):
 	if "data" not in samples[i]:
 		weight = xs[samples[i]]/sumW[samples[i]]*lumi
@@ -51,22 +55,39 @@ for i in range(len(samples)):
 	del temp
 	data["weight"] = weight
 	data["sType"] = sType
+	print("Processing %s with %i events"%(samples[i],len(data["nMuons"])))
+
 
 	# Select other variables
 	data = select(data)
 
 	# Perform Cuts
-	data["selection"] = skim(data)
+	data["selection"],effs[samples[i]] = skim(data)
 
 	# Save resulting data
 	with open("%s/pickle/%s.p"%(out_dir,samples[i]),'wb') as handle:
 		pickle.dump(data, handle)
 
+print("Saving all data in pickle files")
 data = {}
 for i in range(len(samples)):
 	with open("%s/pickle/%s.p"%(out_dir,samples[i]),'rb') as handle:
 		data[samples[i]] = pickle.load(handle)
 
+print("Efficiencies of each cut:")
+cuts = ["Sample"]
+for key in effs[samples[0]]:
+	cuts.append(key)
+x = PrettyTable(cuts)
+for key in effs:
+	row = [key]
+	for key2 in effs[key]:
+		row.append("%.2f%%"%(effs[key][key2]))
+	x.add_row(row)
+print(x)
+
+
 # Make Plots
-for p in plots:
+print("Generating Plots")
+for p in tqdm(plots):
 	plot(data,p,samples,False,out_dir)
