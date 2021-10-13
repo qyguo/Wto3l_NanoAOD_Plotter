@@ -54,8 +54,8 @@ plots = [
 ["Transverse Missing Energy","met","met",50,0,250,"GeV",True],
 ["Transver Missing Energy Phi","met_phi","met_phi",40,-4,4,"phi",True],
 ["dR Between Leading and Subleading","dR12","dR12",100,0,6,"dR",True],
-["dR Between Leading and Subleading","dR13","dR13",100,0,6,"dR",True],
-["dR Between Leading and Subleading","dR12","dR12",100,0,6,"dR",True],
+["dR Between Leading and Trailing","dR13","dR13",100,0,6,"dR",True],
+["dR Between Subleading and Trailing","dR23","dR23",100,0,6,"dR",True],
 
 # 2D Plots
 #To be incorporated
