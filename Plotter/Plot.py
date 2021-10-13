@@ -39,7 +39,7 @@ def plot(data,p,s,e,out):
 		y,binEdges = np.histogram(to_plot,bins=p[3],range=(p[4],p[5]),weights=weight_arr)
 		bincenters = 0.5*(binEdges[1:]+binEdges[:-1])
 		if data[s[i]]["sType"]=="MC":
-			ax1.bar(bincenters,y,yerr=error,bottom=last,label='%s: %.2f'%(s[i],np.sum(y)))
+			ax1.bar(bincenters,y,yerr=error,bottom=last,width=binEdges[1]-binEdges[0],label='%s: %.2f'%(s[i],np.sum(y)))
 			last += y
 			MC_error += hidden_error
 		elif data[s[i]]["sType"]=="sig":
@@ -79,3 +79,4 @@ def plot(data,p,s,e,out):
 	fig.suptitle("%s"%(p[0]))
 	fig.savefig("%s/%s.png"%(out,p[1]))
 	fig.clf()
+	plt.close(fig)
