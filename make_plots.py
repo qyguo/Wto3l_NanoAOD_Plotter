@@ -16,14 +16,16 @@ from Skimmer.AnalysisSkimmer import *
 from Skimmer.ZSelector import *
 from Plotter.Plot import *
 
+#Define parameters from plotting
 samples = background_samples + [signal_samples[0]] + data_samples#[signal_samples[0]]
 files = combFiles(signal_samples, background_samples, data_samples, signal_files, background_files, data_files)
 
 lumi = 41.4*1000
+error_on_MC = False
 
-out_dir = "Output/testing"
-if not os.path.exists(out_dir): os.makedirs(out_dir)
-if not os.path.exists("%s/pickle"%(out_dir)): os.makedirs("%s/pickle"%(out_dir))
+out_dir = "testing"
+if not os.path.exists("Output/%s/"%(out_dir)): os.makedirs("Output/%s/"%(out_dir))
+if not os.path.exists("Output/pickle/%s/"%(out_dir)): os.makedirs("Output/pickle/%s/"%(out_dir))
 
 plots = [
 
@@ -94,13 +96,12 @@ for i in range(len(samples)):
 	data["selection"],effs[samples[i]] = skim(data)
 
 	# Save resulting data
-	with open("%s/pickle/%s.p"%(out_dir,samples[i]),'wb') as handle:
+	with open("Output/pickle/%s/%s.p"%(out_dir,samples[i]),'wb') as handle:
 		pickle.dump(data, handle)
 
-print("Saving all data in pickle files")
 data = {}
 for i in range(len(samples)):
-	with open("%s/pickle/%s.p"%(out_dir,samples[i]),'rb') as handle:
+	with open("Output/pickle/%s/%s.p"%(out_dir,samples[i]),'rb') as handle:
 		data[samples[i]] = pickle.load(handle)
 
 print("Efficiencies of each cut:")
@@ -113,7 +114,7 @@ for key in effs:
 	for key2 in effs[key]:
 		row.append("%.2f%%"%(effs[key][key2]))
 	x.add_row(row)
-table = open("%s/Efficiency_Table.txt"%(out_dir),"w")
+table = open("Output/%s/Efficiency_Table.txt"%(out_dir),"w")
 table.write(x.get_string())
 table.close()
 print(x)
@@ -122,4 +123,8 @@ print(x)
 # Make Plots
 print("Generating Plots")
 for p in tqdm(plots):
-	plot(data,p,samples,False,out_dir)
+	plot(data,p,samples,error_on_MC,out_dir)
+
+print("Uploading plots to web")
+import subprocess
+subprocess.run(["scp","-r","Output/%s/"%(out_dir),"nimenend@lxplus.cern.ch:/eos/user/n/nimenend/www/Wto3l/SR_Selection/New_Plotter/"])

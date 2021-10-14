@@ -77,6 +77,6 @@ def plot(data,p,s,e,out):
 
 
 	fig.suptitle("%s"%(p[0]))
-	fig.savefig("%s/%s.png"%(out,p[1]))
+	fig.savefig("Output/%s/%s.png"%(out,p[1]))
 	fig.clf()
 	plt.close(fig)
