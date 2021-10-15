@@ -1,4 +1,4 @@
-input_dir = "/cmsuf/data/store/user/t2/users/nikmenendez/skimmed/NanoAOD/2017/background/signal_sel/Eff/"
+input_dir = "/cmsuf/data/store/user/t2/users/nikmenendez/skimmed/NanoAOD/2017/background/ZpX/Eff/"
 xs_bkg = {}
 sumW_bkg = {}
 
