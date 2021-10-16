@@ -23,7 +23,7 @@ files = combFiles(signal_samples, background_samples, data_samples, signal_files
 lumi = 41.4*1000
 error_on_MC = False
 
-out_dir = "testing"
+out_dir = "With_Pileup"
 if not os.path.exists("Output/%s/"%(out_dir)): os.makedirs("Output/%s/"%(out_dir))
 if not os.path.exists("Output/pickle/%s/"%(out_dir)): os.makedirs("Output/pickle/%s/"%(out_dir))
 
@@ -86,6 +86,8 @@ for i in range(len(samples)):
 	del temp
 	data["weight"] = weight
 	data["sType"] = sType
+	if "data" not in samples[i]:
+		data["pileupWeight"] = data["pileupWeight"]/32
 	print("Processing %s with %i events"%(samples[i],len(data["nMuons"])))
 
 
