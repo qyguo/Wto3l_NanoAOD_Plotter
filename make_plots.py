@@ -86,6 +86,8 @@ for i in range(len(samples)):
 	del temp
 	data["weight"] = weight
 	data["sType"] = sType
+	if "data" not in samples[i]:
+		data["pileupWeight"] = data["pileupWeight"]/32
 	print("Processing %s with %i events"%(samples[i],len(data["nMuons"])))
 
 

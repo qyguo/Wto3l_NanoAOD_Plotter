@@ -29,7 +29,7 @@ def plot(data,p,s,e,out):
 	last, data_made, MC_error, data_error = 0,[],0,0
 	for i in range(len(s)):
 		to_plot = data[s[i]][p[2]][data[s[i]]["selection"]]
-		weight_arr = data[s[i]]["weight"]*data[s[i]]["genWeight"][data[s[i]]["selection"]]
+		weight_arr = data[s[i]]["weight"]*data[s[i]]["genWeight"][data[s[i]]["selection"]]*data[s[i]]["pileupWeight"][data[s[i]]["selection"]]
 		y,binEdges = np.histogram(to_plot,bins=p[3],range=(p[4],p[5]))
 		hidden_error = np.sqrt(np.abs(y))*data[s[i]]["weight"]
 		if e or data[s[i]]["sType"]=="data":
