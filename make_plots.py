@@ -23,7 +23,7 @@ files = combFiles(signal_samples, background_samples, data_samples, signal_files
 lumi = 41.4*1000
 error_on_MC = False
 
-out_dir = "With_Pileup"
+out_dir = "Muon_3P0F"
 if not os.path.exists("Output/%s/"%(out_dir)): os.makedirs("Output/%s/"%(out_dir))
 if not os.path.exists("Output/pickle/%s/"%(out_dir)): os.makedirs("Output/pickle/%s/"%(out_dir))
 
@@ -129,4 +129,4 @@ for p in tqdm(plots):
 
 print("Uploading plots to web")
 import subprocess
-subprocess.run(["scp","-r","Output/%s/"%(out_dir),"nimenend@lxplus.cern.ch:/eos/user/n/nimenend/www/Wto3l/SR_Selection/New_Plotter/"])
+subprocess.run(["scp","-r","Output/%s/"%(out_dir),"nimenend@lxplus.cern.ch:/eos/user/n/nimenend/www/Wto3l/SR_Selection/ZpX/"])

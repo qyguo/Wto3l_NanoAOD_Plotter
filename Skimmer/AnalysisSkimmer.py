@@ -24,5 +24,14 @@ def skim(data):
 	selection, eff["pTL3 > 5"]			= cut(data['pTL3'] > 5 , selection)
 	selection, eff["Iso < 0.1"]			= cut((data['IsoL1'] < 0.1)  & (data['IsoL2'] < 0.1)  & (data['IsoL3'] < 0.1), selection)
 	selection, eff["medId True"]		= cut((data['medIdL1'] == 1) & (data['medIdL2'] == 1) & (data['medIdL3'] == 1), selection)
+	
+	#fail_Iso = (data['IsoL1'] > 0.1).astype(int)  + (data['IsoL2'] > 0.1).astype(int)  + (data['IsoL3'] > 0.1).astype(int)
+	#selection, eff["One Iso > 0.1"]		= cut(fail_Iso==2, selection)
+
+	#fail_Med = (data['medIdL1'] != 1).astype(int) + (data['medIdL2'] != 1).astype(int) + (data['medIdL3'] != 1).astype(int)
+	#selection, eff["One MedId False"]	= cut(fail_Med==1, selection)
+
+	#fail_Eth = ((data['IsoL1']>0.1)|(data['medIdL1']!=1)).astype(int)  + ((data['IsoL2']>0.1)|(data['medIdL2']!=1)).astype(int)  + ((data['IsoL3']>0.1)|(data['medIdL3']!=1)).astype(int)
+	#selection, eff["One Fail Iso or MedId"] = cut(fail_Eth==2, selection)
 
 	return selection, eff
