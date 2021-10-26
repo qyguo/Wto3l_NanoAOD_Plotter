@@ -5,11 +5,11 @@ sumW_bkg = {}
 background_samples = []
 background_files = {}
 	
-sam = "DYJetsToLL_M1To10"
-background_samples.append(sam)
-background_files[sam] = "%s%s.root"%(input_dir,sam)
-xs_bkg[sam] = 2037.0
-sumW_bkg[sam] = 24227000.0
+#sam = "DYJetsToLL_M1To10"
+#background_samples.append(sam)
+#background_files[sam] = "%s%s.root"%(input_dir,sam)
+#xs_bkg[sam] = 2037.0
+#sumW_bkg[sam] = 24227000.0
 
 sam = "DYJetsToLL_M10To50"
 background_samples.append(sam)

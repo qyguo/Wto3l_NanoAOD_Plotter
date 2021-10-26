@@ -23,7 +23,7 @@ files = combFiles(signal_samples, background_samples, data_samples, signal_files
 lumi = 41.4*1000
 error_on_MC = False
 
-out_dir = "2e1F_all"
+out_dir = "2e0F_all"
 if not os.path.exists("Output/%s/"%(out_dir)): os.makedirs("Output/%s/"%(out_dir))
 if not os.path.exists("Output/pickle/%s/"%(out_dir)): os.makedirs("Output/pickle/%s/"%(out_dir))
 
