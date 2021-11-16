@@ -15,17 +15,19 @@ from Datasets.Run2017.Background import *
 from Skimmer.AnalysisSkimmer import *
 from Skimmer.ZSelector import *
 from Plotter.Plot import *
+from Weighter.Fake_weight import *
 
 #Define parameters from plotting
-samples = background_samples + [signal_samples[0]] + data_samples#[signal_samples[0]]
+#samples = background_samples + [signal_samples[0]] + data_samples#[signal_samples[0]]
+samples = ["WZTo3LNu","ZZTo4L","fake"] + [signal_samples[0]] + ["data"]
 files = combFiles(signal_samples, background_samples, data_samples, signal_files, background_files, data_files)
 
 lumi = 41.4*1000
 error_on_MC = False
 
-out_dir = "Muon_3P0F"
-if not os.path.exists("Output/%s/"%(out_dir)): os.makedirs("Output/%s/"%(out_dir))
-if not os.path.exists("Output/pickle/%s/"%(out_dir)): os.makedirs("Output/pickle/%s/"%(out_dir))
+out_dir = "3mu_validation"
+if not os.path.exists("/home/nikmenendez/Output/%s/"%(out_dir)): os.makedirs("/home/nikmenendez/Output/%s/"%(out_dir))
+if not os.path.exists("/home/nikmenendez/Output/pickle/%s/"%(out_dir)): os.makedirs("/home/nikmenendez/Output/pickle/%s/"%(out_dir))
 
 plots = [
 
@@ -67,10 +69,10 @@ plots = [
 xs, sumW = combXS(xs_sig,sumW_sig,xs_bkg,sumW_bkg)
 effs = {}
 for i in range(len(samples)):
-	if "data" not in samples[i]:
-		weight = xs[samples[i]]/sumW[samples[i]]*lumi
-	else:
+	if ("data" in samples[i]) or ("fake" in samples[i]):
 		weight = xs[samples[i]]/sumW[samples[i]]
+	else:
+		weight = xs[samples[i]]/sumW[samples[i]]*lumi
 	if "Wto3l" in samples[i]: sType = "sig"
 	elif "data" in samples[i]: sType = "data"
 	else: sType = "MC"	
@@ -86,7 +88,7 @@ for i in range(len(samples)):
 	del temp
 	data["weight"] = weight
 	data["sType"] = sType
-	if "data" not in samples[i]:
+	if not (("data" in samples[i]) or ("fake" in samples[i])):
 		data["pileupWeight"] = data["pileupWeight"]/32
 	print("Processing %s with %i events"%(samples[i],len(data["nMuons"])))
 
@@ -95,15 +97,19 @@ for i in range(len(samples)):
 	data = select(data)
 
 	# Perform Cuts
-	data["selection"],effs[samples[i]] = skim(data)
+	data["selection"],effs[samples[i]] = skim(data,samples[i])
+
+	# Get fake weight if necessary
+	data["fake_weight"] = Fake_weight(data,samples[i])
+	data["genWeight"] = data["genWeight"]*data["fake_weight"]
 
 	# Save resulting data
-	with open("Output/pickle/%s/%s.p"%(out_dir,samples[i]),'wb') as handle:
+	with open("/home/nikmenendez/Output/pickle/%s/%s.p"%(out_dir,samples[i]),'wb') as handle:
 		pickle.dump(data, handle)
 
 data = {}
 for i in range(len(samples)):
-	with open("Output/pickle/%s/%s.p"%(out_dir,samples[i]),'rb') as handle:
+	with open("/home/nikmenendez/Output/pickle/%s/%s.p"%(out_dir,samples[i]),'rb') as handle:
 		data[samples[i]] = pickle.load(handle)
 
 print("Efficiencies of each cut:")
@@ -116,7 +122,7 @@ for key in effs:
 	for key2 in effs[key]:
 		row.append("%.2f%%"%(effs[key][key2]))
 	x.add_row(row)
-table = open("Output/%s/Efficiency_Table.txt"%(out_dir),"w")
+table = open("/home/nikmenendez/Output/%s/Efficiency_Table.txt"%(out_dir),"w")
 table.write(x.get_string())
 table.close()
 print(x)
@@ -129,4 +135,4 @@ for p in tqdm(plots):
 
 print("Uploading plots to web")
 import subprocess
-subprocess.run(["scp","-r","Output/%s/"%(out_dir),"nimenend@lxplus.cern.ch:/eos/user/n/nimenend/www/Wto3l/SR_Selection/ZpX/"])
+subprocess.run(["scp","-r","/home/nikmenendez/Output/%s/"%(out_dir),"nimenend@lxplus.cern.ch:/eos/user/n/nimenend/www/Wto3l/SR_Selection/ZpX/"])

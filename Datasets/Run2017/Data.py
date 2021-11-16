@@ -3,6 +3,9 @@ input_dir = "/cmsuf/data/store/user/t2/users/nikmenendez/skimmed/NanoAOD/2017/da
 data_samples = ["data"]
 data_files = {"data": "%stotal_data_no_dupe.root"%(input_dir)}
 
+data_samples.append("fake")
+data_files["fake"] = "%stotal_data_no_dupe.root"%(input_dir)
+
 signal_vars = [
 "genWeight",
 "pileupWeight",
