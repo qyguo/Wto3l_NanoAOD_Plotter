@@ -1,4 +1,4 @@
-input_dir = "/cmsuf/data/store/user/t2/users/nikmenendez/skimmed/NanoAOD/2017/background/ZpX/Eff/"
+input_dir = "/cmsuf/data/store/user/t2/users/nikmenendez/skimmed/NanoAOD/2017/background/Zpeak/Eff/"
 xs_bkg = {}
 sumW_bkg = {}
 
@@ -22,6 +22,7 @@ background_samples.append(sam)
 background_files[sam] = "%s%s.root"%(input_dir,sam)
 xs_bkg[sam] = 6077.22
 sumW_bkg[sam] = 3782668437151.0
+#sumW_bkg[sam] = 389905961740 + 394391955962 + 290956201056 + 424508873867 + 352905856982 + 362139682900 + 413166366300 + 428133600803 + 348718879890 + 377841057646
 
 sam = "TTJets_DiLept"
 background_samples.append(sam)
@@ -52,7 +53,6 @@ background_samples.append(sam)
 background_files[sam] = "%s%s.root"%(input_dir,sam)
 xs_bkg[sam] = 12.178
 sumW_bkg[sam] = 22155848.0
-
 
 signal_vars = [
 "genWeight",

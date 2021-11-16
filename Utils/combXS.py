@@ -9,6 +9,8 @@ def combXS(xs_sig,sumW_sig,xs_bkg,sumW_bkg):
 
 	xs["data"] = 1
 	sumW["data"] = 1
+	xs["fake"] = 1
+	sumW["fake"] = 1
 
 	return xs, sumW
 

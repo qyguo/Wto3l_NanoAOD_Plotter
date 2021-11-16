@@ -23,7 +23,7 @@ files = combFiles(signal_samples, background_samples, data_samples, signal_files
 lumi = 41.4*1000
 error_on_MC = False
 
-out_dir = "2e0F_all"
+out_dir = "2e1F"
 if not os.path.exists("Output/%s/"%(out_dir)): os.makedirs("Output/%s/"%(out_dir))
 if not os.path.exists("Output/pickle/%s/"%(out_dir)): os.makedirs("Output/pickle/%s/"%(out_dir))
 
@@ -33,7 +33,7 @@ plots = [
 #[Title,save name,variable plotted,nBins,low,high,unit,plot data]
 ["3 Lep Invariant Mass","m3l","m3l",200,0,200,"GeV",True],
 ["3 Lep + MET Transverse Mass","mt","mt",300,0,300,"GeV",True],
-["Electron Pair Mass","mass1","M1",120,0,120,"GeV",True],
+["Electron Pair Mass","mass1","M1",240,0,120,"GeV",True],
 ["Leading e pT","pTL1","pTL1",100,0,100,"GeV",True],
 ["Subleading e pT","pTL2","pTL2",100,0,100,"GeV",True],
 ["Muon pT","pTL3","pTL3",100,0,100,"GeV",True],
@@ -58,6 +58,8 @@ plots = [
 ["dR Between Leading e and Muon","dR13","dR13",100,0,6,"dR",True],
 ["dR Between Subleading e and Muon","dR23","dR23",100,0,6,"dR",True],
 ["Muon MediumId","medIdL3","medIdL3",2,0,2,"Fail/Pass",True],
+["Number of Good Muons","nGoodMuons","nGoodMuons",5,0,5,"n",True],
+["Number of b jets","nbJets","nbJets",5,0,5,"n",True],
 
 # 2D Plots
 #To be incorporated
@@ -89,7 +91,6 @@ for i in range(len(samples)):
 	if "data" not in samples[i]:
 		data["pileupWeight"] = data["pileupWeight"]/32
 	print("Processing %s with %i events"%(samples[i],len(data["nMuons"])))
-
 
 	# Select other variables
 	data = select(data)

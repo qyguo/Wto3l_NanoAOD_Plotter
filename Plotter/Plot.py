@@ -28,8 +28,16 @@ def plot(data,p,s,e,out):
 
 	last, data_made, MC_error, data_error = 0,[],0,0
 	for i in range(len(s)):
-		to_plot = data[s[i]][p[2]][data[s[i]]["selection"]]
-		weight_arr = data[s[i]]["weight"]*data[s[i]]["genWeight"][data[s[i]]["selection"]]*data[s[i]]["pileupWeight"][data[s[i]]["selection"]]
+		if len(p)<9:
+			to_plot = data[s[i]][p[2]][data[s[i]]["selection"]]
+			weight_arr = data[s[i]]["weight"]*data[s[i]]["genWeight"][data[s[i]]["selection"]]*data[s[i]]["pileupWeight"][data[s[i]]["selection"]]
+		elif p[8]=="pass":
+			to_plot = data[s[i]][p[2]][data[s[i]]["selection_pass"]]
+			weight_arr = data[s[i]]["weight"]*data[s[i]]["genWeight"][data[s[i]]["selection_pass"]]*data[s[i]]["pileupWeight"][data[s[i]]["selection_pass"]]
+		elif p[8]=="fail":
+			to_plot = data[s[i]][p[2]][data[s[i]]["selection_fail"]]
+			weight_arr = data[s[i]]["weight"]*data[s[i]]["genWeight"][data[s[i]]["selection_fail"]]*data[s[i]]["pileupWeight"][data[s[i]]["selection_fail"]]
+			
 		y,binEdges = np.histogram(to_plot,bins=p[3],range=(p[4],p[5]))
 		hidden_error = np.sqrt(np.abs(y))*data[s[i]]["weight"]
 		if e or data[s[i]]["sType"]=="data":
@@ -77,6 +85,6 @@ def plot(data,p,s,e,out):
 
 
 	fig.suptitle("%s"%(p[0]))
-	fig.savefig("Output/%s/%s.png"%(out,p[1]))
+	fig.savefig("/home/nikmenendez/Output/%s/%s.png"%(out,p[1]))
 	fig.clf()
 	plt.close(fig)
