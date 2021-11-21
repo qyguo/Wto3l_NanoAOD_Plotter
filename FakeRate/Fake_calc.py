@@ -43,11 +43,12 @@ def fake_calc(data,s,nbins,out):
 		err_pass += er_pass
 		err_fail += er_fail
 
-	ratio1_b = y_fail/(y_pass+y_fail)
-	err1_b = ratio1_b*(err_fail/y_fail + (err_pass+err_fail)/(y_pass+y_fail))
+	ratio1_b = y_pass/(y_pass+y_fail)
+	err1_b = ratio1_b*(err_pass/y_pass + (err_pass+err_fail)/(y_pass+y_fail))
 
-	ratio2_b = y_pass/(y_fail-y_pass)
-	err2_b = ratio2_b*(err_pass/y_pass + (err_fail+err_pass)/(y_fail-y_pass))
+	ratio2_b = ratio1_b/(1-ratio1_b)
+	#err2_b = ratio2_b*(2*(err1_b/ratio1_b))
+	err2_b = ratio2_b*(err_pass/y_pass + err_fail/y_fail)
 
 	del y_pass, y_fail, err_pass, err_fail
 
@@ -91,11 +92,12 @@ def fake_calc(data,s,nbins,out):
 		err_pass += er_pass
 		err_fail += er_fail
 
-	ratio1_e = y_fail/(y_pass+y_fail)
-	err1_e = ratio1_e*(err_fail/y_fail + (err_pass+err_fail)/(y_pass+y_fail))
+	ratio1_e = y_pass/(y_pass+y_fail)
+	err1_e = ratio1_e*(err_pass/y_pass + (err_pass+err_fail)/(y_pass+y_fail))
 
-	ratio2_e = y_pass/(y_fail-y_pass)
-	err2_e = ratio2_e*(err_pass/y_pass + (err_fail+err_pass)/(y_fail-y_pass))
+	ratio2_e = ratio1_e/(1-ratio1_e)
+	#err2_e = ratio2_e*(2*(err1_e/ratio1_e))
+	err2_e = ratio2_e*(err_pass/y_pass + err_fail/y_fail)
 
 	errx = np.zeros(len(ratio1_e))
 	for i in range(len(ratio1_e)):
@@ -107,7 +109,7 @@ def fake_calc(data,s,nbins,out):
 	plt.ylim(bottom=0,top=1)
 	plt.xlim(left=nbins[0],right=nbins[-1])
 	plt.xlabel("Muon pT (GeV)")
-	plt.ylabel("fail/total")
+	plt.ylabel("pass/total")
 	plt.legend(loc='best')
 	plt.savefig("/home/nikmenendez/Output/%s/%s.png"%(out,"FakeRate_fail_total"))
 	plt.clf()
@@ -118,7 +120,7 @@ def fake_calc(data,s,nbins,out):
 	plt.ylim(bottom=0,top=1)
 	plt.xlim(left=nbins[0],right=nbins[-1])
 	plt.xlabel("Muon pT (GeV)")
-	plt.ylabel("pass/(fail-pass)")
+	plt.ylabel("f/(1-f)")
 	plt.legend(loc='best')
 	plt.savefig("/home/nikmenendez/Output/%s/%s.png"%(out,"FakeRate_pass_fail"))
 	plt.clf()

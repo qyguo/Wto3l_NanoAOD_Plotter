@@ -27,6 +27,7 @@ def plot(data,p,s,e,out):
 	ax2 = fig.add_subplot(gs[7:,:])
 
 	last, data_made, MC_error, data_error = 0,[],0,0
+	tot_data, tot_MC, err_data, err_MC = 0, 0, 0, 0
 	for i in range(len(s)):
 		if len(p)<9:
 			to_plot = data[s[i]][p[2]][data[s[i]]["selection"]]
@@ -42,10 +43,35 @@ def plot(data,p,s,e,out):
 		hidden_error = np.sqrt(np.abs(y))*data[s[i]]["weight"]
 		if e or data[s[i]]["sType"]=="data":
 			error = hidden_error
+			tot_data = np.sum(weight_arr)
+			err_data = np.sqrt(tot_data)
+		elif data[s[i]]["sType"]=="MC":
+			error = 0
+			if not ("fake" in s[i]):
+				tot_MC += np.sum(weight_arr)
+				err_MC += np.sqrt(np.sum(weight_arr))
 		else:
 			error = 0
 		y,binEdges = np.histogram(to_plot,bins=p[3],range=(p[4],p[5]),weights=weight_arr)
 		bincenters = 0.5*(binEdges[1:]+binEdges[:-1])
+
+		# Fake reweighting with WZ and ZZ
+		if "fake" in s[i]:
+			sam = "WZTo3LNu"
+			WZ_plot = data[sam][p[2]][data[sam]["fail"]]
+			WZ_weight = data[sam]["weight"]*data[sam]["genWeight"][data[sam]["fail"]]*data[sam]["pileupWeight"][data[sam]["fail"]]*data[sam]["fake_weight"][data[sam]["fail"]]
+			sam = "ZZTo4L"
+			ZZ_plot = data[sam][p[2]][data[sam]["fail"]]
+			ZZ_weight = data[sam]["weight"]*data[sam]["genWeight"][data[sam]["fail"]]*data[sam]["pileupWeight"][data[sam]["fail"]]*data[sam]["fake_weight"][data[sam]["fail"]]
+
+			yWZ, binEdges = np.histogram(WZ_plot,bins=p[3],range=(p[4],p[5]),weights=WZ_weight)
+			yZZ, binEdges = np.histogram(ZZ_plot,bins=p[3],range=(p[4],p[5]),weights=ZZ_weight)
+
+			y = y - yWZ - yZZ
+
+			tot_MC += np.sum(weight_arr) - np.sum(WZ_weight) - np.sum(ZZ_weight)
+			err_MC += np.sqrt(np.sum(weight_arr)) + np.sqrt(np.sum(WZ_weight)) + np.sqrt(np.sum(ZZ_weight))
+
 		if data[s[i]]["sType"]=="MC":
 			ax1.bar(bincenters,y,yerr=error,bottom=last,width=binEdges[1]-binEdges[0],label='%s: %.2f'%(s[i],np.sum(y)))
 			last += y
@@ -68,10 +94,10 @@ def plot(data,p,s,e,out):
 		ratioErr = ratio*(data_error/data_made + MC_error/last)
 		ax2.errorbar(bincenters,ratio,yerr=ratioErr,drawstyle='steps-mid',fmt="o",color='black')
 
-		tot_data = np.sum(data_made)
-		tot_MC = np.sum(last)
+		#tot_data = np.sum(data_made)
+		#tot_MC = np.sum(last)
 		dataMCratio = tot_data/tot_MC
-		dataMCerror = dataMCratio*(np.sum(MC_error)/tot_MC + np.sum(data_error)/tot_data)
+		dataMCerror = dataMCratio*(err_MC/tot_MC + err_data/tot_data)
 		ax1.text(0.0,1.0,'Data/Pred = %.2f +- %.2f'%(dataMCratio,dataMCerror),size=20,transform = ax1.transAxes)
 		
 

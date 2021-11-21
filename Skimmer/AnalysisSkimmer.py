@@ -24,14 +24,15 @@ def skim(data):
 	selection, eff["Subleading e pT > 15"] = cut((data["pTL2"]>15), selection)
 
 	selection, eff["No b Jets"]			= cut((data["nbJets"]==0), selection)
-	selection, eff["1 Good Muon"]		= cut((data["nGoodMuons"]==1), selection)
+	selection, eff[">=1 Good Muon"]		= cut((data["nGoodMuons"]>=1), selection)
 	selection, eff["medId True"]		= cut((data['medIdL3'] == 1), selection)
 	selection, eff["Isolation < 0.6"]	= cut((data["IsoL3"]<0.6), selection)
 	selection, eff["SIP3D < 4"]			= cut((data["sip3dL3"]<4), selection)
 
-	selection, eff["MET < 30"]          = cut((data["met"]<30), selection)
+	selection, eff["MET < 40"]          = cut((data["met"]<40), selection)
+	selection, eff["Only 3 leptons"]	= cut((data["nLeptons"]==3), selection)
 
-	selection, eff["M1 Around Z"]		= cut((data["M1"]>(91-15))&(data["M1"]<(91+15)),selection)
+	selection, eff["M1 Around Z"]		= cut((data["M1"]>(91-10))&(data["M1"]<(91+10)),selection)
 
 	if np.count_nonzero(selection)!=0:
 		eff["Overall"] = np.count_nonzero(selection)/len(data['nMuons'])*100
@@ -53,14 +54,15 @@ def skim_val(data):
 	selection, eff["Subleading e pT > 15"] = cut((data["pTL2"]>15), selection)
 
 	selection, eff["No b Jets"]			= cut((data["nbJets"]==0), selection)
-	selection, eff["1 Good Muon"]		= cut((data["nGoodMuons"]==1), selection)
+	selection, eff[">=1 Good Muon"]		= cut((data["nGoodMuons"]>=1), selection)
 	selection, eff["medId True"]		= cut((data['medIdL3'] == 1), selection)
 	selection, eff["Isolation < 0.6"]	= cut((data["IsoL3"]<0.6), selection)
 	selection, eff["SIP3D < 4"]			= cut((data["sip3dL3"]<4), selection)
 
-	selection, eff["MET < 30"]          = cut((data["met"]<30), selection)
+	selection, eff["MET < 40"]          = cut((data["met"]<40), selection)
+	selection, eff["Only 3 leptons"]    = cut((data["nLeptons"]==3), selection)
 
-	selection, eff["M1 Not Around Z"]	= cut(~((data["M1"]>(91-15))&(data["M1"]<(91+15))),selection)
+	selection, eff["M1 Not Around Z"]	= cut(~((data["M1"]>(91-10))&(data["M1"]<(91+10))),selection)
 
 	return selection, eff
 
@@ -70,6 +72,7 @@ def skim_flip(data,eff,s):
 	
 	selection = data['selection']
 	
+	fail = selection * data["IsoL3"]>iso
 	if "fake" in s:
 		selection, eff["Iso Cut"] = cut((data["IsoL3"]>iso), selection)
 	else:
@@ -80,4 +83,4 @@ def skim_flip(data,eff,s):
 	else:
 		eff["Overall"] = 0
 
-	return selection, eff
+	return selection, eff, fail

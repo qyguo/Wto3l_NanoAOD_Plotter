@@ -2,8 +2,8 @@ import numpy as np
 
 def Fake_weight(data,s,fwb,fwe,pt_bins):
 
-	if "fake" not in s:
-		return [1] * len(data["etaL3"])
+	#if "fake" not in s:
+	#	return [1] * len(data["etaL3"])
 
 	barrel = np.abs(data["etaL3"]) <= 1.4
 	endcap = np.abs(data["etaL3"]) >= 1.4

@@ -27,7 +27,8 @@ files = combFiles(signal_samples, background_samples, data_samples, signal_files
 lumi = 41.4*1000
 error_on_MC = False
 pt_bins = [5,10,15,20,30,60]
-pt_bins = [5,10,15,20,30,40,60]
+#pt_bins = [5,10,15,20,30,40,60]
+#pt_bins = [5,10,15,20,30,45,60,80,100]
 
 out_dir = "FakeRate"
 if not os.path.exists("/home/nikmenendez/Output/%s/"%(out_dir)): os.makedirs("/home/nikmenendez/Output/%s/"%(out_dir))
@@ -39,11 +40,18 @@ plots = [
 
 # 1D Plots
 #[Title,save name,variable plotted,nBins,low,high,unit,plot data]
-["3 Lep Invariant Mass","calc_m3l","m3l",200,0,200,"GeV",True],
-["Electron Pair Mass","calc_mass1","M1",240,0,120,"GeV",True],
-["Muon pT","calc_pTL3","pTL3",100,0,100,"GeV",True],
+["3 Lep Invariant Mass","calc_m3l","m3l",100,0,200,"GeV",True],
+["Electron Pair Mass","calc_mass1","M1",100,0,200,"GeV",True],
+["Muon pT","calc_pTL3","pTL3",30,0,60,"GeV",True],
 ["Pass pT","calc_passpT","pTL3",pt_bins,0,60,"GeV",True,"pass"],
 ["Fail pT","calc_failpT","pTL3",pt_bins,0,60,"GeV",True,"fail"],
+["3 Lep + MET Transverse Mass","calc_mt","mt",100,0,300,"GeV",True],
+["Transverse Missing Energy","calc_met","met",50,0,250,"GeV",True],
+["Transver Missing Energy Phi","calc_met_phi","met_phi",40,-4,4,"phi",True],
+["Electron Pair Transverse Mass","calc_M1T","M1T",100,0,200,"GeV",True],
+["Number of Electrons","calc_nElec","nElectrons",6,0,6,"n",True],
+["Number of Leptons","calc_nLep","nLeptons",6,0,6,"n",True],
+["Number of Good Leptons","calc_nGoodLep","nGoodLeptons",6,0,6,"n",True]
 
 ]
 
@@ -71,7 +79,7 @@ for i in range(len(samples)):
 	data["weight"] = weight
 	data["sType"] = sType
 	if "data" not in samples[i]:
-		data["pileupWeight"] = data["pileupWeight"]/37
+		data["pileupWeight"] = data["pileupWeight"]/32
 	print("Processing %s with %i events"%(samples[i],len(data["nMuons"])))
 
 	# Select other variables
@@ -134,12 +142,12 @@ plots = [
 #[Title,save name,variable plotted,nBins,low,high,unit,plot data]
 ["3 Lep Invariant Mass","val_m3l","m3l",100,0,200,"GeV",True],
 ["Electron Pair Mass","val_mass1","M1",100,0,200,"GeV",True],
-["Muon pT","val_pTL3","pTL3",25,0,100,"GeV",True],
+["Muon pT","val_pTL3","pTL3",30,0,60,"GeV",True],
 ["Muon eta","val_etaL3","etaL3",60,-3.,3.,"eta",True], 
 ["Muon phi","val_phiL3","phiL3",40,-4.,4.,"phi",True], 
-["Muon Isolation","val_IsoL3","IsoL3",100,0.,0.2,"pfRelIso03_all",True], 
-["Muon 3D Impact Parameter","val_ip3dL3","ip3dL3",100,0.,0.2,"IP3D",True], 
-["Muon Significance of 3D Impact Parameter","val_sip3dL3","sip3dL3",100,0.,10.,"SIP3D",True], 
+["Muon Isolation","val_IsoL3","IsoL3",50,0.,0.2,"pfRelIso03_all",True], 
+["Muon 3D Impact Parameter","val_ip3dL3","ip3dL3",25,0.,0.05,"IP3D",True], 
+["Muon Significance of 3D Impact Parameter","val_sip3dL3","sip3dL3",40,0.,4.,"SIP3D",True], 
 #["Pass pT","val_passpT","pTL3",pt_bins,0,60,"GeV",True,"pass"],
 #["Fail pT","val_failpT","pTL3",pt_bins,0,60,"GeV",True,"fail"],
 
@@ -168,7 +176,7 @@ for i in range(len(samples)):
 	data["weight"] = weight
 	data["sType"] = sType
 	if not (("data" in samples[i]) or ("fake" in samples[i])):
-		data["pileupWeight"] = data["pileupWeight"]/37
+		data["pileupWeight"] = data["pileupWeight"]/32
 	print("Processing %s with %i events"%(samples[i],len(data["nMuons"])))
 
 	# Select other variables
@@ -176,10 +184,10 @@ for i in range(len(samples)):
 
 	# Perform Cuts
 	data["selection"],effs[samples[i]] = skim_val(data)
-	data["selection"],effs[samples[i]] = skim_flip(data,effs[samples[i]],samples[i])
+	data["selection"],effs[samples[i]],data["fail"] = skim_flip(data,effs[samples[i]],samples[i])
 
 	data["fake_weight"] = Fake_weight(data,samples[i],fake_weight_b,fake_weight_e,pt_bins)
-	data["genWeight"] = data["genWeight"]*data["fake_weight"]
+	if "fake" in samples[i]: data["genWeight"] = data["genWeight"]*data["fake_weight"]
 
 	# Save resulting data
 	with open("/home/nikmenendez/pickle/%s/%s.p"%(out_dir,samples[i]),'wb') as handle:
