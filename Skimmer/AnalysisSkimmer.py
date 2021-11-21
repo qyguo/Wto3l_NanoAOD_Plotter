@@ -29,6 +29,8 @@ def skim(data,s):
 	
 	fail_Iso = (data['IsoL1'] > 0.1).astype(int)  + (data['IsoL2'] > 0.1).astype(int)  + (data['IsoL3'] > 0.1).astype(int)
 
+	fail = fail_Iso==1
+	fail2= fail_Iso==2
 	if "fake" in s:
 		selection, eff["Iso Cut"]		= cut(fail_Iso==1, selection)
 	else:
@@ -39,4 +41,4 @@ def skim(data,s):
 	else:
 		eff["Overall"] = 0
 
-	return selection, eff
+	return selection, eff, fail, fail2
