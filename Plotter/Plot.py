@@ -35,15 +35,28 @@ def plot(data,p,s,e,out):
 		hidden_error = np.sqrt(np.abs(y))*data[s[i]]["weight"]
 		if e or data[s[i]]["sType"]=="data":
 			error = hidden_error
+			count = len(weight_arr)
 			tot_data = np.sum(weight_arr)
+			count_err = np.sqrt(count)
 			err_data = np.sqrt(tot_data)
-		elif data[s[i]]["sType"]=="MC":
+		elif data[s[i]]["sType"]=="MC": 
 			error = 0
 			if not ("fake" in s[i]):
+				count = len(weight_arr)*data[s[i]]["weight"]
+				count_w = np.sum(weight_arr)
 				tot_MC += np.sum(weight_arr)
-				err_MC += np.sqrt(np.sum(weight_arr))
+				if len(weight_arr)>0:
+					count_err = np.sqrt(len(weight_arr))*np.average(weight_arr)
+				else:
+					count_err = 0
+				count_err_w = np.sqrt(np.sum(weight_arr))
+				#err_MC += np.sqrt(np.sum(weight_arr))
+				err_MC += count_err
 		else:
 			error = 0
+			count_w = np.sum(weight_arr)
+			count_err = np.sqrt(len(weight_arr))*np.average(weight_arr)
+			
 		y,binEdges = np.histogram(to_plot,bins=p[3],range=(p[4],p[5]),weights=weight_arr)
 		bincenters = 0.5*(binEdges[1:]+binEdges[:-1])
 
@@ -52,30 +65,46 @@ def plot(data,p,s,e,out):
 			sam = "WZTo3LNu"
 			WZ_plot = data[sam][p[2]][data[sam]["fail"]]
 			WZ_weight = data[sam]["weight"]*data[sam]["genWeight"][data[sam]["fail"]]*data[sam]["pileupWeight"][data[sam]["fail"]]*data[sam]["fake_weight"][data[sam]["fail"]]
-			WZ_weight2= data[sam]["weight"]*data[sam]["genWeight"][data[sam]["fail"]]*data[sam]["pileupWeight"][data[sam]["fail"]]*data[sam]["fake_weight"][data[sam]["fail"]]*data[sam]["fake_weight"][data[sam]["fail"]]
+			WZ_plot2= data[sam][p[2]][data[sam]["fail2"]]
+			WZ_weight2= data[sam]["weight"]*data[sam]["genWeight"][data[sam]["fail2"]]*data[sam]["pileupWeight"][data[sam]["fail2"]]*data[sam]["fake_weight"][data[sam]["fail2"]]
 			sam = "ZZTo4L"
 			ZZ_plot = data[sam][p[2]][data[sam]["fail"]]
 			ZZ_weight = data[sam]["weight"]*data[sam]["genWeight"][data[sam]["fail"]]*data[sam]["pileupWeight"][data[sam]["fail"]]*data[sam]["fake_weight"][data[sam]["fail"]]
-			ZZ_weight2= data[sam]["weight"]*data[sam]["genWeight"][data[sam]["fail"]]*data[sam]["pileupWeight"][data[sam]["fail"]]*data[sam]["fake_weight"][data[sam]["fail"]]*data[sam]["fake_weight"][data[sam]["fail"]]
+			ZZ_plot2= data[sam][p[2]][data[sam]["fail2"]]
+			ZZ_weight2= data[sam]["weight"]*data[sam]["genWeight"][data[sam]["fail2"]]*data[sam]["pileupWeight"][data[sam]["fail2"]]*data[sam]["fake_weight"][data[sam]["fail2"]]
+			
+			to_plot2= data[s[i]][p[2]][data[s[i]]["fail2"]]
+			to_weight2= data[s[i]]["weight"]*data[s[i]]["genWeight"][data[s[i]]["fail2"]]*data[s[i]]["pileupWeight"][data[s[i]]["fail2"]]*data[s[i]]["fake_weight"][data[s[i]]["fail2"]]
 			
 			yWZ, binEdges = np.histogram(WZ_plot,bins=p[3],range=(p[4],p[5]),weights=WZ_weight)
 			yZZ, binEdges = np.histogram(ZZ_plot,bins=p[3],range=(p[4],p[5]),weights=ZZ_weight)
 			
-			yWZ2, binEdges = np.histogram(WZ_plot,bins=p[3],range=(p[4],p[5]),weights=WZ_weight2)
-			yZZ2, binEdges = np.histogram(ZZ_plot,bins=p[3],range=(p[4],p[5]),weights=ZZ_weight2)
+			yWZ2, binEdges = np.histogram(WZ_plot2,bins=p[3],range=(p[4],p[5]),weights=WZ_weight2)
+			yZZ2, binEdges = np.histogram(ZZ_plot2,bins=p[3],range=(p[4],p[5]),weights=ZZ_weight2)
 
-			y = y - yWZ - yZZ
-			tot_MC += np.sum(weight_arr) - np.sum(WZ_weight) - np.sum(ZZ_weight)
-			err_MC += np.sqrt(np.sum(weight_arr)) + np.sqrt(np.sum(WZ_weight)) + np.sqrt(np.sum(ZZ_weight))
+			y2, binEdges = np.histogram(to_plot2,bins=p[3],range=(p[4],p[5]),weights=to_weight2)
+
+			#For 3P0F Validation
+			y = y - yWZ - yZZ - y2 + yWZ2 + yZZ2
+			count_w = np.sum(weight_arr) - np.sum(WZ_weight) - np.sum(ZZ_weight) - np.sum(to_weight2) + np.sum(WZ_weight2) + np.sum(ZZ_weight2)
+			count_err += np.sqrt(len(weight_arr))*np.average(weight_arr) + np.sqrt(len(WZ_weight))*np.average(WZ_weight) + np.sqrt(len(ZZ_weight))*np.average(ZZ_weight) + np.sqrt(len(to_weight2))*np.average(to_weight2) + np.sqrt(len(WZ_weight2))*np.average(WZ_weight2) + np.sqrt(len(ZZ_weight2))*np.average(ZZ_weight2)
+
+			#For 2P1F Validation
+			#y = y - yWZ2 - yZZ2
+			#count_w = np.sum(weight_arr) - np.sum(WZ_weight2) - np.sum(ZZ_weight2)
+			#count_err += np.sqrt(len(weight_arr))*np.average(weight_arr) + np.sqrt(len(WZ_weight2))*np.average(WZ_weight2) + np.sqrt(len(ZZ_weight2))*np.average(ZZ_weight2)
+
+			tot_MC += count_w
+			err_MC += count_err
 
 		if data[s[i]]["sType"]=="MC":
-			ax1.bar(bincenters,y,yerr=error,bottom=last,width=binEdges[1]-binEdges[0],label='%s: %.2f'%(s[i],np.sum(y)))
+			ax1.bar(bincenters,y,yerr=error,bottom=last,width=binEdges[1]-binEdges[0],label='%s: %.2f +- %.2f'%(s[i],count_w,count_err))
 			last += y
 			MC_error += hidden_error
 		elif data[s[i]]["sType"]=="sig":
-			ax1.errorbar(bincenters,y,yerr=error,drawstyle='steps-mid',label='%s: %.2f'%(s[i],np.sum(y)))
+			ax1.errorbar(bincenters,y,yerr=error,drawstyle='steps-mid',label='%s: %.2f +- %.2f'%(s[i],count_w,count_err))
 		else:
-			ax1.errorbar(bincenters,y,yerr=error,drawstyle='steps-mid',fmt="o",color='black',label='%s: %.2f'%(s[i],np.sum(y)))
+			ax1.errorbar(bincenters,y,yerr=error,drawstyle='steps-mid',fmt="o",color='black',label='%s: %i +- %.2f'%(s[i],tot_data,err_data))
 			data_made = y
 			data_error = hidden_error
 

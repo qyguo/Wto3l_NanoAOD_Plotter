@@ -18,14 +18,14 @@ from Plotter.Plot import *
 from Weighter.Fake_weight import *
 
 #Define parameters from plotting
-samples = background_samples + [signal_samples[0]] + data_samples[:-1]
-#samples = ["WZTo3LNu","ZZTo4L","fake"] + [signal_samples[0]] + ["data"]
+#samples = background_samples + [signal_samples[0]] + data_samples[:-1]
+samples = ["WZTo3LNu","ZZTo4L","fake"] + [signal_samples[0]] + ["data"]
 files = combFiles(signal_samples, background_samples, data_samples, signal_files, background_files, data_files)
 
 lumi = 41.4*1000
 error_on_MC = False
 
-out_dir = "3mu_3P0F"
+out_dir = "Control_3mu_val_LT4"
 if not os.path.exists("/home/nikmenendez/Output/%s/"%(out_dir)): os.makedirs("/home/nikmenendez/Output/%s/"%(out_dir))
 if not os.path.exists("/home/nikmenendez/Output/pickle/%s/"%(out_dir)): os.makedirs("/home/nikmenendez/Output/pickle/%s/"%(out_dir))
 
@@ -33,11 +33,11 @@ plots = [
 
 # 1D Plots
 #[Title,save name,variable plotted,nBins,low,high,unit,plot data]
-["3 Mu Invariant Mass","m3l","m3l",83,0,83,"GeV",True],
+["3 Mu Invariant Mass","m3l","m3l",100,0,200,"GeV",True],
 ["3 Mu + MET Transverse Mass","mt","mt",100,0,250,"GeV",True],
-["Lower Mass diMu Pair","mass2","M2",160,0,80,"GeV",False],
-["Higher Mass diMu Pair","mass1","M1",160,0,80,"GeV",False],
-["Same Sign diMu Pair","sameMass","M0",160,0,80,"GeV",True],
+["Lower Mass diMu Pair","mass2","M2",100,0,200,"GeV",True],
+["Higher Mass diMu Pair","mass1","M1",100,0,200,"GeV",True],
+["Same Sign diMu Pair","sameMass","M0",200,0,200,"GeV",True],
 ["Leading pT","pTL1","pTL1",100,0,100,"GeV",True],
 ["Subleading pT","pTL2","pTL2",80,0,80,"GeV",True],
 ["Trailing pT","pTL3","pTL3",50,0,50,"GeV",True],
@@ -104,8 +104,8 @@ for i in range(len(samples)):
 	# Get fake weight if necessary
 	data["fake_weight"] = Fake_weight(data,samples[i])
 	if "fake" in samples[i]: 
-		data["genWeight"] = data["genWeight"]*data["fake_weight"]
-		#data["genWeight"] = data["genWeight"]*data["fake_weight"]*data["fail"] + data["genWeight"]*data["fake_weight"]*data["fake_weight"]*data["fail2"]
+		#data["genWeight"] = data["genWeight"]*data["fake_weight"]*data["fail2"] #For 2P1F Validation
+		data["genWeight"] = data["genWeight"]*data["fake_weight"]*data["fail"] + data["genWeight"]*data["fake_weight"]*data["fail2"] #For 3P0F Validation
 
 	# Save resulting data
 	with open("/home/nikmenendez/Output/pickle/%s/%s.p"%(out_dir,samples[i]),'wb') as handle:
