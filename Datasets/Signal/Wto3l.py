@@ -1,10 +1,15 @@
 input_dir = "/cmsuf/data/store/user/t2/users/nikmenendez/skimmed/NanoAOD/2017/signal/signal_sel/Eff/"
 masses = [4,5,15,30,60]
-xs_sig = {	"Wto3l_M4":  7.474,
-		"Wto3l_M5":  5.453,
-		"Wto3l_M15": 1.0042,
-		"Wto3l_M30": 0.17985,
-		"Wto3l_M60": 0.0021799,}
+#xs_sig = {	"Wto3l_M4":  7.474,
+#		"Wto3l_M5":  5.453,
+#		"Wto3l_M15": 1.0042,
+#		"Wto3l_M30": 0.17985,
+#		"Wto3l_M60": 0.0021799,}
+xs_sig = {	"Wto3l_M4":  100,
+		"Wto3l_M5":  200,
+		"Wto3l_M15": 100,
+		"Wto3l_M30": 100,
+		"Wto3l_M60": 100,}
 sumW_sig = {"Wto3l_M4":  100000,
 		"Wto3l_M5":  500000,
 		"Wto3l_M15": 100000,

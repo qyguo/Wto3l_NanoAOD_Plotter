@@ -18,14 +18,14 @@ from Plotter.Plot import *
 from Weighter.Fake_weight import *
 
 #Define parameters from plotting
-#samples = background_samples + [signal_samples[0]] + data_samples[:-1]
-samples = ["WZTo3LNu","ZZTo4L","fake"] + [signal_samples[0]] + ["data"]
+samples = background_samples + signal_samples + data_samples[:-1]
+#samples = ["WZTo3LNu","ZZTo4L","fake"] + [signal_samples[0]] + ["data"]
 files = combFiles(signal_samples, background_samples, data_samples, signal_files, background_files, data_files)
 
 lumi = 41.4*1000
 error_on_MC = False
 
-out_dir = "Control_3mu_val_LT4"
+out_dir = "3mu_onlyVeto"
 if not os.path.exists("/home/nikmenendez/Output/%s/"%(out_dir)): os.makedirs("/home/nikmenendez/Output/%s/"%(out_dir))
 if not os.path.exists("/home/nikmenendez/Output/pickle/%s/"%(out_dir)): os.makedirs("/home/nikmenendez/Output/pickle/%s/"%(out_dir))
 
@@ -33,11 +33,12 @@ plots = [
 
 # 1D Plots
 #[Title,save name,variable plotted,nBins,low,high,unit,plot data]
-["3 Mu Invariant Mass","m3l","m3l",100,0,200,"GeV",True],
+["3 Mu Invariant Mass","m3l","m3l",83,0,83,"GeV",True],
 ["3 Mu + MET Transverse Mass","mt","mt",100,0,250,"GeV",True],
-["Lower Mass diMu Pair","mass2","M2",100,0,200,"GeV",True],
-["Higher Mass diMu Pair","mass1","M1",100,0,200,"GeV",True],
-["Same Sign diMu Pair","sameMass","M0",200,0,200,"GeV",True],
+["Lower Mass diMu Pair","mass2","M2",160,0,80,"GeV",False],
+["Higher Mass diMu Pair","mass1","M1",160,0,80,"GeV",False],
+["Same Sign diMu Pair","sameMass","M0",160,0,80,"GeV",True],
+
 ["Leading pT","pTL1","pTL1",100,0,100,"GeV",True],
 ["Subleading pT","pTL2","pTL2",80,0,80,"GeV",True],
 ["Trailing pT","pTL3","pTL3",50,0,50,"GeV",True],
@@ -53,15 +54,29 @@ plots = [
 ["Leading 3D Impact Parameter","ip3dL1","ip3dL1",25,0.,0.05,"IP3D",True],
 ["Subleading 3D Impact Parameter","ip3dL2","ip3dL2",25,0.,0.05,"IP3D",True],
 ["Trailing 3D Impact Parameter","ip3dL3","ip3dL3",25,0.,0.05,"IP3D",True],
-["Leading Significance of 3D Impact Parameter","sip3dL1","sip3dL1",40,0.,4.,"SIP3D",True],
-["Subleading Significance of 3D Impact Parameter","sip3dL2","sip3dL2",40,0.,4.,"SIP3D",True],
-["Trailing Significance of 3D Impact Parameter","sip3dL3","sip3dL3",40,0.,4.,"SIP3D",True],
+["Leading Significance of 3D Impact Parameter","sip3dL1","sip3dL1",100,0.,10.,"SIP3D",True],
+["Subleading Significance of 3D Impact Parameter","sip3dL2","sip3dL2",100,0.,10.,"SIP3D",True],
+["Trailing Significance of 3D Impact Parameter","sip3dL3","sip3dL3",100,0.,10.,"SIP3D",True],
+["Leading dxy","dxyL1","dxyL1",100,-1.,1.,"cm",True],
+["Subleading dxy","dxyL2","dxyL2",100,-1.,1.,"cm",True],
+["Trailing dxy","dxyL3","dxyL3",100,-1.,1.,"cm",True],
+["Leading dz","dzL1","dzL1",100,-1.,1.,"cm",True],
+["Subleading dz","dzL2","dzL2",100,-1.,1.,"cm",True],
+["Trailing dz","dzL3","dzL3",100,-1.,1.,"cm",True],
+["Leading medId","medIdL1","medIdL1",2,0,2,"cm",True],
+["Subleading medId","medIdL2","medIdL2",2,0,2,"cm",True],
+["Trailing medId","medIdL3","medIdL3",2,0,2,"cm",True],
+["Leading mvaId","mvaIdL1","mvaIdL1",6,0,6,"cm",True],
+["Subleading mvaId","mvaIdL2","mvaIdL2",6,0,6,"cm",True],
+["Trailing mvaId","mvaIdL3","mvaIdL3",6,0,6,"cm",True],
+
 ["Transverse Missing Energy","met","met",50,0,250,"GeV",True],
 ["Transver Missing Energy Phi","met_phi","met_phi",40,-4,4,"phi",True],
 ["dR Between Leading and Subleading","dR12","dR12",100,0,6,"dR",True],
 ["dR Between Leading and Trailing","dR13","dR13",100,0,6,"dR",True],
 ["dR Between Subleading and Trailing","dR23","dR23",100,0,6,"dR",True],
 ["Number of b Jets","nbJets","nbJets",2,0,2,"n",True],
+["Number of Jets","nJets","nJets",12,0,12,"n",True],
 
 # 2D Plots
 #To be incorporated
@@ -140,4 +155,4 @@ for p in tqdm(plots):
 print('\a')
 print("Uploading plots to web")
 import subprocess
-subprocess.run(["scp","-r","/home/nikmenendez/Output/%s/"%(out_dir),"nimenend@lxplus.cern.ch:/eos/user/n/nimenend/www/Wto3l/SR_Selection/ZpX/"])
+subprocess.run(["scp","-r","/home/nikmenendez/Output/%s/"%(out_dir),"nimenend@lxplus.cern.ch:/eos/user/n/nimenend/www/Wto3l/SR_Selection/New_Plotter/"])
