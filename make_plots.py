@@ -18,26 +18,34 @@ from Plotter.Plot import *
 from Weighter.Fake_weight import *
 
 #Define parameters from plotting
-samples = background_samples + signal_samples + data_samples[:-1]
-#samples = ["WZTo3LNu","ZZTo4L","fake"] + [signal_samples[0]] + ["data"]
+#samples = background_samples + signal_samples + data_samples[:-1]
+#samples = ["WZTo3LNu","ZZTo4L","fake"] + [signal_samples[1]] + ["data"]
+samples = ["WZTo3LNu","ZZTo4L","fake"] + signal_samples + ["data"]
 files = combFiles(signal_samples, background_samples, data_samples, signal_files, background_files, data_files)
 
 lumi = 41.4*1000
 error_on_MC = False
 
-out_dir = "3mu_onlyVeto"
-if not os.path.exists("/home/nikmenendez/Output/%s/"%(out_dir)): os.makedirs("/home/nikmenendez/Output/%s/"%(out_dir))
-if not os.path.exists("/home/nikmenendez/Output/pickle/%s/"%(out_dir)): os.makedirs("/home/nikmenendez/Output/pickle/%s/"%(out_dir))
+out_dir = "3mu_disc20"
+if not os.path.exists("/orange/avery/nikmenendez/Output/%s/"%(out_dir)): os.makedirs("/orange/avery/nikmenendez/Output/%s/"%(out_dir))
+if not os.path.exists("/orange/avery/nikmenendez/Output/pickle/%s/"%(out_dir)): os.makedirs("/orange/avery/nikmenendez/Output/pickle/%s/"%(out_dir))
 
 plots = [
 
 # 1D Plots
 #[Title,save name,variable plotted,nBins,low,high,unit,plot data]
 ["3 Mu Invariant Mass","m3l","m3l",83,0,83,"GeV",True],
+#["3 Mu Invariant Mass","m3l","m3l",100,0,200,"GeV",True],
 ["3 Mu + MET Transverse Mass","mt","mt",100,0,250,"GeV",True],
 ["Lower Mass diMu Pair","mass2","M2",160,0,80,"GeV",False],
+#["Lower Mass diMu Pair","mass2","M2",100,0,200,"GeV",True],
 ["Higher Mass diMu Pair","mass1","M1",160,0,80,"GeV",False],
+#["Higher Mass diMu Pair","mass1","M1",100,0,200,"GeV",True],
 ["Same Sign diMu Pair","sameMass","M0",160,0,80,"GeV",True],
+#["Same Sign diMu Pair","sameMass","M0",100,0,200,"GeV",True],
+["dR Between Lower Mass diMu","dRM2","dRM2",100,0,6,"dR",False],
+["dR Between Higher Mass diMu","dRM1","dRM1",100,0,6,"dR",False],
+["dR Between Same Sign diMu","dRM0","dRM0",100,0,6,"dR",True],
 
 ["Leading pT","pTL1","pTL1",100,0,100,"GeV",True],
 ["Subleading pT","pTL2","pTL2",80,0,80,"GeV",True],
@@ -48,27 +56,35 @@ plots = [
 ["Leading phi","phiL1","phiL1",40,-4.,4.,"phi",True],
 ["Subleading phi","phiL2","phiL2",40,-4.,4.,"phi",True],
 ["Trailing phi","phiL3","phiL3",40,-4.,4.,"phi",True],
-["Leading Isolation","IsoL1","IsoL1",50,0.,0.2,"pfRelIso03_all",True],
-["Subleading Isolation","IsoL2","IsoL2",50,0.,0.2,"pfRelIso03_all",True],
-["Trailing Isolation","IsoL3","IsoL3",50,0.,0.2,"pfRelIso03_all",True],
-["Leading 3D Impact Parameter","ip3dL1","ip3dL1",25,0.,0.05,"IP3D",True],
-["Subleading 3D Impact Parameter","ip3dL2","ip3dL2",25,0.,0.05,"IP3D",True],
-["Trailing 3D Impact Parameter","ip3dL3","ip3dL3",25,0.,0.05,"IP3D",True],
-["Leading Significance of 3D Impact Parameter","sip3dL1","sip3dL1",100,0.,10.,"SIP3D",True],
-["Subleading Significance of 3D Impact Parameter","sip3dL2","sip3dL2",100,0.,10.,"SIP3D",True],
-["Trailing Significance of 3D Impact Parameter","sip3dL3","sip3dL3",100,0.,10.,"SIP3D",True],
-["Leading dxy","dxyL1","dxyL1",100,-1.,1.,"cm",True],
-["Subleading dxy","dxyL2","dxyL2",100,-1.,1.,"cm",True],
-["Trailing dxy","dxyL3","dxyL3",100,-1.,1.,"cm",True],
-["Leading dz","dzL1","dzL1",100,-1.,1.,"cm",True],
-["Subleading dz","dzL2","dzL2",100,-1.,1.,"cm",True],
-["Trailing dz","dzL3","dzL3",100,-1.,1.,"cm",True],
-["Leading medId","medIdL1","medIdL1",2,0,2,"cm",True],
-["Subleading medId","medIdL2","medIdL2",2,0,2,"cm",True],
-["Trailing medId","medIdL3","medIdL3",2,0,2,"cm",True],
-["Leading mvaId","mvaIdL1","mvaIdL1",6,0,6,"cm",True],
-["Subleading mvaId","mvaIdL2","mvaIdL2",6,0,6,"cm",True],
-["Trailing mvaId","mvaIdL3","mvaIdL3",6,0,6,"cm",True],
+["Leading Isolation","IsoL1","IsoL1",60,0.,0.6,"pfRelIso03_all",True],
+["Subleading Isolation","IsoL2","IsoL2",60,0.,0.6,"pfRelIso03_all",True],
+["Trailing Isolation","IsoL3","IsoL3",60,0.,0.6,"pfRelIso03_all",True],
+["Leading 3D Impact Parameter","ip3dL1","ip3dL1",25,0.,0.02,"IP3D",True],
+["Subleading 3D Impact Parameter","ip3dL2","ip3dL2",25,0.,0.02,"IP3D",True],
+["Trailing 3D Impact Parameter","ip3dL3","ip3dL3",25,0.,0.02,"IP3D",True],
+["Leading Significance of 3D Impact Parameter","sip3dL1","sip3dL1",40,0.,4.,"SIP3D",True],
+["Subleading Significance of 3D Impact Parameter","sip3dL2","sip3dL2",40,0.,4.,"SIP3D",True],
+["Trailing Significance of 3D Impact Parameter","sip3dL3","sip3dL3",40,0.,4.,"SIP3D",True],
+["Leading dxy","dxyL1","dxyL1",50,-.02,.02,"cm",True],
+["Subleading dxy","dxyL2","dxyL2",50,-.02,.02,"cm",True],
+["Trailing dxy","dxyL3","dxyL3",50,-.02,.02,"cm",True],
+["Leading dz","dzL1","dzL1",50,-.02,.02,"cm",True],
+["Subleading dz","dzL2","dzL2",50,-.02,.02,"cm",True],
+["Trailing dz","dzL3","dzL3",50,-.02,.02,"cm",True],
+["Leading Medium ID","medIdL1","medIdL1",2,0,2,"True",True],
+["Subleading Medium ID","medIdL2","medIdL2",2,0,2,"True",True],
+["Trailing Medium ID","medIdL3","medIdL3",2,0,2,"True",True],
+["Leading mva ID","mvaIdL1","mvaIdL1",6,0,6,"ID",True],
+["Subleading mva ID","mvaIdL2","mvaIdL2",6,0,6,"ID",True],
+["Trailing mva ID","mvaIdL3","mvaIdL3",6,0,6,"ID",True],
+
+["Worst Isolation","worstIso","worstIso",60,0,.6,"pfRelIso03_all",True],
+["Worst dxy","worstdxy","worstdxy",20,0,.02,"cm",True],
+["Worst dz","worstdz","worstdz",20,0,0.02,"cm",True],
+["Worst 3D Impact Parameter","worstip3d","worstip3d",25,0.,0.02,"IP3D",True],
+["Worst Significance of 3D Impact Parameter","worstsip3d","worstsip3d",100,0.,4.,"SIP3D",True],
+["Worst Medium ID","worstmedId","worstmedId",2,0,2,"True",True],
+["Worst mva ID","worstmvaId","worstmvaId",6,0,6,"ID",True],
 
 ["Transverse Missing Energy","met","met",50,0,250,"GeV",True],
 ["Transver Missing Energy Phi","met_phi","met_phi",40,-4,4,"phi",True],
@@ -77,6 +93,8 @@ plots = [
 ["dR Between Subleading and Trailing","dR23","dR23",100,0,6,"dR",True],
 ["Number of b Jets","nbJets","nbJets",2,0,2,"n",True],
 ["Number of Jets","nJets","nJets",12,0,12,"n",True],
+
+["Neural Network Discriminator","discriminator","discriminator",100,0,1,"",True],
 
 # 2D Plots
 #To be incorporated
@@ -123,12 +141,12 @@ for i in range(len(samples)):
 		data["genWeight"] = data["genWeight"]*data["fake_weight"]*data["fail"] + data["genWeight"]*data["fake_weight"]*data["fail2"] #For 3P0F Validation
 
 	# Save resulting data
-	with open("/home/nikmenendez/Output/pickle/%s/%s.p"%(out_dir,samples[i]),'wb') as handle:
+	with open("/orange/avery/nikmenendez/Output/pickle/%s/%s.p"%(out_dir,samples[i]),'wb') as handle:
 		pickle.dump(data, handle)
 
 data = {}
 for i in range(len(samples)):
-	with open("/home/nikmenendez/Output/pickle/%s/%s.p"%(out_dir,samples[i]),'rb') as handle:
+	with open("/orange/avery/nikmenendez/Output/pickle/%s/%s.p"%(out_dir,samples[i]),'rb') as handle:
 		data[samples[i]] = pickle.load(handle)
 
 print("Efficiencies of each cut:")
@@ -141,7 +159,7 @@ for key in effs:
 	for key2 in effs[key]:
 		row.append("%.2f%%"%(effs[key][key2]))
 	x.add_row(row)
-table = open("/home/nikmenendez/Output/%s/Efficiency_Table.txt"%(out_dir),"w")
+table = open("/orange/avery/nikmenendez/Output/%s/Efficiency_Table.txt"%(out_dir),"w")
 table.write(x.get_string())
 table.close()
 print(x)
@@ -155,4 +173,4 @@ for p in tqdm(plots):
 print('\a')
 print("Uploading plots to web")
 import subprocess
-subprocess.run(["scp","-r","/home/nikmenendez/Output/%s/"%(out_dir),"nimenend@lxplus.cern.ch:/eos/user/n/nimenend/www/Wto3l/SR_Selection/New_Plotter/"])
+subprocess.run(["scp","-r","/orange/avery/nikmenendez/Output/%s/"%(out_dir),"nimenend@lxplus.cern.ch:/eos/user/n/nimenend/www/Wto3l/SR_Selection/New_Plotter/"])

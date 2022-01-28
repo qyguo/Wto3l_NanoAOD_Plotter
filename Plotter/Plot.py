@@ -6,17 +6,17 @@ def plot(data,p,s,e,out):
 	# Sort Samples by Amount of Statistics
 	stats = []
 	nSig,nData = 0,0
-	for i in range(len(s)):
-		if data[s[i]]["sType"]=="MC":
-			stats.append(len(data[s[i]][p[2]][data[s[i]]["selection"]]))
-		elif data[s[i]]["sType"]=="sig":
-			nSig+=1
-		else:
-			nData+=1
+	#for i in range(len(s)):
+	#	if data[s[i]]["sType"]=="MC":
+	#		stats.append(len(data[s[i]][p[2]][data[s[i]]["selection"]]))
+	#	elif data[s[i]]["sType"]=="sig":
+	#		nSig+=1
+	#	else:
+	#		nData+=1
 
-	s_sorted = [x for _,x in sorted(zip(stats,s[:-(nSig+nData)]))]
-	s_sorted.reverse()
-	s = s_sorted + s[-(nSig+nData):]
+	#s_sorted = [x for _,x in sorted(zip(stats,s[:-(nSig+nData)]))]
+	#s_sorted.reverse()
+	#s = s_sorted + s[-(nSig+nData):]
 	if not p[7]: s = s[:-1]
 
 	# Make Plot
@@ -136,6 +136,6 @@ def plot(data,p,s,e,out):
 
 
 	fig.suptitle("%s"%(p[0]))
-	fig.savefig("/home/nikmenendez/Output/%s/%s.png"%(out,p[1]))
+	fig.savefig("/orange/avery/nikmenendez/Output/%s/%s.png"%(out,p[1]))
 	fig.clf()
 	plt.close(fig)
