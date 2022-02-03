@@ -9,7 +9,9 @@ def select(data):
 	Lep1 = uproot_methods.classes.TLorentzVector.PtEtaPhiMassLorentzVectorArray(data['pTL1'],data['etaL1'],data['phiL1'],data['massL1'])
 	Lep2 = uproot_methods.classes.TLorentzVector.PtEtaPhiMassLorentzVectorArray(data['pTL2'],data['etaL2'],data['phiL2'],data['massL2'])
 	Lep3 = uproot_methods.classes.TLorentzVector.PtEtaPhiMassLorentzVectorArray(data['pTL3'],data['etaL3'],data['phiL3'],data['massL3'])
-	
+
+	data["m3l_pt"] = (Lep1 + Lep2 + Lep3).pt
+
 	# Define 3 possible Zp combinations
 	P1 = Lep1 + Lep2
 	P2 = Lep1 + Lep3
@@ -41,14 +43,15 @@ def select(data):
 	data["worstmvaId"] = np.fmin(np.fmin(np.abs(data["mvaIdL1"]),np.abs(data["mvaIdL2"])),np.abs(data["mvaIdL3"]))
 
 	# --------- Predict discriminator from NN -----------------------
-	#clear_session()
-	#ZModel = load_model("/orange/avery/nikmenendez/Wto3l/Optimizer/MVA/ZSelector_model_alt.h5")
-	#Selector_vars = ["dxyL1", "dzL1", "etaL1", "ip3dL1", "phiL1", "sip3dL1",
-    #        		 "dxyL2", "dzL2", "etaL2", "ip3dL2", "phiL2", "sip3dL2",
-    #         		 "dxyL3", "dzL3", "etaL3", "ip3dL3", "phiL3", "sip3dL3",
-    #         		 "dR12", "dR13", "dR23", "dRM0", "m3l", "mt", "met", "met_phi", "nJets"]
-	#df = pd.DataFrame.from_dict(data)
-	#data["discriminator"] = (ZModel.predict(df[Selector_vars])).ravel()
+	clear_session()
+	ZModel = load_model("/orange/avery/nikmenendez/Wto3l/Optimizer/MVA/ZSelector_model_alt.h5")
+	Selector_vars = ["dxyL1", "dzL1", "etaL1", "ip3dL1", "phiL1", "sip3dL1",
+            		 "dxyL2", "dzL2", "etaL2", "ip3dL2", "phiL2", "sip3dL2",
+             		 "dxyL3", "dzL3", "etaL3", "ip3dL3", "phiL3", "sip3dL3",
+             		 "dR12", "dR13", "dR23", "dRM0", "m3l", "mt", "met", "met_phi", "nJets",
+					 "M0", "m3l_pt"]
+	df = pd.DataFrame.from_dict(data)
+	data["discriminator"] = (ZModel.predict(df[Selector_vars])).ravel()
 	# ---------------------------------------------------------------
 
 	return data

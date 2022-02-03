@@ -61,7 +61,7 @@ def skim(data,s):
 
 	#selection, eff["pTL3 5-10"]			= cut((data["pTL3"] > 5) & (data["pTL3"] < 10), selection)
 	
-	#selection, eff["NN disc > 0.2"]		= cut(data["discriminator"] > 0.2, selection)
+	#selection, eff["NN disc > 0.50"]	= cut(data["discriminator"] > 0.50, selection)
 
 	if np.count_nonzero(selection)!=0:
 		eff["Overall"] = np.count_nonzero(selection)/len(data['nMuons'])*100
@@ -87,6 +87,10 @@ def skim_opt(data,s):
 	#seleciton, eff["pTL1 > 12"]		 	= cut(data['pTL1'] > 12, selection)
 	#selection, eff["pTL2 > 10"]			= cut(data['pTL2'] > 10, selection)
 	#selection, eff["pTL3 > 5"]			= cut(data['pTL3'] > 5 , selection)
-	#selection, eff["medId True"]        = cut((data['medIdL1'] == 1) & (data['medIdL2'] == 1) & (data['medIdL3'] == 1), selection)
+	selection, eff["medId True"]		= cut(data["worstmedId"] == 1, selection)
+	selection, eff["SIP3D <= 3.2"]		= cut(data["worstsip3d"] <= 3.2, selection)
+	selection, eff["dxy <= 0.02"]		= cut(data["worstdxy"] <= 0.02, selection)
+	selection, eff["dx <= 0.02"]		= cut(data["worstdz"] <= 0.02, selection)
+	selection, eff["Iso < 0.3"]			= cut(data["worstIso"] < 0.3, selection)
 
 	return selection, eff

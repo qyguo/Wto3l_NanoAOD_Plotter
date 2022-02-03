@@ -21,12 +21,13 @@ from Weighter.Fake_weight import *
 #samples = background_samples + signal_samples + data_samples[:-1]
 #samples = ["WZTo3LNu","ZZTo4L","fake"] + [signal_samples[1]] + ["data"]
 samples = ["WZTo3LNu","ZZTo4L","fake"] + signal_samples + ["data"]
+#samples = signal_samples
 files = combFiles(signal_samples, background_samples, data_samples, signal_files, background_files, data_files)
 
 lumi = 41.4*1000
 error_on_MC = False
 
-out_dir = "3mu_disc20"
+out_dir = "3mu_disc_v2"
 if not os.path.exists("/orange/avery/nikmenendez/Output/%s/"%(out_dir)): os.makedirs("/orange/avery/nikmenendez/Output/%s/"%(out_dir))
 if not os.path.exists("/orange/avery/nikmenendez/Output/pickle/%s/"%(out_dir)): os.makedirs("/orange/avery/nikmenendez/Output/pickle/%s/"%(out_dir))
 
@@ -35,13 +36,14 @@ plots = [
 # 1D Plots
 #[Title,save name,variable plotted,nBins,low,high,unit,plot data]
 ["3 Mu Invariant Mass","m3l","m3l",83,0,83,"GeV",True],
+["3 Mu pT","m3l_pt","m3l_pt",200,0,200,"GeV",True],
 #["3 Mu Invariant Mass","m3l","m3l",100,0,200,"GeV",True],
 ["3 Mu + MET Transverse Mass","mt","mt",100,0,250,"GeV",True],
 ["Lower Mass diMu Pair","mass2","M2",160,0,80,"GeV",False],
 #["Lower Mass diMu Pair","mass2","M2",100,0,200,"GeV",True],
 ["Higher Mass diMu Pair","mass1","M1",160,0,80,"GeV",False],
 #["Higher Mass diMu Pair","mass1","M1",100,0,200,"GeV",True],
-["Same Sign diMu Pair","sameMass","M0",160,0,80,"GeV",True],
+["Same Sign diMu Pair","sameMass","M0",80,0,80,"GeV",True],
 #["Same Sign diMu Pair","sameMass","M0",100,0,200,"GeV",True],
 ["dR Between Lower Mass diMu","dRM2","dRM2",100,0,6,"dR",False],
 ["dR Between Higher Mass diMu","dRM1","dRM1",100,0,6,"dR",False],
@@ -173,4 +175,4 @@ for p in tqdm(plots):
 print('\a')
 print("Uploading plots to web")
 import subprocess
-subprocess.run(["scp","-r","/orange/avery/nikmenendez/Output/%s/"%(out_dir),"nimenend@lxplus.cern.ch:/eos/user/n/nimenend/www/Wto3l/SR_Selection/New_Plotter/"])
+subprocess.run(["scp","-r","/orange/avery/nikmenendez/Output/%s/"%(out_dir),"nimenend@lxplus.cern.ch:/eos/user/n/nimenend/www/Wto3l/SR_Selection/ZpX/"])

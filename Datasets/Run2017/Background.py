@@ -6,53 +6,54 @@ background_samples = []
 background_files = {}
 	
 sam = "DYJetsToLL_M1To10"
-background_samples.append(sam)
+#background_samples.append(sam)
 background_files[sam] = "%s%s.root"%(input_dir,sam)
 xs_bkg[sam] = 2037.0
 sumW_bkg[sam] = 24227000.0
 
 sam = "DYJetsToLL_M10To50"
-background_samples.append(sam)
+#background_samples.append(sam)
 background_files[sam] = "%s%s.root"%(input_dir,sam)
 xs_bkg[sam] = 18610.0
 sumW_bkg[sam] = 78994955.0
 
 sam = "DYJetsToLL_M50"
-background_samples.append(sam)
+#background_samples.append(sam)
 background_files[sam] = "%s%s.root"%(input_dir,sam)
 xs_bkg[sam] = 6077.22
 sumW_bkg[sam] = 3782668437151.0
 
 sam = "TTJets_DiLept"
-background_samples.append(sam)
+#background_samples.append(sam)
 background_files[sam] = "%s%s.root"%(input_dir,sam)
 xs_bkg[sam] = 54.23
 sumW_bkg[sam] = 28349068.0
 
 sam = "WZTo3LNu"
-background_samples.append(sam)
+#background_samples.append(sam)
 background_files[sam] = "%s%s.root"%(input_dir,sam)
 xs_bkg[sam] = 5.052
 sumW_bkg[sam] = 94563223.0
 
 sam = "ZZTo4L"
-background_samples.append(sam)
+#background_samples.append(sam)
 background_files[sam] = "%s%s.root"%(input_dir,sam)
 xs_bkg[sam] = 1.369
 sumW_bkg[sam] = 55658966.0
 
 sam = "WJetsToLNu"
-background_samples.append(sam)
+#background_samples.append(sam)
 background_files[sam] = "%s%s.root"%(input_dir,sam)
 xs_bkg[sam] = 61526.7
 sumW_bkg[sam] = 77631180.0
 
 sam = "WWTo2L2Nu"
-background_samples.append(sam)
+#background_samples.append(sam)
 background_files[sam] = "%s%s.root"%(input_dir,sam)
 xs_bkg[sam] = 12.178
 sumW_bkg[sam] = 22155848.0
 
+background_samples = ["ZZTo4L","WZTo3LNu","TTJets_DiLept","DYJetsToLL_M50","DYJetsToLL_M10To50","DYJetsToLL_M1To10","WJetsToLNu","WWTo2L2Nu"]
 
 signal_vars = [
 "genWeight",

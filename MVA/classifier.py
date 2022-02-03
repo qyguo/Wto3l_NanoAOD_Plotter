@@ -3,10 +3,17 @@ from __future__ import division
 import os
 os.environ['KERAS_BACKEND']='tensorflow'
 
-from tensorflow.python.keras.models import Sequential, Model
-from tensorflow.python.keras.layers import Input, Activation, Dense, Convolution2D, MaxPooling2D, Dropout, Flatten, LeakyReLU, ReLU
-from tensorflow.python.keras.utils import np_utils
-from tensorflow.python.keras.optimizers import TFOptimizer
+#import tensorflow
+#from tensorflow.python.keras.models import Sequential, Model
+#from tensorflow.python.keras.layers import Input, Activation, Dense, Convolution2D, MaxPooling2D, Dropout, Flatten, LeakyReLU, ReLU
+#from tensorflow.python.keras.utils import np_utils
+#from tensorflow.python.keras.optimizers import TFOptimizer
+from tensorflow import keras
+
+from keras.models import Sequential, Model
+from keras.layers import Input, Activation, Dense, Dropout, ReLU
+from keras.utils import np_utils
+from tensorflow.keras.optimizers import Adam
 
 from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import train_test_split
@@ -30,7 +37,8 @@ lumi = 41.4*1000
 vars_test = ["dxyL1", "dzL1", "etaL1", "ip3dL1", "phiL1", "sip3dL1",
 			 "dxyL2", "dzL2", "etaL2", "ip3dL2", "phiL2", "sip3dL2",
 			 "dxyL3", "dzL3", "etaL3", "ip3dL3", "phiL3", "sip3dL3",
-			 "dR12", "dR13", "dR23", "dRM0", "m3l", "mt", "met", "met_phi", "nJets"]
+			 "dR12", "dR13", "dR23", "dRM0", "m3l", "mt", "met", "met_phi", "nJets",
+			 "M0", "m3l_pt"]
 vars_check = ["sType"]
 
 effs = {}
@@ -177,13 +185,18 @@ def plot_classifier_output():
 inputs = Input(shape=(len(vars_test),), name = 'input')
 #x = Dropout(.1, name = 'input_dropout_.2')(inputs)
 x = Dense(64, name = 'hidden1', activation="ReLU")(inputs)
+#x = Dropout(.1, name = 'hidden1_dropout_.1')(x)
 x = Dense(32, name = 'hidden2', activation="ReLU")(x)
+#x = Dropout(.1, name = 'hidden2_dropout_.1')(x)
 #x = LeakyReLU(.1, name = 'LeakyReLU1_.1')(x)
 #x = ReLU(name = 'ReLU1')(x)
 outputs = Dense(1, name = 'output', activation='sigmoid')(x)
 
 model = Model(inputs=inputs, outputs=outputs)
-model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
+#opt = keras.optimizers.Adam(learning_rate=0.0001)
+#opt = Adam(learning_rate=0.0002, beta_1=0.5, epsilon=0.001)
+opt = Adam()
+model.compile(opt, loss='binary_crossentropy', metrics=['accuracy'])
 
 model.summary()
 

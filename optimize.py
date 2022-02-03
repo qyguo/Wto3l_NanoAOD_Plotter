@@ -37,6 +37,7 @@ plots = [
 # 1D Plots
 #[Title,save name,variable plotted,nBins,low,high,unit,plot data]
 ["3 Mu Invariant Mass","m3l","m3l",83,0,83,"GeV",True],
+["3 Mu pT","m3l_pt","m3l_pt",200,0,200,"GeV",True],
 ["3 Mu + MET Transverse Mass","mt","mt",100,0,250,"GeV",True],
 ["Lower Mass diMu Pair","mass2","M2",160,0,80,"GeV",False],
 ["Higher Mass diMu Pair","mass1","M1",160,0,80,"GeV",False],
@@ -92,33 +93,37 @@ plots = [
 ["Number of b Jets","nbJets","nbJets",2,0,2,"n",True],
 ["Number of Jets","nJets","nJets",12,0,12,"n",True],
 
+["Neural Network Discriminant","discriminator","discriminator",100,0,1,"",True]
+
 ]
 
 cuts = [
 
-#[Title,save name,variable plotted,nBins,low,high,unit,less than]
-["Worst Isolation","worstIso","worstIso",60,0,.6,"pfRelIso03_all",True],
-["Worst dxy","worstdxy","worstdxy",50,0,1,"cm",True],
-["Worst dz","worstdz","worstdz",50,0,1,"cm",True],
-["Worst 3D Impact Parameter","worstip3d","worstip3d",25,0.,0.1,"IP3D",True],
-["Worst Significance of 3D Impact Parameter","worstsip3d","worstsip3d",100,0.,10.,"SIP3D",True],
-["Worst Medium ID","worstmedId","worstmedId",2,0,2,"True",True],
-#["Worst mva ID","worstmvaId","worstmvaId",6,0,6,"ID",True],
+##[Title,save name,variable plotted,nBins,low,high,unit,less than]
+#["Worst Isolation","worstIso","worstIso",60,0,.6,"pfRelIso03_all",True],
+#["Worst dxy","worstdxy","worstdxy",50,0,1,"cm",True],
+#["Worst dz","worstdz","worstdz",50,0,1,"cm",True],
+#["Worst 3D Impact Parameter","worstip3d","worstip3d",25,0.,0.1,"IP3D",True],
+#["Worst Significance of 3D Impact Parameter","worstsip3d","worstsip3d",100,0.,10.,"SIP3D",True],
+#["Worst Medium ID","worstmedId","worstmedId",2,0,2,"True",True],
+##["Worst mva ID","worstmvaId","worstmvaId",6,0,6,"ID",True],
 
-["3 Mu Invariant Mass","m3l","m3l",83,0,83,"GeV",True],
-["3 Mu + MET Transverse Mass","mt","mt",100,0,250,"GeV",True],
+#["3 Mu Invariant Mass","m3l","m3l",83,0,83,"GeV",True],
+#["3 Mu + MET Transverse Mass","mt","mt",100,0,250,"GeV",True],
+#
+#["Leading pT","pTL1","pTL1",100,0,100,"GeV",True],
+#["Subleading pT","pTL2","pTL2",80,0,80,"GeV",True],
+#["Trailing pT","pTL3","pTL3",50,0,50,"GeV",True],
+#
+#["Transverse Missing Energy","met","met",50,0,250,"GeV",True],
+##["Transver Missing Energy Phi","met_phi","met_phi",40,-4,4,"phi",True],
+#["dR Between Leading and Subleading","dR12","dR12",100,0,6,"dR",True],
+#["dR Between Leading and Trailing","dR13","dR13",100,0,6,"dR",True],
+#["dR Between Subleading and Trailing","dR23","dR23",100,0,6,"dR",True],
+##["Number of b Jets","nbJets","nbJets",2,0,2,"n",True],
+#["Number of Jets","nJets","nJets",12,0,12,"n",True],
 
-["Leading pT","pTL1","pTL1",100,0,100,"GeV",True],
-["Subleading pT","pTL2","pTL2",80,0,80,"GeV",True],
-["Trailing pT","pTL3","pTL3",50,0,50,"GeV",True],
-
-["Transverse Missing Energy","met","met",50,0,250,"GeV",True],
-#["Transver Missing Energy Phi","met_phi","met_phi",40,-4,4,"phi",True],
-["dR Between Leading and Subleading","dR12","dR12",100,0,6,"dR",True],
-["dR Between Leading and Trailing","dR13","dR13",100,0,6,"dR",True],
-["dR Between Subleading and Trailing","dR23","dR23",100,0,6,"dR",True],
-#["Number of b Jets","nbJets","nbJets",2,0,2,"n",True],
-["Number of Jets","nJets","nJets",12,0,12,"n",True],
+["Neural Network Discriminant","discriminator","discriminator",100,0,1,"",True]
 
 ]
 
