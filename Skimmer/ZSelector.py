@@ -1,8 +1,10 @@
 import numpy as np
 import uproot_methods
 import pandas as pd
-from tensorflow.keras.models import load_model
-from tensorflow.keras.backend import clear_session
+import joblib
+#from tensorflow.keras.models import load_model
+#from tensorflow.keras.backend import clear_session
+#from sklearn.ensemble import RandomForestClassifier
 
 def select(data):
 
@@ -42,16 +44,38 @@ def select(data):
 	data["worstmedId"] = np.fmin(np.fmin(np.abs(data["medIdL1"]),np.abs(data["medIdL2"])),np.abs(data["medIdL3"]))
 	data["worstmvaId"] = np.fmin(np.fmin(np.abs(data["mvaIdL1"]),np.abs(data["mvaIdL2"])),np.abs(data["mvaIdL3"]))
 
+	Selector_vars = ["etaL1", "phiL1",
+                     "etaL2", "phiL2",
+                     "etaL3", "phiL3",
+                     "dR12", "dR13", "dR23", "dRM0", "m3l", "mt", "met", "nJets",
+                     "M0", "m3l_pt"]
+
 	# --------- Predict discriminator from NN -----------------------
-	clear_session()
-	ZModel = load_model("/orange/avery/nikmenendez/Wto3l/Optimizer/MVA/ZSelector_model_alt.h5")
-	Selector_vars = ["dxyL1", "dzL1", "etaL1", "ip3dL1", "phiL1", "sip3dL1",
-            		 "dxyL2", "dzL2", "etaL2", "ip3dL2", "phiL2", "sip3dL2",
-             		 "dxyL3", "dzL3", "etaL3", "ip3dL3", "phiL3", "sip3dL3",
-             		 "dR12", "dR13", "dR23", "dRM0", "m3l", "mt", "met", "met_phi", "nJets",
-					 "M0", "m3l_pt"]
-	df = pd.DataFrame.from_dict(data)
-	data["discriminator"] = (ZModel.predict(df[Selector_vars])).ravel()
-	# ---------------------------------------------------------------
+	#clear_session()
+	#ZModel = load_model("/orange/avery/nikmenendez/Wto3l/Optimizer/MVA/ZSelector_model_alt.h5")
+	##Selector_vars = ["dxyL1", "dzL1", "etaL1", "ip3dL1", "phiL1", "sip3dL1", 
+    ##        		 "dxyL2", "dzL2", "etaL2", "ip3dL2", "phiL2", "sip3dL2",
+    ##         		 "dxyL3", "dzL3", "etaL3", "ip3dL3", "phiL3", "sip3dL3",
+    ##         		 "dR12", "dR13", "dR23", "dRM0", "m3l", "mt", "met", "nJets",
+	##				 "M0", "m3l_pt"]
+	#df = pd.DataFrame.from_dict(data)[Selector_vars]
+	#df["sType"], df["Weights"] = 1, 1
+	#maxW = pd.read_pickle("/orange/avery/nikmenendez/Wto3l/Optimizer/MVA/maxes.pkl")
+	#minW = pd.read_pickle("/orange/avery/nikmenendez/Wto3l/Optimizer/MVA/mins.pkl")
+	#df = (df-minW)/(maxW-minW)
+
+	#data["discriminator"] = (ZModel.predict(df[Selector_vars])).ravel()
+	## ---------------------------------------------------------------
+
+	## --------- Predict Class from Random Forest --------------------
+	#rf = joblib.load("/orange/avery/nikmenendez/Wto3l/Optimizer/MVA/forest_model.joblib")
+	##Selector_vars = ["etaL1", "phiL1",
+    ##                 "etaL2", "phiL2",
+    ##                 "etaL3", "phiL3",
+    ##                 "dR12", "dR13", "dR23", "dRM0", "m3l", "mt", "met", "nJets",
+    ##                 "M0", "m3l_pt"]
+	#df  = pd.DataFrame.from_dict(data)[Selector_vars]
+	#data["forestguess"] = rf.predict(df)
+	## ---------------------------------------------------------------
 
 	return data

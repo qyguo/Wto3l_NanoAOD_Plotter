@@ -10,11 +10,13 @@ xs_sig = {	"Wto3l_M4":  10,
 		"Wto3l_M15": 10,
 		"Wto3l_M30": 10,
 		"Wto3l_M60": 10,}
+#		"Wto3l_M1": 10}
 sumW_sig = {"Wto3l_M4":  100000,
 		"Wto3l_M5":  500000,
 		"Wto3l_M15": 100000,
 		"Wto3l_M30": 100000,
 		"Wto3l_M60": 100000,}
+#		"Wto3l_M1":  100000}
 
 signal_samples = []
 signal_files = {}

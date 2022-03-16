@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-def plot(data,p,s,e,out):
+def plot(data,p,s,e,out,pRatio):
 
 	# Sort Samples by Amount of Statistics
 	stats = []
@@ -21,10 +21,15 @@ def plot(data,p,s,e,out):
 
 	# Make Plot
 
-	fig = plt.figure(constrained_layout=False,figsize=(10,13),)
-	gs = fig.add_gridspec(10,1)
-	ax1 = fig.add_subplot(gs[:7,:])
-	ax2 = fig.add_subplot(gs[7:,:])
+	if pRatio:
+		fig = plt.figure(constrained_layout=False,figsize=(10,13),)
+		gs = fig.add_gridspec(10,1)
+		ax1 = fig.add_subplot(gs[:7,:])
+		ax2 = fig.add_subplot(gs[7:,:])
+	else:
+		fig = plt.figure(constrained_layout=False,figsize=(10,7),)
+		ax1 = fig.add_subplot()
+		
 
 	last, data_made, MC_error, data_error = 0,[],0,0
 	tot_data, tot_MC, err_data, err_MC = 0, 0, 0, 0
@@ -108,34 +113,37 @@ def plot(data,p,s,e,out):
 			data_made = y
 			data_error = hidden_error
 
-	ax1.set_xlabel("%s (%s)"%(p[0],p[6]))
-	ax1.set_ylabel("Number of Events")
+	ax1.set_xlabel("%s (%s)"%(p[0],p[6]),size='x-large')
+	ax1.set_ylabel("Number of Events",size='x-large')
 	ax1.set_ylim(bottom=0)
 	ax1.set_xlim(p[4],p[5])
 	ax1.legend(loc='best',fontsize='x-small')
 
-	if len(data_made)>0 and len(last) > 0:
-		ratio = data_made/last
-		ratioErr = ratio*(data_error/data_made + MC_error/last)
-		ax2.errorbar(bincenters,ratio,yerr=ratioErr,drawstyle='steps-mid',fmt="o",color='black')
+	if pRatio:
+		if len(data_made)>0 and len(last) > 0:
+			ratio = data_made/last
+			ratioErr = ratio*(data_error/data_made + MC_error/last)
+			ax2.errorbar(bincenters,ratio,yerr=ratioErr,drawstyle='steps-mid',fmt="o",color='black')
 
-		#tot_data = np.sum(data_made)
-		#tot_MC = np.sum(last)
-		dataMCratio = tot_data/tot_MC
-		dataMCerror = dataMCratio*(err_MC/tot_MC + err_data/tot_data)
-		ax1.text(0.0,1.0,'Data/Pred = %.2f +- %.2f'%(dataMCratio,dataMCerror),size=20,transform = ax1.transAxes)
-		
+			#tot_data = np.sum(data_made)
+			#tot_MC = np.sum(last)
+			dataMCratio = tot_data/tot_MC
+			dataMCerror = dataMCratio*(err_MC/tot_MC + err_data/tot_data)
+			ax1.text(0.0,1.0,'2017, Data/Pred = %.2f +- %.2f'%(dataMCratio,dataMCerror),size=15,transform = ax1.transAxes)
+			
 
-	ax2.set_xlabel("%s (%s)"%(p[0],p[6]))
-	ax2.set_ylabel("Data/MC Ratio")
-	ax2.set_ylim(bottom=0,top=2)
-	ax2.set_xlim(p[4],p[5])
-	start, end = ax2.get_ylim()
-	ax2.yaxis.set_ticks(np.arange(start, end, 0.25))
-	ax2.grid()
+		ax2.set_xlabel("%s (%s)"%(p[0],p[6]),size='x-large')
+		ax2.set_ylabel("Data/MC Ratio",size='x-large')
+		ax2.set_ylim(bottom=0,top=2)
+		ax2.set_xlim(p[4],p[5])
+		start, end = ax2.get_ylim()
+		ax2.yaxis.set_ticks(np.arange(start, end, 0.25))
+		ax2.grid()
+	else:
+		ax1.text(0.0,1.0,'2017',size=15,transform = ax1.transAxes)
 
 
-	fig.suptitle("%s"%(p[0]))
+	fig.suptitle("%s"%(p[0]),size='xx-large')
 	fig.savefig("/orange/avery/nikmenendez/Output/%s/%s.png"%(out,p[1]))
 	fig.clf()
 	plt.close(fig)

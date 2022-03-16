@@ -1,4 +1,5 @@
 input_dir = "/cmsuf/data/store/user/t2/users/nikmenendez/skimmed/NanoAOD/2017/data/signal_sel/Eff/"
+#input_dir = "/cmsuf/data/store/user/t2/users/nikmenendez/skimmed/NanoAOD/2017/data/Zpeak/Eff/"
 
 data_samples = ["data"]
 data_files = {"data": "%stotal_data_no_dupe.root"%(input_dir)}

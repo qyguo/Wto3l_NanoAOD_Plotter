@@ -1,6 +1,7 @@
 from __future__ import division
 
 import os
+import sys
 os.environ['KERAS_BACKEND']='tensorflow'
 
 #import tensorflow
@@ -16,7 +17,7 @@ from keras.utils import np_utils
 from tensorflow.keras.optimizers import Adam
 
 from sklearn.metrics import mean_squared_error
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, StratifiedShuffleSplit
 from sklearn.utils import shuffle
 import pandas as pd
 import numpy as np
@@ -28,23 +29,34 @@ from Datasets.Run2017.Data import *
 from Datasets.Run2017.Background import *
 from Skimmer.AnalysisSkimmer import *
 from Skimmer.ZSelector import *
+from Weighter.Fake_weight import *
 
-samples = background_samples + signal_samples
+#samples = background_samples + signal_samples
+samples = ["WZTo3LNu","ZZTo4L","fake"] + signal_samples
 files = combFiles(signal_samples, background_samples, data_samples, signal_files, background_files, data_files)
 xs, sumW = combXS(xs_sig,sumW_sig,xs_bkg,sumW_bkg)
 lumi = 41.4*1000
 
-vars_test = ["dxyL1", "dzL1", "etaL1", "ip3dL1", "phiL1", "sip3dL1",
-			 "dxyL2", "dzL2", "etaL2", "ip3dL2", "phiL2", "sip3dL2",
-			 "dxyL3", "dzL3", "etaL3", "ip3dL3", "phiL3", "sip3dL3",
-			 "dR12", "dR13", "dR23", "dRM0", "m3l", "mt", "met", "met_phi", "nJets",
+#vars_test = ["dxyL1", "dzL1", "etaL1", "ip3dL1", "phiL1", "sip3dL1", 
+#			 "dxyL2", "dzL2", "etaL2", "ip3dL2", "phiL2", "sip3dL2",
+#			 "dxyL3", "dzL3", "etaL3", "ip3dL3", "phiL3", "sip3dL3",
+#			 "dR12", "dR13", "dR23", "dRM0", "m3l", "mt", "met", "nJets",
+#			 "M0", "m3l_pt"]
+vars_test = ["etaL1", "phiL1", 
+			 "etaL2", "phiL2",
+			 "etaL3", "phiL3",
+			 "dR12", "dR13", "dR23", "dRM0", "m3l", "mt", "met", "nJets",
 			 "M0", "m3l_pt"]
 vars_check = ["sType"]
 
 effs = {}
-events = pd.DataFrame()
+#events = pd.DataFrame()
+part = {}
 for i in range(len(samples)):
-	weight = xs[samples[i]]/sumW[samples[i]]*lumi
+	if ("data" in samples[i]) or ("fake" in samples[i]):
+		weight = xs[samples[i]]/sumW[samples[i]]
+	else:
+		weight = xs[samples[i]]/sumW[samples[i]]*lumi
 	if "Wto3l" in samples[i]: sType = 1
 	else: sType = 0
 
@@ -59,8 +71,8 @@ for i in range(len(samples)):
 	del temp
 	#data["weight"] = weight
 	data["sType"] = sType
-	data["pileupWeight"] = data["pileupWeight"]/32
-	data["Weights"] = weight * data["pileupWeight"] * data["genWeight"]
+	if not (("data" in samples[i]) or ("fake" in samples[i])):
+		data["pileupWeight"] = data["pileupWeight"]/32
 	print("Processing %s with %i events"%(samples[i],len(data["nMuons"])))
 
 	# Select other variables
@@ -69,16 +81,70 @@ for i in range(len(samples)):
 	# Perform Cuts
 	data["selection"],effs[samples[i]],data["fail"],data["fail2"] = skim(data,samples[i])
 
+	# Get fake weight if necessary
+	data["fake_weight"] = Fake_weight(data,samples[i])
+	if "fake" in samples[i]:
+		data["genWeight"] = data["genWeight"]*data["fake_weight"]*data["fail"] + data["genWeight"]*data["fake_weight"]*data["fail2"]
+		data["selection"] = data["fail"] | data["fail2"]
+
+	data["Weights"] = weight * data["pileupWeight"] * data["genWeight"]
 	df = pd.DataFrame.from_dict(data)
 	df = df[df["selection"]]
 	df = df[vars_test+vars_check+["Weights"]]
-	events = pd.concat([events,df])
+	part[samples[i]] = df
+	#events = pd.concat([events,df])
+
+	if ("WZ" in samples[i]) or ("ZZ" in samples[i]):
+		data["fWeight"] = (data["fake_weight"]*data["fail"] + data["fake_weight"]*data["fail2"]) * (-1)
+		data["Weights"] = data["Weights"] * data["fWeight"]
+		data["selection"] = data["fail"] | data["fail2"]
+
+		df = pd.DataFrame.from_dict(data)
+		df = df[df["selection"]]
+		df = df[vars_test+vars_check+["Weights"]]
+		part["%s_fake"%(samples[i])] = df
+		#events = pd.concat([events,df])
 
 #Shuffle DF and split into training and testing
+#events = shuffle(events)
+#events = events.reset_index(drop=True)
+#events_train, events_test = train_test_split(events, test_size=0.33, random_state=123456)
+events_train, events_test = pd.DataFrame(), pd.DataFrame()
+for s in samples:
+	df_train, df_test = train_test_split(part[s], test_size=0.33, random_state=123456)
+	events_train = pd.concat([events_train, df_train])
+	events_test = pd.concat([events_test, df_test])
+	#if ("WZ" in s) or ("ZZ" in s):
+	#	df_train, df_test = train_test_split(part["%s_fake"%(s)], test_size=0.33, random_state=123456)
+	#	events_train = pd.concat([events_train, df_train])
+	#	events_test = pd.concat([events_test, df_test])
 
-events = shuffle(events)
-events = events.reset_index(drop=True)
-events_train, events_test = train_test_split(events, test_size=0.33, random_state=123456)
+events_train = shuffle(events_train)
+events_train = events_train.reset_index(drop=True)
+events_test = shuffle(events_test)
+events_test = events_test.reset_index(drop=True)
+
+#maxW = pd.concat([events_train["Weights"],events_test["Weights"]]).max()
+#minW = pd.concat([events_train["Weights"],events_test["Weights"]]).min()
+#events_train["Weights"] = (events_train["Weights"]-minW)/(maxW-minW)
+#events_test["Weights"] = (events_test["Weights"]-minW)/(maxW-minW)
+
+maxW = pd.concat([events_train,events_test]).max()
+minW = pd.concat([events_train,events_test]).min()
+events_train = (events_train-minW)/(maxW-minW)
+events_test = (events_test-minW)/(maxW-minW)
+
+maxW.to_pickle("maxes.pkl")
+minW.to_pickle("mins.pkl")
+
+#Weight_train = events_train["Weights"]
+#Weight_test = events_train["Weights"]
+#meanW = pd.concat([events_train,events_test]).mean()
+#stdW = pd.concat([events_train,events_test]).std()
+#events_train = (events_train-meanW)/(stdW)
+#events_test = (events_test-meanW)/(stdW)
+#events_train["Weights"] = Weight_train
+#events_test["Weights"] = Weight_test
 
 # early stopping callback
 from keras.callbacks import EarlyStopping
@@ -183,17 +249,17 @@ def plot_classifier_output():
 #Create model
 
 inputs = Input(shape=(len(vars_test),), name = 'input')
-#x = Dropout(.1, name = 'input_dropout_.2')(inputs)
+x = Dropout(.1, name = 'input_dropout_.1')(inputs)
 x = Dense(64, name = 'hidden1', activation="ReLU")(inputs)
-#x = Dropout(.1, name = 'hidden1_dropout_.1')(x)
+x = Dropout(.1, name = 'hidden1_dropout_.1')(x)
 x = Dense(32, name = 'hidden2', activation="ReLU")(x)
-#x = Dropout(.1, name = 'hidden2_dropout_.1')(x)
+x = Dropout(.1, name = 'hidden2_dropout_.1')(x)
 #x = LeakyReLU(.1, name = 'LeakyReLU1_.1')(x)
 #x = ReLU(name = 'ReLU1')(x)
 outputs = Dense(1, name = 'output', activation='sigmoid')(x)
 
 model = Model(inputs=inputs, outputs=outputs)
-#opt = keras.optimizers.Adam(learning_rate=0.0001)
+#opt = keras.optimizers.Adam(learning_rate=0.001,beta_1=0.5)
 #opt = Adam(learning_rate=0.0002, beta_1=0.5, epsilon=0.001)
 opt = Adam()
 model.compile(opt, loss='binary_crossentropy', metrics=['accuracy'])
@@ -202,11 +268,11 @@ model.summary()
 
 history = model.fit(events_train[vars_test],
                     events_train[vars_check],
-                    epochs=20,
+                    epochs=100,
                     batch_size=256,
                     sample_weight = events_train['Weights'].values,
                     verbose=1,
-                    #callbacks=[early_stopping], 
+                    callbacks=[early_stopping], 
                     validation_split=0.25)
 
 import matplotlib.pyplot as plt
@@ -230,6 +296,25 @@ ax.set_ylabel('acc')
 plt.savefig("loss_acc.png")
 
 plot_classifier_output()
+
+# Plot ROC Curve
+from sklearn.metrics import roc_curve, roc_auc_score
+events_prob = model.predict(events_test[vars_test])
+
+fpr, tpr, thresholds = roc_curve(events_test[vars_check],events_prob)
+auc_score = roc_auc_score(events_test[vars_check],events_prob,average='micro')
+print("AUC Score = %.2f"%(auc_score))
+def plot_roc_curve(fpr,tpr,auc_score):
+	plt.clf()
+	plt.plot(fpr,tpr,label="AUC = %.2f"%(auc_score))
+	plt.axis([0,1,0,1])
+	plt.xlabel('False Positive Rate')
+	plt.ylabel('True Positive Rate')
+	plt.legend(loc='best')
+	plt.savefig("ROC.png")
+
+plot_roc_curve(fpr,tpr,auc_score)
+
 
 results = model.evaluate(events_test[vars_test], events_test[vars_check])
 print(results)

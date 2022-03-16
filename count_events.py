@@ -18,21 +18,15 @@ from Plotter.Plot import *
 from Weighter.Fake_weight import *
 
 #Define parameters from plotting
-
-# Signal Region
-#samples = background_samples + signal_samples
-#samples = ["ZZTo4L","WZTo3LNu","fake"] + signal_samples
-
-# Control Region
-#samples = background_samples + ["data"]
-samples = ["ZZTo4L","WZTo3LNu","fake"] + ["data"]
-
+samples = ["data"] + signal_samples
 files = combFiles(signal_samples, background_samples, data_samples, signal_files, background_files, data_files)
+
+masses = [1,2,3,4,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80]
 
 lumi = 41.4*1000
 error_on_MC = False
 
-out_dir = "Control_3mu_RBE_3mu"
+out_dir = "Control_3mu_val_m3l98"
 if not os.path.exists("/orange/avery/nikmenendez/Output/%s/"%(out_dir)): os.makedirs("/orange/avery/nikmenendez/Output/%s/"%(out_dir))
 if not os.path.exists("/orange/avery/nikmenendez/Output/pickle/%s/"%(out_dir)): os.makedirs("/orange/avery/nikmenendez/Output/pickle/%s/"%(out_dir))
 
@@ -40,25 +34,19 @@ plots = [
 
 # 1D Plots
 #[Title,save name,variable plotted,nBins,low,high,unit,plot data]
-["3 Mu pT","m3l_pt","m3l_pt",150,0,150,"GeV",True],
-["3 Mu + MET Transverse Mass","mt","mt",100,0,250,"GeV",True],
-["dR Between Same Sign diMu","dRM0","dRM0",100,0,6,"dR",True],
-
-#For Signal Region
 #["3 Mu Invariant Mass","m3l","m3l",83,0,83,"GeV",True],
-#["Lower Mass diMu Pair","mass2","M2",160,0,80,"GeV",False],
-#["Higher Mass diMu Pair","mass1","M1",160,0,80,"GeV",False],
-#["Same Sign diMu Pair","sameMass","M0",80,0,80,"GeV",True],
-#["dR Between Lower Mass diMu","dRM2","dRM2",100,0,6,"dR",False],
-#["dR Between Higher Mass diMu","dRM1","dRM1",100,0,6,"dR",False],
-
-#For Control Region
+["3 Mu pT","m3l_pt","m3l_pt",150,0,150,"GeV",True],
 ["3 Mu Invariant Mass","m3l","m3l",100,0,200,"GeV",True],
+["3 Mu + MET Transverse Mass","mt","mt",100,0,250,"GeV",True],
+#["Lower Mass diMu Pair","mass2","M2",160,0,80,"GeV",False],
 ["Lower Mass diMu Pair","mass2","M2",100,0,200,"GeV",True],
+#["Higher Mass diMu Pair","mass1","M1",160,0,80,"GeV",False],
 ["Higher Mass diMu Pair","mass1","M1",100,0,200,"GeV",True],
+#["Same Sign diMu Pair","sameMass","M0",80,0,80,"GeV",True],
 ["Same Sign diMu Pair","sameMass","M0",100,0,200,"GeV",True],
-["dR Between Lower Mass diMu","dRM2","dRM2",100,0,6,"dR",True],
-["dR Between Higher Mass diMu","dRM1","dRM1",100,0,6,"dR",True],
+["dR Between Lower Mass diMu","dRM2","dRM2",100,0,6,"dR",False],
+["dR Between Higher Mass diMu","dRM1","dRM1",100,0,6,"dR",False],
+["dR Between Same Sign diMu","dRM0","dRM0",100,0,6,"dR",True],
 
 ["Leading pT","pTL1","pTL1",100,0,100,"GeV",True],
 ["Subleading pT","pTL2","pTL2",80,0,80,"GeV",True],
@@ -106,7 +94,6 @@ plots = [
 ["dR Between Subleading and Trailing","dR23","dR23",100,0,6,"dR",True],
 ["Number of b Jets","nbJets","nbJets",2,0,2,"n",True],
 ["Number of Jets","nJets","nJets",12,0,12,"n",True],
-["Number of Muons","nMuons","nMuons",6,0,6,"n",True],
 
 #["Neural Network Discriminator","discriminator","discriminator",100,0,1,"",True],
 #["Random Forest Class","forestguess","forestguess",2,0,2,"",True],
@@ -116,9 +103,14 @@ plots = [
 
 ]
 
+def effican(x):
+	return -0.05214623 + 0.02283149*x - 0.0002936241*x*x
+
 xs, sumW = combXS(xs_sig,sumW_sig,xs_bkg,sumW_bkg)
 effs = {}
 for i in range(len(samples)):
+	count = {}
+	needed = {}
 	if ("data" in samples[i]) or ("fake" in samples[i]):
 		weight = xs[samples[i]]/sumW[samples[i]]
 	else:
@@ -149,47 +141,63 @@ for i in range(len(samples)):
 	# Perform Cuts
 	data["selection"],effs[samples[i]],data["fail"],data["fail2"] = skim(data,samples[i])
 
-	# Get fake weight if necessary
-	data["fake_weight"] = Fake_weight(data,samples[i])
-	if "fake" in samples[i]: 
-		#data["genWeight"] = data["genWeight"]*data["fake_weight"]*data["fail2"] #For 2P1F Validation
-		data["genWeight"] = data["genWeight"]*data["fake_weight"]*data["fail"] + data["genWeight"]*data["fake_weight"]*data["fail2"] #For 3P0F Validation
+	if "data" in samples[i]:
+		for m in masses:
+			lb = m - m*0.005
+			ub = m + m*0.005
 
-	# Save resulting data
-	with open("/orange/avery/nikmenendez/Output/pickle/%s/%s.p"%(out_dir,samples[i]),'wb') as handle:
-		pickle.dump(data, handle)
+			selM1 = ((data["M1"]>=lb) & (data["M1"]<=ub)) * data["selection"]
+			selM2 = ((data["M2"]>=lb) & (data["M2"]<=ub)) * data["selection"]
+			sel = selM1 | selM2
+			count[m] = np.count_nonzero(sel)
 
-data = {}
-for i in range(len(samples)):
-	with open("/orange/avery/nikmenendez/Output/pickle/%s/%s.p"%(out_dir,samples[i]),'rb') as handle:
-		data[samples[i]] = pickle.load(handle)
+			needed[m] = int(count[m] * 100 / effican(m))
 
-print("Efficiencies of each cut:")
-cuts = ["Sample"]
-for key in effs[samples[0]]:
-	cuts.append(key)
-x = PrettyTable(cuts)
-for key in effs:
-	row = [key]
-	for key2 in effs[key]:
-		row.append("%.2f%%"%(effs[key][key2]))
-	x.add_row(row)
-table = open("/orange/avery/nikmenendez/Output/%s/Efficiency_Table.txt"%(out_dir),"w")
-table.write(x.get_string())
-table.close()
-print(x)
-
-
-# Make Plots
-print("Generating Plots")
-for p in tqdm(plots):
-	if "data" in samples:
-		plot(data,p,samples,error_on_MC,out_dir,True)
+		print(count)
+		print(needed)
 	else:
-		plot(data,p,samples,error_on_MC,out_dir,False)
-		
+		count_sig = np.count_nonzero(data["selection"])
+		eff_sig = count_sig/sumW[samples[i]]
+		print(count_sig,eff_sig)
 
-print('\a')
-print("Uploading plots to web")
-import subprocess
-subprocess.run(["scp","-r","/orange/avery/nikmenendez/Output/%s/"%(out_dir),"nimenend@lxplus.cern.ch:/eos/user/n/nimenend/www/Wto3l/SR_Selection/New_Plotter/"])
+	## Get fake weight if necessary
+	#data["fake_weight"] = Fake_weight(data,samples[i])
+	#if "fake" in samples[i]: 
+	#	#data["genWeight"] = data["genWeight"]*data["fake_weight"]*data["fail2"] #For 2P1F Validation
+	#	data["genWeight"] = data["genWeight"]*data["fake_weight"]*data["fail"] + data["genWeight"]*data["fake_weight"]*data["fail2"] #For 3P0F Validation
+
+	## Save resulting data
+	#with open("/orange/avery/nikmenendez/Output/pickle/%s/%s.p"%(out_dir,samples[i]),'wb') as handle:
+	#	pickle.dump(data, handle)
+
+
+#data = {}
+#for i in range(len(samples)):
+#	with open("/orange/avery/nikmenendez/Output/pickle/%s/%s.p"%(out_dir,samples[i]),'rb') as handle:
+#		data[samples[i]] = pickle.load(handle)
+#
+#print("Efficiencies of each cut:")
+#cuts = ["Sample"]
+#for key in effs[samples[0]]:
+#	cuts.append(key)
+#x = PrettyTable(cuts)
+#for key in effs:
+#	row = [key]
+#	for key2 in effs[key]:
+#		row.append("%.2f%%"%(effs[key][key2]))
+#	x.add_row(row)
+#table = open("/orange/avery/nikmenendez/Output/%s/Efficiency_Table.txt"%(out_dir),"w")
+#table.write(x.get_string())
+#table.close()
+#print(x)
+#
+#
+## Make Plots
+#print("Generating Plots")
+#for p in tqdm(plots):
+#	plot(data,p,samples,error_on_MC,out_dir)
+#
+#print('\a')
+#print("Uploading plots to web")
+#import subprocess
+#subprocess.run(["scp","-r","/orange/avery/nikmenendez/Output/%s/"%(out_dir),"nimenend@lxplus.cern.ch:/eos/user/n/nimenend/www/Wto3l/SR_Selection/ZpX/"])

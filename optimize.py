@@ -20,8 +20,8 @@ from Plotter.ROC import *
 from Weighter.Fake_weight import *
 
 #Define parameters from plotting
-samples = background_samples + signal_samples + ["data"]
-#samples = ["WZTo3LNu","ZZTo4L","fake"] + [signal_samples[0]] + ["data"]
+#samples = background_samples + signal_samples
+samples = ["WZTo3LNu","ZZTo4L","fake"] + signal_samples
 files = combFiles(signal_samples, background_samples, data_samples, signal_files, background_files, data_files)
 sig_masses = [4,5,15,30,60]
 
@@ -29,7 +29,7 @@ lumi = 41.4*1000
 error_on_MC = False
 
 out_dir = "to_opt"
-if not os.path.exists("/orange/avery/nikmenendez/Output/Optimize/%s/"%(out_dir)): os.makedirs("/orange/avery/nikmenendez/Output/Optimize/%s/"%(out_dir))
+if not os.path.exists("/orange/avery/nikmenendez/Output/Optimize2/%s/"%(out_dir)): os.makedirs("/orange/avery/nikmenendez/Output/Optimize2/%s/"%(out_dir))
 if not os.path.exists("/orange/avery/nikmenendez/Output/pickle/%s/"%(out_dir)): os.makedirs("/orange/avery/nikmenendez/Output/pickle/%s/"%(out_dir))
 
 plots = [
@@ -92,38 +92,41 @@ plots = [
 ["dR Between Subleading and Trailing","dR23","dR23",100,0,6,"dR",True],
 ["Number of b Jets","nbJets","nbJets",2,0,2,"n",True],
 ["Number of Jets","nJets","nJets",12,0,12,"n",True],
+["Number of Muons","nMuons","nMuons",6,0,6,"n",True],
 
-["Neural Network Discriminant","discriminator","discriminator",100,0,1,"",True]
+#["Neural Network Discriminant","discriminator","discriminator",100,0,1,"",True]
 
 ]
 
 cuts = [
 
-##[Title,save name,variable plotted,nBins,low,high,unit,less than]
+#[Title,save name,variable plotted,nBins,low,high,unit,less than]
 #["Worst Isolation","worstIso","worstIso",60,0,.6,"pfRelIso03_all",True],
 #["Worst dxy","worstdxy","worstdxy",50,0,1,"cm",True],
 #["Worst dz","worstdz","worstdz",50,0,1,"cm",True],
 #["Worst 3D Impact Parameter","worstip3d","worstip3d",25,0.,0.1,"IP3D",True],
 #["Worst Significance of 3D Impact Parameter","worstsip3d","worstsip3d",100,0.,10.,"SIP3D",True],
 #["Worst Medium ID","worstmedId","worstmedId",2,0,2,"True",True],
-##["Worst mva ID","worstmvaId","worstmvaId",6,0,6,"ID",True],
+#["Worst mva ID","worstmvaId","worstmvaId",6,0,6,"ID",True],
 
-#["3 Mu Invariant Mass","m3l","m3l",83,0,83,"GeV",True],
-#["3 Mu + MET Transverse Mass","mt","mt",100,0,250,"GeV",True],
-#
+["3 Mu Invariant Mass","m3l","m3l",83,0,83,"GeV",True],
+["3 Mu + MET Transverse Mass","mt","mt",100,0,250,"GeV",True],
+["3 Mu pT","m3l_pt","m3l_pt",200,0,200,"GeV",True],
+
 #["Leading pT","pTL1","pTL1",100,0,100,"GeV",True],
 #["Subleading pT","pTL2","pTL2",80,0,80,"GeV",True],
 #["Trailing pT","pTL3","pTL3",50,0,50,"GeV",True],
-#
-#["Transverse Missing Energy","met","met",50,0,250,"GeV",True],
-##["Transver Missing Energy Phi","met_phi","met_phi",40,-4,4,"phi",True],
-#["dR Between Leading and Subleading","dR12","dR12",100,0,6,"dR",True],
-#["dR Between Leading and Trailing","dR13","dR13",100,0,6,"dR",True],
-#["dR Between Subleading and Trailing","dR23","dR23",100,0,6,"dR",True],
-##["Number of b Jets","nbJets","nbJets",2,0,2,"n",True],
-#["Number of Jets","nJets","nJets",12,0,12,"n",True],
 
-["Neural Network Discriminant","discriminator","discriminator",100,0,1,"",True]
+["Transverse Missing Energy","met","met",50,0,250,"GeV",True],
+#["Transverse Missing Energy Phi","met_phi","met_phi",40,-4,4,"phi",True],
+["dR Between Leading and Subleading","dR12","dR12",100,0,6,"dR",True],
+["dR Between Leading and Trailing","dR13","dR13",100,0,6,"dR",True],
+["dR Between Subleading and Trailing","dR23","dR23",100,0,6,"dR",True],
+#["Number of b Jets","nbJets","nbJets",2,0,2,"n",True],
+["Number of Jets","nJets","nJets",12,0,12,"n",True],
+["Number of Muons","nMuons","nMuons",6,0,6,"n",True],
+
+#["Neural Network Discriminant","discriminator","discriminator",100,0,1,"",True]
 
 ]
 
@@ -159,11 +162,17 @@ for i in range(len(samples)):
 	data = select(data)
 
 	# Perform Cuts
-	data["selection"], effs[samples[i]] = skim_opt(data,samples[i])
-	if sType == "MC":
-		data["weight_arr"] = data["weight"]*data["genWeight"]*data["pileupWeight"]
-	else:
+	data["selection"], effs[samples[i]], data["fail"], data["fail2"] = skim_opt(data,samples[i])
+
+	data["fake_weight"] = Fake_weight(data,samples[i])
+	if "fake" in samples[i]:
+		data["genWeight"] = data["genWeight"]*data["fake_weight"]*data["fail"] + data["genWeight"]*data["fake_weight"]*data["fail2"]
+
+	if "data" in samples[i]:
 		data["weight_arr"] = np.ones(len(data["genWeight"]))
+	else:
+		data["weight_arr"] = data["weight"]*data["genWeight"]*data["pileupWeight"]
+		
 
 	selected = data
 	selection = selected["selection"]
@@ -172,7 +181,7 @@ for i in range(len(samples)):
 		selected[key] = selected[key][selection]
 
 	# Save resulting data
-	if sType == "MC":
+	if sType != "sig":
 		if not bkg:
 			bkg = selected
 		else:
@@ -208,8 +217,8 @@ for m in tqdm(sig_masses):
 			data[samples[i]]["selection"] = selection2
 
 		for p in tqdm(plots,leave=False):
-			outy = "Optimize/Wto3l_M%i/%s</"%(m,c[1])
-			plot(data,p,samples,error_on_MC,outy)
+			outy = "Optimize2/Wto3l_M%i/%s</"%(m,c[1])
+			plot(data,p,samples,error_on_MC,outy,False)
 
 		effs3 = copy.deepcopy(effs)
 		for i in range(len(samples)):
@@ -221,8 +230,8 @@ for m in tqdm(sig_masses):
 			data[samples[i]]["selection"] = selection3
 			
 		for p in tqdm(plots,leave=False):
-			outy = "Optimize/Wto3l_M%i/%s>/"%(m,c[1])
-			plot(data,p,samples,error_on_MC,outy)
+			outy = "Optimize2/Wto3l_M%i/%s>/"%(m,c[1])
+			plot(data,p,samples,error_on_MC,outy,False)
 		
 		cuts_tab = ["Sample"]
 		for key in effs2[samples[0]]:
@@ -233,7 +242,7 @@ for m in tqdm(sig_masses):
 			for key2 in effs2[key]:
 				row.append("%.2f%%"%(effs2[key][key2]))
 			x.add_row(row)
-		table = open("/orange/avery/nikmenendez/Output/Optimize/Wto3l_M%i/%s</Efficiency_Table.txt"%(m,c[1]),"w")
+		table = open("/orange/avery/nikmenendez/Output/Optimize2/Wto3l_M%i/%s</Efficiency_Table.txt"%(m,c[1]),"w")
 		table.write(x.get_string())
 		table.close()
 
@@ -246,7 +255,7 @@ for m in tqdm(sig_masses):
 			for key2 in effs3[key]:
 				row.append("%.2f%%"%(effs3[key][key2]))
 			x.add_row(row)
-		table = open("/orange/avery/nikmenendez/Output/Optimize/Wto3l_M%i/%s>/Efficiency_Table.txt"%(m,c[1]),"w")
+		table = open("/orange/avery/nikmenendez/Output/Optimize2/Wto3l_M%i/%s>/Efficiency_Table.txt"%(m,c[1]),"w")
 		table.write(x.get_string())
 		table.close()
 
@@ -263,7 +272,7 @@ for c in tqdm(cuts):
 	plt.xlabel("Signal Mass (GeV)")
 	plt.ylabel("%s (%s)"%(c[0],c[6]))
 	plt.title("Optimal Cut for <= %s per Signal Mass"%(c[0]))
-	plt.savefig("/orange/avery/nikmenendez/Output/Optimize/to_opt/%s<.png"%(c[1]))
+	plt.savefig("/orange/avery/nikmenendez/Output/Optimize2/to_opt/%s<.png"%(c[1]))
 	plt.clf()
 
 	plt.plot(sig_masses,opt_cut_gt)
@@ -271,10 +280,10 @@ for c in tqdm(cuts):
 	plt.xlabel("Signal Mass (GeV)")
 	plt.ylabel("%s (%s)"%(c[0],c[6]))
 	plt.title("Optimal Cut for >= %s per Signal Mass"%(c[0]))
-	plt.savefig("/orange/avery/nikmenendez/Output/Optimize/to_opt/%s>.png"%(c[1]))
+	plt.savefig("/orange/avery/nikmenendez/Output/Optimize2/to_opt/%s>.png"%(c[1]))
 	plt.clf()
 
 print('\a')
 print("Uploading plots to web")
 import subprocess
-subprocess.run(["scp","-r","/orange/avery/nikmenendez/Output/Optimize/","nimenend@lxplus.cern.ch:/eos/user/n/nimenend/www/Wto3l/SR_Selection/Optimizer/"])
+subprocess.run(["scp","-r","/orange/avery/nikmenendez/Output/Optimize2/","nimenend@lxplus.cern.ch:/eos/user/n/nimenend/www/Wto3l/SR_Selection/Optimizer/"])
