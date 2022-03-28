@@ -20,19 +20,19 @@ from Weighter.Fake_weight import *
 #Define parameters from plotting
 
 # Signal Region
-#samples = background_samples + signal_samples
-#samples = ["ZZTo4L","WZTo3LNu","fake"] + signal_samples
+#samples = background_samples + signal_samples + ["data"]
+samples = ["ZZTo4L","WZTo3LNu","fake"] + signal_samples + ["data"]
 
 # Control Region
 #samples = background_samples + ["data"]
-samples = ["ZZTo4L","WZTo3LNu","fake"] + ["data"]
+#samples = ["ZZTo4L","WZTo3LNu","fake"] + ["data"]
 
 files = combFiles(signal_samples, background_samples, data_samples, signal_files, background_files, data_files)
 
 lumi = 41.4*1000
 error_on_MC = False
 
-out_dir = "Control_3mu_RBE_3mu"
+out_dir = "3mu_RBE_D"
 if not os.path.exists("/orange/avery/nikmenendez/Output/%s/"%(out_dir)): os.makedirs("/orange/avery/nikmenendez/Output/%s/"%(out_dir))
 if not os.path.exists("/orange/avery/nikmenendez/Output/pickle/%s/"%(out_dir)): os.makedirs("/orange/avery/nikmenendez/Output/pickle/%s/"%(out_dir))
 
@@ -45,20 +45,21 @@ plots = [
 ["dR Between Same Sign diMu","dRM0","dRM0",100,0,6,"dR",True],
 
 #For Signal Region
-#["3 Mu Invariant Mass","m3l","m3l",83,0,83,"GeV",True],
-#["Lower Mass diMu Pair","mass2","M2",160,0,80,"GeV",False],
-#["Higher Mass diMu Pair","mass1","M1",160,0,80,"GeV",False],
-#["Same Sign diMu Pair","sameMass","M0",80,0,80,"GeV",True],
-#["dR Between Lower Mass diMu","dRM2","dRM2",100,0,6,"dR",False],
-#["dR Between Higher Mass diMu","dRM1","dRM1",100,0,6,"dR",False],
+["3 Mu Invariant Mass","m3l","m3l",83,0,83,"GeV",True],
+["4 Mu Invariant Mass","m4l","m4l",100,0,200,"GeV",True],
+["Lower Mass diMu Pair","mass2","M2",160,0,80,"GeV",False],
+["Higher Mass diMu Pair","mass1","M1",160,0,80,"GeV",False],
+["Same Sign diMu Pair","sameMass","M0",80,0,80,"GeV",True],
+["dR Between Lower Mass diMu","dRM2","dRM2",100,0,6,"dR",False],
+["dR Between Higher Mass diMu","dRM1","dRM1",100,0,6,"dR",False],
 
 #For Control Region
-["3 Mu Invariant Mass","m3l","m3l",100,0,200,"GeV",True],
-["Lower Mass diMu Pair","mass2","M2",100,0,200,"GeV",True],
-["Higher Mass diMu Pair","mass1","M1",100,0,200,"GeV",True],
-["Same Sign diMu Pair","sameMass","M0",100,0,200,"GeV",True],
-["dR Between Lower Mass diMu","dRM2","dRM2",100,0,6,"dR",True],
-["dR Between Higher Mass diMu","dRM1","dRM1",100,0,6,"dR",True],
+#["3 Mu Invariant Mass","m3l","m3l",100,0,200,"GeV",True],
+#["Lower Mass diMu Pair","mass2","M2",100,0,200,"GeV",True],
+#["Higher Mass diMu Pair","mass1","M1",100,0,200,"GeV",True],
+#["Same Sign diMu Pair","sameMass","M0",100,0,200,"GeV",True],
+#["dR Between Lower Mass diMu","dRM2","dRM2",100,0,6,"dR",True],
+#["dR Between Higher Mass diMu","dRM1","dRM1",100,0,6,"dR",True],
 
 ["Leading pT","pTL1","pTL1",100,0,100,"GeV",True],
 ["Subleading pT","pTL2","pTL2",80,0,80,"GeV",True],
@@ -84,9 +85,9 @@ plots = [
 ["Leading dz","dzL1","dzL1",50,-.02,.02,"cm",True],
 ["Subleading dz","dzL2","dzL2",50,-.02,.02,"cm",True],
 ["Trailing dz","dzL3","dzL3",50,-.02,.02,"cm",True],
-["Leading Medium ID","medIdL1","medIdL1",2,0,2,"True",True],
-["Subleading Medium ID","medIdL2","medIdL2",2,0,2,"True",True],
-["Trailing Medium ID","medIdL3","medIdL3",2,0,2,"True",True],
+#["Leading Medium ID","medIdL1","medIdL1",2,0,2,"True",True],
+#["Subleading Medium ID","medIdL2","medIdL2",2,0,2,"True",True],
+#["Trailing Medium ID","medIdL3","medIdL3",2,0,2,"True",True],
 ["Leading mva ID","mvaIdL1","mvaIdL1",6,0,6,"ID",True],
 ["Subleading mva ID","mvaIdL2","mvaIdL2",6,0,6,"ID",True],
 ["Trailing mva ID","mvaIdL3","mvaIdL3",6,0,6,"ID",True],
@@ -98,15 +99,18 @@ plots = [
 ["Worst Significance of 3D Impact Parameter","worstsip3d","worstsip3d",100,0.,4.,"SIP3D",True],
 ["Worst Medium ID","worstmedId","worstmedId",2,0,2,"True",True],
 ["Worst mva ID","worstmvaId","worstmvaId",6,0,6,"ID",True],
+["Worst Tight ID","worsttightId","worsttightId",2,0,2,"True",True],
+["Worst Soft ID","worstsoftId","worstsoftId",2,0,2,"True",True],
 
 ["Transverse Missing Energy","met","met",50,0,250,"GeV",True],
 ["Transver Missing Energy Phi","met_phi","met_phi",40,-4,4,"phi",True],
 ["dR Between Leading and Subleading","dR12","dR12",100,0,6,"dR",True],
 ["dR Between Leading and Trailing","dR13","dR13",100,0,6,"dR",True],
 ["dR Between Subleading and Trailing","dR23","dR23",100,0,6,"dR",True],
-["Number of b Jets","nbJets","nbJets",2,0,2,"n",True],
+["Number of b Jets","nbJets","nbJets",6,0,6,"n",True],
 ["Number of Jets","nJets","nJets",12,0,12,"n",True],
 ["Number of Muons","nMuons","nMuons",6,0,6,"n",True],
+["Number of Good Muons","nGoodMuons","nGoodMuons",6,0,6,"n",True],
 
 #["Neural Network Discriminator","discriminator","discriminator",100,0,1,"",True],
 #["Random Forest Class","forestguess","forestguess",2,0,2,"",True],
@@ -158,7 +162,9 @@ for i in range(len(samples)):
 	# Save resulting data
 	with open("/orange/avery/nikmenendez/Output/pickle/%s/%s.p"%(out_dir,samples[i]),'wb') as handle:
 		pickle.dump(data, handle)
+	del data
 
+print("Combining samples")
 data = {}
 for i in range(len(samples)):
 	with open("/orange/avery/nikmenendez/Output/pickle/%s/%s.p"%(out_dir,samples[i]),'rb') as handle:
@@ -192,4 +198,4 @@ for p in tqdm(plots):
 print('\a')
 print("Uploading plots to web")
 import subprocess
-subprocess.run(["scp","-r","/orange/avery/nikmenendez/Output/%s/"%(out_dir),"nimenend@lxplus.cern.ch:/eos/user/n/nimenend/www/Wto3l/SR_Selection/New_Plotter/"])
+subprocess.run(["scp","-r","/orange/avery/nikmenendez/Output/%s/"%(out_dir),"nimenend@lxplus.cern.ch:/eos/user/n/nimenend/www/Wto3l/SR_Selection/UL/"])

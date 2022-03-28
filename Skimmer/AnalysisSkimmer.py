@@ -29,9 +29,10 @@ def skim(data,s):
 	#selection, eff["pTL3 > 5"]			= cut(data['pTL3'] > 5 , selection)
 	#selection, eff["Iso < 0.6"]			= cut((data['IsoL1'] < 0.6)  & (data['IsoL2'] < 0.6)  & (data['IsoL3'] < 0.6), selection)
 	#selection, eff["medId True"]		= cut((data['medIdL1'] == 1) & (data['medIdL2'] == 1) & (data['medIdL3'] == 1), selection)
+	#selection, eff["dRM0 > 0.1"]		= cut(data["dRM0"]>0.1, selection)
 
-	#selection, eff["m3l < 83 GeV"]		= cut((data["m3l"] < 83), selection)
-	selection, eff["m3l > 83 GeV"]		= cut((data["m3l"] > 83), selection)
+	selection, eff["m3l < 83 GeV"]		= cut((data["m3l"] < 83), selection)
+	#selection, eff["m3l > 83 GeV"]		= cut((data["m3l"] > 83), selection)
 
 	# From optimal cuts for Muon
 	selection, eff["medId True"]		= cut(data["worstmedId"] == 1, selection)
@@ -64,6 +65,8 @@ def skim(data,s):
 	#selection, eff["Forest Guess"]		= cut(data["forestguess"] == 1, selection)
 
 	#selection, eff["Only 3 mu"]			= cut(data["nMuons"]==3, selection)
+	#selection, eff["nbJets=0"]			= cut(data["nbJets"]==0, selection)
+	#selection, eff["mvaId > 0"]			= cut(data["worstmvaId"]>0, selection)
 
 	if np.count_nonzero(selection)!=0:
 		eff["Overall"] = np.count_nonzero(selection)/len(data['nMuons'])*100

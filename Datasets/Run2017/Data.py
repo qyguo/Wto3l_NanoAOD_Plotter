@@ -1,4 +1,5 @@
-input_dir = "/cmsuf/data/store/user/t2/users/nikmenendez/skimmed/NanoAOD/2017/data/signal_sel/Eff/"
+#input_dir = "/cmsuf/data/store/user/t2/users/nikmenendez/skimmed/NanoAOD/2017/data/signal_sel/Eff/"
+input_dir = "/cmsuf/data/store/user/t2/users/nikmenendez/skimmed/NanoAOD/2017/data/signal_sel/UL/"
 #input_dir = "/cmsuf/data/store/user/t2/users/nikmenendez/skimmed/NanoAOD/2017/data/Zpeak/Eff/"
 
 data_samples = ["data"]
@@ -67,5 +68,22 @@ signal_vars = [
 "passedDiMu1",
 "passedDiMu2",
 "passedTriMu",
+"idL4",
+"pTL4",
+"etaL4",
+"phiL4",
+"massL4",
+"dxyL4",
+"dzL4",
+"IsoL4",
+"ip3dL4",
+"sip3dL4",
+"tightIdL4",
+"medIdL4",
+"mvaIdL4",
+"softIdL1",
+"softIdL2",
+"softIdL3",
+"softIdL4",
 ]
 

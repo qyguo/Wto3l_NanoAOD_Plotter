@@ -43,6 +43,20 @@ def select(data):
 	data["worstip3d"] = np.fmax(np.fmax(np.abs(data["ip3dL1"]),np.abs(data["ip3dL2"])),np.abs(data["ip3dL3"]))
 	data["worstmedId"] = np.fmin(np.fmin(np.abs(data["medIdL1"]),np.abs(data["medIdL2"])),np.abs(data["medIdL3"]))
 	data["worstmvaId"] = np.fmin(np.fmin(np.abs(data["mvaIdL1"]),np.abs(data["mvaIdL2"])),np.abs(data["mvaIdL3"]))
+	data["worsttightId"] = np.fmin(np.fmin(np.abs(data["tightIdL1"]),np.abs(data["tightIdL2"])),np.abs(data["tightIdL3"]))
+	data["worstsoftId"] = np.fmin(np.fmin(np.abs(data["softIdL1"]),np.abs(data["softIdL2"])),np.abs(data["softIdL3"]))
+
+	del Lep1, Lep2, Lep3, P1, P2, P3
+
+	sip = 3.2
+	dxy, dz = 0.02, 0.02
+	iso = 2.0
+	goodL1 = (abs(data["sip3dL1"])<=sip) & (abs(data["dxyL1"])<=dxy) & (abs(data["dzL1"])<=dz) & (abs(data["medIdL1"])==1) & (abs(data["IsoL1"])<iso) 
+	goodL2 = (abs(data["sip3dL2"])<=sip) & (abs(data["dxyL2"])<=dxy) & (abs(data["dzL2"])<=dz) & (abs(data["medIdL2"])==1) & (abs(data["IsoL2"])<iso)
+	goodL3 = (abs(data["sip3dL3"])<=sip) & (abs(data["dxyL3"])<=dxy) & (abs(data["dzL3"])<=dz) & (abs(data["medIdL3"])==1) & (abs(data["IsoL3"])<iso)
+	goodL4 = (abs(data["sip3dL4"])<=sip) & (abs(data["dxyL4"])<=dxy) & (abs(data["dzL4"])<=dz) & (abs(data["medIdL4"])==1) & (abs(data["IsoL4"])<iso)
+
+	data["nGoodMuons"] = goodL1.astype(int) + goodL2.astype(int) + goodL3.astype(int) + goodL4.astype(int)
 
 	Selector_vars = ["etaL1", "phiL1",
                      "etaL2", "phiL2",

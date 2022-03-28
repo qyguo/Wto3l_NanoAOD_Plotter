@@ -1,4 +1,6 @@
 import numpy as np
+import matplotlib as mpl
+mpl.use('Agg')
 import matplotlib.pyplot as plt
 
 def plot(data,p,s,e,out,pRatio):
@@ -17,11 +19,11 @@ def plot(data,p,s,e,out,pRatio):
 	#s_sorted = [x for _,x in sorted(zip(stats,s[:-(nSig+nData)]))]
 	#s_sorted.reverse()
 	#s = s_sorted + s[-(nSig+nData):]
-	if not p[7]: s = s[:-1]
+	#if not p[7]: s.remove("data")
 
 	# Make Plot
 
-	if pRatio:
+	if pRatio and p[7]:
 		fig = plt.figure(constrained_layout=False,figsize=(10,13),)
 		gs = fig.add_gridspec(10,1)
 		ax1 = fig.add_subplot(gs[:7,:])
@@ -34,6 +36,7 @@ def plot(data,p,s,e,out,pRatio):
 	last, data_made, MC_error, data_error = 0,[],0,0
 	tot_data, tot_MC, err_data, err_MC = 0, 0, 0, 0
 	for i in range(len(s)):
+		if (not p[7]) and ("data" in s[i]): continue
 		to_plot = data[s[i]][p[2]][data[s[i]]["selection"]]
 		weight_arr = data[s[i]]["weight"]*data[s[i]]["genWeight"][data[s[i]]["selection"]]*data[s[i]]["pileupWeight"][data[s[i]]["selection"]]
 		y,binEdges = np.histogram(to_plot,bins=p[3],range=(p[4],p[5]))
@@ -119,7 +122,7 @@ def plot(data,p,s,e,out,pRatio):
 	ax1.set_xlim(p[4],p[5])
 	ax1.legend(loc='best',fontsize='x-small')
 
-	if pRatio:
+	if pRatio and p[7]:
 		if len(data_made)>0 and len(last) > 0:
 			ratio = data_made/last
 			ratioErr = ratio*(data_error/data_made + MC_error/last)

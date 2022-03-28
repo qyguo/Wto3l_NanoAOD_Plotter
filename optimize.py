@@ -20,10 +20,10 @@ from Plotter.ROC import *
 from Weighter.Fake_weight import *
 
 #Define parameters from plotting
-#samples = background_samples + signal_samples
-samples = ["WZTo3LNu","ZZTo4L","fake"] + signal_samples
+samples = background_samples + signal_samples
+#samples = ["WZTo3LNu","ZZTo4L","fake"] + signal_samples
 files = combFiles(signal_samples, background_samples, data_samples, signal_files, background_files, data_files)
-sig_masses = [4,5,15,30,60]
+sig_masses = [4,5,15,30,45,60]
 
 lumi = 41.4*1000
 error_on_MC = False
@@ -70,9 +70,9 @@ plots = [
 ["Leading dz","dzL1","dzL1",100,-1.,1.,"cm",True],
 ["Subleading dz","dzL2","dzL2",100,-1.,1.,"cm",True],
 ["Trailing dz","dzL3","dzL3",100,-1.,1.,"cm",True],
-["Leading Medium ID","medIdL1","medIdL1",2,0,2,"True",True],
-["Subleading Medium ID","medIdL2","medIdL2",2,0,2,"True",True],
-["Trailing Medium ID","medIdL3","medIdL3",2,0,2,"True",True],
+#["Leading Medium ID","medIdL1","medIdL1",2,0,2,"True",True],
+#["Subleading Medium ID","medIdL2","medIdL2",2,0,2,"True",True],
+#["Trailing Medium ID","medIdL3","medIdL3",2,0,2,"True",True],
 ["Leading mva ID","mvaIdL1","mvaIdL1",6,0,6,"ID",True],
 ["Subleading mva ID","mvaIdL2","mvaIdL2",6,0,6,"ID",True],
 ["Trailing mva ID","mvaIdL3","mvaIdL3",6,0,6,"ID",True],
@@ -90,9 +90,10 @@ plots = [
 ["dR Between Leading and Subleading","dR12","dR12",100,0,6,"dR",True],
 ["dR Between Leading and Trailing","dR13","dR13",100,0,6,"dR",True],
 ["dR Between Subleading and Trailing","dR23","dR23",100,0,6,"dR",True],
-["Number of b Jets","nbJets","nbJets",2,0,2,"n",True],
+["Number of b Jets","nbJets","nbJets",4,0,4,"n",True],
 ["Number of Jets","nJets","nJets",12,0,12,"n",True],
 ["Number of Muons","nMuons","nMuons",6,0,6,"n",True],
+["Number of Good Muons","nGoodMuons","nGoodMuons",6,0,6,"n",True],
 
 #["Neural Network Discriminant","discriminator","discriminator",100,0,1,"",True]
 
@@ -107,7 +108,7 @@ cuts = [
 #["Worst 3D Impact Parameter","worstip3d","worstip3d",25,0.,0.1,"IP3D",True],
 #["Worst Significance of 3D Impact Parameter","worstsip3d","worstsip3d",100,0.,10.,"SIP3D",True],
 #["Worst Medium ID","worstmedId","worstmedId",2,0,2,"True",True],
-#["Worst mva ID","worstmvaId","worstmvaId",6,0,6,"ID",True],
+["Worst mva ID","worstmvaId","worstmvaId",6,0,6,"ID",True],
 
 ["3 Mu Invariant Mass","m3l","m3l",83,0,83,"GeV",True],
 ["3 Mu + MET Transverse Mass","mt","mt",100,0,250,"GeV",True],
@@ -124,7 +125,9 @@ cuts = [
 ["dR Between Subleading and Trailing","dR23","dR23",100,0,6,"dR",True],
 #["Number of b Jets","nbJets","nbJets",2,0,2,"n",True],
 ["Number of Jets","nJets","nJets",12,0,12,"n",True],
+["Number of b Jets","nbJets","nbJets",4,0,4,"n",True],
 ["Number of Muons","nMuons","nMuons",6,0,6,"n",True],
+["Number of Good Muons","nGoodMuons","nGoodMuons",6,0,6,"n",True],
 
 #["Neural Network Discriminant","discriminator","discriminator",100,0,1,"",True]
 
