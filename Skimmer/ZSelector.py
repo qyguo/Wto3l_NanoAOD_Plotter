@@ -6,7 +6,9 @@ def select(data):
 	Lep1 = uproot_methods.classes.TLorentzVector.PtEtaPhiMassLorentzVectorArray(data['pTL1'],data['etaL1'],data['phiL1'],data['massL1'])
 	Lep2 = uproot_methods.classes.TLorentzVector.PtEtaPhiMassLorentzVectorArray(data['pTL2'],data['etaL2'],data['phiL2'],data['massL2'])
 	Lep3 = uproot_methods.classes.TLorentzVector.PtEtaPhiMassLorentzVectorArray(data['pTL3'],data['etaL3'],data['phiL3'],data['massL3'])
-	
+
+	data["m3l_pt"] = (Lep1 + Lep2 + Lep3).pt
+
 	# Define 3 possible Zp combinations
 	P1 = Lep1 + Lep2
 	#P2 = Lep1 + Lep3

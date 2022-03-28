@@ -83,8 +83,8 @@ def plot(data,p,s,e,out):
 			data_made = y
 			data_error = hidden_error
 
-	ax1.set_xlabel("%s (%s)"%(p[0],p[6]))
-	ax1.set_ylabel("Number of Events")
+	ax1.set_xlabel("%s (%s)"%(p[0],p[6]),size='x-large')
+	ax1.set_ylabel("Number of Events",size='x-large')
 	ax1.set_ylim(bottom=0)
 	ax1.set_xlim(p[4],p[5])
 	ax1.legend(loc='best',fontsize='x-small')
@@ -98,11 +98,11 @@ def plot(data,p,s,e,out):
 		#tot_MC = np.sum(last)
 		dataMCratio = tot_data/tot_MC
 		dataMCerror = dataMCratio*(err_MC/tot_MC + err_data/tot_data)
-		ax1.text(0.0,1.0,'Data/Pred = %.2f +- %.2f'%(dataMCratio,dataMCerror),size=20,transform = ax1.transAxes)
+		ax1.text(0.0,1.0,'2017,Data/Pred = %.2f +- %.2f'%(dataMCratio,dataMCerror),size=15,transform = ax1.transAxes)
 		
 
-	ax2.set_xlabel("%s (%s)"%(p[0],p[6]))
-	ax2.set_ylabel("Data/MC Ratio")
+	ax2.set_xlabel("%s (%s)"%(p[0],p[6]),size='x-large')
+	ax2.set_ylabel("Data/MC Ratio",size='x-large')
 	ax2.set_ylim(bottom=0,top=2)
 	ax2.set_xlim(p[4],p[5])
 	start, end = ax2.get_ylim()
@@ -110,7 +110,7 @@ def plot(data,p,s,e,out):
 	ax2.grid()
 
 
-	fig.suptitle("%s"%(p[0]))
-	fig.savefig("/home/nikmenendez/Output/%s/%s.png"%(out,p[1]))
+	fig.suptitle("%s"%(p[0]),size='xx-large')
+	fig.savefig("/orange/avery/nikmenendez/Output/%s/%s.png"%(out,p[1]))
 	fig.clf()
 	plt.close(fig)

@@ -23,7 +23,7 @@ files = combFiles(signal_samples, background_samples, data_samples, signal_files
 lumi = 41.4*1000
 error_on_MC = False
 
-out_dir = "2e"
+out_dir = "2e1F"
 if not os.path.exists("/home/nikmenendez/Output/%s/"%(out_dir)): os.makedirs("/home/nikmenendez/Output/%s/"%(out_dir))
 if not os.path.exists("/home/nikmenendez/Output/pickle/%s/"%(out_dir)): os.makedirs("/home/nikmenendez/Output/pickle/%s/"%(out_dir))
 
@@ -128,6 +128,7 @@ print("Generating Plots")
 for p in tqdm(plots):
 	plot(data,p,samples,error_on_MC,out_dir)
 
+print('\a')
 print("Uploading plots to web")
 import subprocess
 subprocess.run(["scp","-r","/home/nikmenendez/Output/%s/"%(out_dir),"nimenend@lxplus.cern.ch:/eos/user/n/nimenend/www/Wto3l/SR_Selection/ZpX/"])

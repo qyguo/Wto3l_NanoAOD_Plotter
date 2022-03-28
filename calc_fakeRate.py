@@ -30,9 +30,9 @@ pt_bins = [5,10,15,20,30,60]
 #pt_bins = [5,10,15,20,30,40,60]
 #pt_bins = [5,10,15,20,30,45,60,80,100]
 
-out_dir = "FakeRate"
-if not os.path.exists("/home/nikmenendez/Output/%s/"%(out_dir)): os.makedirs("/home/nikmenendez/Output/%s/"%(out_dir))
-if not os.path.exists("/home/nikmenendez/pickle/%s/"%(out_dir)): os.makedirs("/home/nikmenendez/pickle/%s/"%(out_dir))
+out_dir = "FakeRate_newOpt_5"
+if not os.path.exists("/orange/avery/nikmenendez/Output/%s/"%(out_dir)): os.makedirs("/orange/avery/nikmenendez/Output/%s/"%(out_dir))
+if not os.path.exists("/orange/avery/nikmenendez/pickle/%s/"%(out_dir)): os.makedirs("/orange/avery/nikmenendez/pickle/%s/"%(out_dir))
 
 # CALCULATE FAKERATE
 
@@ -51,7 +51,16 @@ plots = [
 ["Electron Pair Transverse Mass","calc_M1T","M1T",100,0,200,"GeV",True],
 ["Number of Electrons","calc_nElec","nElectrons",6,0,6,"n",True],
 ["Number of Leptons","calc_nLep","nLeptons",6,0,6,"n",True],
-["Number of Good Leptons","calc_nGoodLep","nGoodLeptons",6,0,6,"n",True]
+["Number of Good Leptons","calc_nGoodLep","nGoodLeptons",6,0,6,"n",True],
+["3 Mu pT","calc_m3l_pt","m3l_pt",150,0,150,"GeV",True],
+["dR Between Leading and Subleading","calc_dR12","dR12",100,0,6,"dR",True],
+["dR Between Leading and Muon","calc_dR13","dR13",100,0,6,"dR",True],
+["dR Between Subleading and Muon","calc_dR23","dR23",100,0,6,"dR",True],
+["Muon eta","calc_etaL3","etaL3",60,-3.,3.,"eta",True], 
+["Muon phi","calc_phiL3","phiL3",40,-4.,4.,"phi",True], 
+["Muon Isolation","calc_IsoL3","IsoL3",50,0.,0.2,"pfRelIso03_all",True], 
+["Muon 3D Impact Parameter","calc_ip3dL3","ip3dL3",25,0.,0.05,"IP3D",True], 
+["Muon Significance of 3D Impact Parameter","calc_sip3dL3","sip3dL3",40,0.,4.,"SIP3D",True], 
 
 ]
 
@@ -83,6 +92,7 @@ for i in range(len(samples)):
 	print("Processing %s with %i events"%(samples[i],len(data["nMuons"])))
 
 	# Select other variables
+	print(data["nLeptons"])
 	data = select(data)
 
 	# Perform Cuts
@@ -91,12 +101,12 @@ for i in range(len(samples)):
 	data["selection_pass"], data["selection_fail"] = fake_skim(data)
 
 	# Save resulting data
-	with open("/home/nikmenendez/pickle/%s/%s.p"%(out_dir,samples[i]),'wb') as handle:
+	with open("/orange/avery/nikmenendez/pickle/%s/%s.p"%(out_dir,samples[i]),'wb') as handle:
 		pickle.dump(data, handle)
 
 data = {}
 for i in range(len(samples)):
-	with open("/home/nikmenendez/pickle/%s/%s.p"%(out_dir,samples[i]),'rb') as handle:
+	with open("/orange/avery/nikmenendez/pickle/%s/%s.p"%(out_dir,samples[i]),'rb') as handle:
 		data[samples[i]] = pickle.load(handle)
 
 print("Efficiencies of each cut:")
@@ -109,7 +119,7 @@ for key in effs:
 	for key2 in effs[key]:
 		row.append("%.2f%%"%(effs[key][key2]))
 	x.add_row(row)
-table = open("/home/nikmenendez/Output/%s/Efficiency_Table.txt"%(out_dir),"w")
+table = open("/orange/avery/nikmenendez/Output/%s/Efficiency_Table.txt"%(out_dir),"w")
 table.write(x.get_string())
 table.close()
 print(x)
@@ -148,8 +158,17 @@ plots = [
 ["Muon Isolation","val_IsoL3","IsoL3",50,0.,0.2,"pfRelIso03_all",True], 
 ["Muon 3D Impact Parameter","val_ip3dL3","ip3dL3",25,0.,0.05,"IP3D",True], 
 ["Muon Significance of 3D Impact Parameter","val_sip3dL3","sip3dL3",40,0.,4.,"SIP3D",True], 
-#["Pass pT","val_passpT","pTL3",pt_bins,0,60,"GeV",True,"pass"],
-#["Fail pT","val_failpT","pTL3",pt_bins,0,60,"GeV",True,"fail"],
+["3 Lep + MET Transverse Mass","val_mt","mt",100,0,300,"GeV",True],
+["Transverse Missing Energy","val_met","met",50,0,250,"GeV",True],
+["Transver Missing Energy Phi","val_met_phi","met_phi",40,-4,4,"phi",True],
+["Electron Pair Transverse Mass","val_M1T","M1T",100,0,200,"GeV",True],
+["Number of Electrons","val_nElec","nElectrons",6,0,6,"n",True],
+["Number of Leptons","val_nLep","nLeptons",6,0,6,"n",True],
+["Number of Good Leptons","val_nGoodLep","nGoodLeptons",6,0,6,"n",True],
+["3 Mu pT","val_m3l_pt","m3l_pt",150,0,150,"GeV",True],
+["dR Between Leading and Subleading","val_dR12","dR12",100,0,6,"dR",True],
+["dR Between Leading and Muon","val_dR13","dR13",100,0,6,"dR",True],
+["dR Between Subleading and Muon","val_dR23","dR23",100,0,6,"dR",True],
 
 ]
 
@@ -190,12 +209,12 @@ for i in range(len(samples)):
 	if "fake" in samples[i]: data["genWeight"] = data["genWeight"]*data["fake_weight"]
 
 	# Save resulting data
-	with open("/home/nikmenendez/pickle/%s/%s.p"%(out_dir,samples[i]),'wb') as handle:
+	with open("/orange/avery/nikmenendez/pickle/%s/%s.p"%(out_dir,samples[i]),'wb') as handle:
 		pickle.dump(data, handle)
 
 data = {}
 for i in range(len(samples)):
-	with open("/home/nikmenendez/pickle/%s/%s.p"%(out_dir,samples[i]),'rb') as handle:
+	with open("/orange/avery/nikmenendez/pickle/%s/%s.p"%(out_dir,samples[i]),'rb') as handle:
 		data[samples[i]] = pickle.load(handle)
 
 print("Efficiencies of each cut:")
@@ -208,7 +227,7 @@ for key in effs:
 	for key2 in effs[key]:
 		row.append("%.2f%%"%(effs[key][key2]))
 	x.add_row(row)
-table = open("/home/nikmenendez/Output/%s/Efficiency_Table.txt"%(out_dir),"w")
+table = open("/orange/avery/nikmenendez/Output/%s/Efficiency_Table.txt"%(out_dir),"w")
 table.write(x.get_string())
 table.close()
 print(x)
@@ -225,4 +244,4 @@ print("")
 print('\a')
 print("Uploading plots to web")
 import subprocess
-subprocess.run(["scp","-r","/home/nikmenendez/Output/%s/"%(out_dir),"nimenend@lxplus.cern.ch:/eos/user/n/nimenend/www/Wto3l/SR_Selection/ZpX/"])
+subprocess.run(["scp","-r","/orange/avery/nikmenendez/Output/%s/"%(out_dir),"nimenend@lxplus.cern.ch:/eos/user/n/nimenend/www/Wto3l/SR_Selection/ZpX/"])

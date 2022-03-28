@@ -15,7 +15,7 @@ def fake_skim(data):
 
 	selection = data['selection']
 
-	selection_pass = selection*(data["IsoL3"]<0.1)
-	selection_fail = selection*(data["IsoL3"]>0.1)
+	selection_pass = selection*(data["IsoL3"]<0.3)
+	selection_fail = selection*(data["IsoL3"]>0.3)
 
 	return selection_pass, selection_fail

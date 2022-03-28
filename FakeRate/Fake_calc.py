@@ -111,7 +111,7 @@ def fake_calc(data,s,nbins,out):
 	plt.xlabel("Muon pT (GeV)")
 	plt.ylabel("pass/total")
 	plt.legend(loc='best')
-	plt.savefig("/home/nikmenendez/Output/%s/%s.png"%(out,"FakeRate_fail_total"))
+	plt.savefig("/orange/avery/nikmenendez/Output/%s/%s.png"%(out,"FakeRate_fail_total"))
 	plt.clf()
 
 	bincenters = 0.5*(binEdges_pass[1:]+binEdges_pass[:-1])
@@ -122,7 +122,7 @@ def fake_calc(data,s,nbins,out):
 	plt.xlabel("Muon pT (GeV)")
 	plt.ylabel("f/(1-f)")
 	plt.legend(loc='best')
-	plt.savefig("/home/nikmenendez/Output/%s/%s.png"%(out,"FakeRate_pass_fail"))
+	plt.savefig("/orange/avery/nikmenendez/Output/%s/%s.png"%(out,"FakeRate_pass_fail"))
 	plt.clf()
 
 
