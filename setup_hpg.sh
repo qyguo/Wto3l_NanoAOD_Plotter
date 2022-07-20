@@ -8,4 +8,4 @@ export BASE_PATH=${PWD}
 module load git cuda python/3.8
 #python3 -c "import uproot"
 
-srun --ntasks=1 --cpus-per-task=8 --mem=32gb -t 2000 --pty bash -i
+srun --ntasks=1 --cpus-per-task=8 --mem=40gb -t 2000 --pty bash -i

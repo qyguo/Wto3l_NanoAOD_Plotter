@@ -46,11 +46,27 @@ def select(data):
 	data["worsttightId"] = np.fmin(np.fmin(np.abs(data["tightIdL1"]),np.abs(data["tightIdL2"])),np.abs(data["tightIdL3"]))
 	data["worstsoftId"] = np.fmin(np.fmin(np.abs(data["softIdL1"]),np.abs(data["softIdL2"])),np.abs(data["softIdL3"]))
 
+	data["biggestEta"] = np.fmax(np.fmax(np.abs(data["etaL1"]),np.abs(data["etaL2"])),np.abs(data["etaL3"]))
+	data["smallestEta"] = np.fmin(np.fmin(np.abs(data["etaL1"]),np.abs(data["etaL2"])),np.abs(data["etaL3"]))
+
+	data["dPhi12"] = np.abs(data["phiL1"] - data["phiL2"])
+	data["dPhi13"] = np.abs(data["phiL1"] - data["phiL3"])
+	data["dPhi23"] = np.abs(data["phiL2"] - data["phiL3"])
+
+	# ------------- Select Z for fake rate measurements ------------------------
+	diff1 = np.abs(91.0-data["M1"])
+	diff2 = np.abs(91.0-data["M2"])
+	data["MZ"] = data["M1"]*(diff1<diff2) + data["M2"]*(diff2<diff1)
+	data["Lf"] = (diff1<diff2)*(3*data["p1"]+2*(data["p2"] & np.logical_not(data["p1"]))) + (diff2<diff1)*(1*data["p3"]+2*(data["p2"] & np.logical_not(data["p3"])))
+	data["IsoLf"] = (data["Lf"]==1)*(data["IsoL1"]) + (data["Lf"]==2)*(data["IsoL2"]) + (data["Lf"]==3)*(data["IsoL3"])
+	data["mvaIdLf"] = (data["Lf"]==1)*(data["mvaIdL1"]) + (data["Lf"]==2)*(data["mvaIdL2"]) + (data["Lf"]==3)*(data["mvaIdL3"])
+	# --------------------------------------------------------------------------
+
 	del Lep1, Lep2, Lep3, P1, P2, P3
 
 	sip = 3.2
 	dxy, dz = 0.02, 0.02
-	iso = 2.0
+	iso = 0.3
 	goodL1 = (abs(data["sip3dL1"])<=sip) & (abs(data["dxyL1"])<=dxy) & (abs(data["dzL1"])<=dz) & (abs(data["medIdL1"])==1) & (abs(data["IsoL1"])<iso) 
 	goodL2 = (abs(data["sip3dL2"])<=sip) & (abs(data["dxyL2"])<=dxy) & (abs(data["dzL2"])<=dz) & (abs(data["medIdL2"])==1) & (abs(data["IsoL2"])<iso)
 	goodL3 = (abs(data["sip3dL3"])<=sip) & (abs(data["dxyL3"])<=dxy) & (abs(data["dzL3"])<=dz) & (abs(data["medIdL3"])==1) & (abs(data["IsoL3"])<iso)

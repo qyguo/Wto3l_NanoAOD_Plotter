@@ -35,6 +35,13 @@ xs_bkg[sam] = 6077.22
 #sumW_bkg[sam] = 201650476.0 #3782668437151.0
 sumW_bkg[sam] = read_sumW("%ssumW/%s.txt"%(input_dir,sam))
 
+sam = "DYJetsToLL_M0To1"
+#background_samples.append(sam)
+background_files[sam] = "%sDYJetsToLL_M50_M0To1.root"%(input_dir)
+xs_bkg[sam] = 6077.22
+#sumW_bkg[sam] = 201650476.0 #3782668437151.0
+sumW_bkg[sam] = read_sumW("%ssumW/DYJetsToLL_M50_M0To1.txt"%(input_dir))
+
 sam = "TTJets_DiLept"
 #background_samples.append(sam)
 background_files[sam] = "%s%s.root"%(input_dir,sam)
@@ -49,12 +56,19 @@ xs_bkg[sam] = 5.052
 #sumW_bkg[sam] = 87559049.0 #94563223.0
 sumW_bkg[sam] = read_sumW("%ssumW/%s.txt"%(input_dir,sam))
 
+#sam = "ZZTo4L"
+##background_samples.append(sam)
+#background_files[sam] = "%s%s.root"%(input_dir,sam)
+#xs_bkg[sam] = 1.369
+##sumW_bkg[sam] = 131669254.0 #55658966.0
+#sumW_bkg[sam] = read_sumW("%ssumW/%s.txt"%(input_dir,sam))
+
 sam = "ZZTo4L"
 #background_samples.append(sam)
-background_files[sam] = "%s%s.root"%(input_dir,sam)
-xs_bkg[sam] = 1.369
+background_files[sam] = "%s%s_M1Toinf.root"%(input_dir,sam)
+xs_bkg[sam] = 13.74
 #sumW_bkg[sam] = 131669254.0 #55658966.0
-sumW_bkg[sam] = read_sumW("%ssumW/%s.txt"%(input_dir,sam))
+sumW_bkg[sam] = read_sumW("%ssumW/%s_M1Toinf.txt"%(input_dir,sam))
 
 sam = "WJetsToLNu"
 #background_samples.append(sam)
@@ -70,9 +84,10 @@ xs_bkg[sam] = 12.178
 #sumW_bkg[sam] = 78687950.0 #22155848.0
 sumW_bkg[sam] = read_sumW("%ssumW/%s.txt"%(input_dir,sam))
 
-background_samples = ["ZZTo4L","WZTo3LNu","TTJets_DiLept","DYJetsToLL_M50","DYJetsToLL_M10To50","DYJetsToLL_M1To10","WJetsToLNu","WWTo2L2Nu"]
+background_samples = ["ZZTo4L","WZTo3LNu","TTJets_DiLept","DYJetsToLL_M50","DYJetsToLL_M10To50","DYJetsToLL_M1To10","WJetsToLNu","WWTo2L2Nu","DYJetsToLL_M0To1"]
+#background_samples = ["ZZTo4L_M1Toinf","WZTo3LNu","TTJets_DiLept","DYJetsToLL_M50","DYJetsToLL_M10To50","DYJetsToLL_M1To10","WJetsToLNu","WWTo2L2Nu"]
 
-signal_vars = [
+background_vars = [
 "genWeight",
 "pileupWeight",
 "nMuons",
@@ -149,4 +164,11 @@ signal_vars = [
 "softIdL2",
 "softIdL3",
 "softIdL4",
+"gen_dPtL1",
+"gen_dPtL2",
+"gen_dPtL3",
+"gen_dRL1",
+"gen_dRL2",
+"gen_dRL3",
+#"photon_mass",
 ]

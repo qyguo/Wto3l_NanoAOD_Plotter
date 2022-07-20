@@ -8,7 +8,7 @@ data_files = {"data": "%stotal_data_no_dupe.root"%(input_dir)}
 data_samples.append("fake")
 data_files["fake"] = "%stotal_data_no_dupe.root"%(input_dir)
 
-signal_vars = [
+data_vars = [
 "genWeight",
 "pileupWeight",
 "nMuons",
@@ -85,5 +85,11 @@ signal_vars = [
 "softIdL2",
 "softIdL3",
 "softIdL4",
+"gen_dPtL1",
+"gen_dPtL2",
+"gen_dPtL3",
+"gen_dRL1",
+"gen_dRL2",
+"gen_dRL3",
 ]
 
