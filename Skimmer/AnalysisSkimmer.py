@@ -14,8 +14,8 @@ def cut(data,selection):
 def skim(data,s):
 	
 	eff = {}
-	iso_pre   = 0.6
-	iso_check = 0.1 #999.0
+	iso_pre   = 2.0
+	iso_check = 0.3 #999.0
 	mva_check = 1
 	
 	selection = data['nMuons'] > -1
@@ -55,7 +55,8 @@ def skim(data,s):
 	# For MVA Selection
 	selection, eff["Iso < 0.3"]			= cut(data["worstIso"] < 0.3, selection)
 	#selection, eff["mvaId Loose"]		= cut(data["worstmvaId"]>0, selection)
-	selection, eff["medId True"]		= cut(data["worstmedId"] == 1, selection)
+	#selection, eff["medId True"]		= cut(data["worstmedId"] == 1, selection)
+	#selection, eff["looseId True"]		= cut(data["worstlooseId"] == 1, selection)
 
 	fail_mvaId = (data['mvaIdL1'] <= mva_check).astype(int)  + (data['mvaIdL2'] <= mva_check).astype(int)  + (data['mvaIdL3'] <= mva_check).astype(int)
 	fail = (fail_mvaId==1) * selection
@@ -64,8 +65,20 @@ def skim(data,s):
 		#selection, eff["mvaId Cut"]		= cut((fail_mvaId==1) | (fail_mvaId==2), selection)
 		selection, eff["One mvaId <= %.2f"%(mva_check)]		= cut((fail_mvaId==1), selection)
 	else:
-		selection, eff["mvaId > %.2f"%(mva_check)]			= cut(fail_mvaId==0, selection)
+		selection, eff["mvaId > %.2f"%(mva_check)]			= cut(fail_mvaId==1, selection)
 
+	# For Iso+SIP Selection
+	##selection, eff["Iso < %.1f"%(iso_pre)]	= cut(data["worstIso"] < iso_pre, selection)
+	#selection, eff["medId True"]			= cut(data["worstmedId"] == 1, selection)
+
+	#fail_IsoSip = ((data['IsoL1']>iso_check)|(data['sip3dL1']>4)).astype(int) + ((data['IsoL2']>iso_check)|(data['sip3dL2']>4)).astype(int) + ((data['IsoL3']>iso_check)|(data['sip3dL3']>4)).astype(int)
+	#fail = (fail_IsoSip==1) * selection
+	#fail2= (fail_IsoSip==2) * selection
+	##if "fake" in s:
+	##	#selection, eff["Iso Cut"]		= cut((fail_Iso==1) | (fail_Iso==2), selection)
+	##	selection, eff["One Iso > %.2f or SIP > 4"%(iso_check)]		= cut((fail_IsoSip==1), selection)
+	##else:
+	##	selection, eff["Iso < %.2f & SIP <= 4"%(iso_check)]			= cut(fail_IsoSip==0, selection)
 
 	# Finish
 	if np.count_nonzero(selection)!=0:

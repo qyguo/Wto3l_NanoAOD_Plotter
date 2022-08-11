@@ -23,11 +23,10 @@ import time
 
 # Signal Region
 #samples = background_samples + signal_samples + ["data"]
-#samples = ["ZZTo4L","WZTo3LNu","fake"] + signal_samples + ["data"]
-samples = ["ZZTo4L","WZTo3LNu","DYJetsToLL_M0To1","fake"] + signal_samples + ["data"]
+#samples = ["ZZTo4L","WZTo3LNu","DYJetsToLL_M0To1","fake"] + signal_samples + ["data"]
 
 # Control Region
-#samples = background_samples + ["data"]
+samples = background_samples + ["data"]
 #samples = ["ZZTo4L","WZTo3LNu","DYJetsToLL_M0To1","fake"] + ["data"]
 #samples = ["ZZTo4L","WZTo3LNu"] + ["data"]
 
@@ -39,7 +38,7 @@ lumi = 41.4*1000
 error_on_MC = False
 skip_skim=False
 
-out_dir = "3mu_RBE_D_datacard_making"
+out_dir = "3mu_MC_D_mva_noIdPre_2P1F"
 if not os.path.exists("/orange/avery/nikmenendez/Output/%s/"%(out_dir)): os.makedirs("/orange/avery/nikmenendez/Output/%s/"%(out_dir))
 if not os.path.exists("/orange/avery/nikmenendez/Output/pickle/%s/"%(out_dir)): os.makedirs("/orange/avery/nikmenendez/Output/pickle/%s/"%(out_dir))
 
@@ -49,8 +48,8 @@ plots = [
 #[Title,save name,variable plotted,nBins,low,high,unit,plot data]
 #["3 Mu Invariant Mass","m3l","m3l",83,0,83,"GeV",True],
 #["Low diMuon Mass","photon_mass","photon_mass",50,0,5,"GeV",False],
-["Lower Mass diMu Pair" ,"mass2","M2",76,3.5,80.5,"GeV",False],
-["Higher Mass diMu Pair","mass1","M1",76,3.5,80.5,"GeV",False],
+#["Lower Mass diMu Pair" ,"mass2","M2",76,3.5,80.5,"GeV",False],
+#["Higher Mass diMu Pair","mass1","M1",76,3.5,80.5,"GeV",False],
 
 ["3 Mu pT","m3l_pt","m3l_pt",150,0,150,"GeV",True],
 ["3 Mu + MET Transverse Mass","mt","mt",100,0,350,"GeV",True],
@@ -58,9 +57,10 @@ plots = [
 
 #For Signal Region
 ["3 Mu Invariant Mass","m3l","m3l",83,0,83,"GeV",True],
-["4 Mu Invariant Mass","m4l","m4l",100,0,200,"GeV",True],
 #["Lower Mass diMu Pair","mass2","M2",160,0,80,"GeV",False],
 #["Higher Mass diMu Pair","mass1","M1",160,0,80,"GeV",False],
+["Lower Mass diMu Pair" ,"mass2","M2",76,3.5,80.5,"GeV",False],
+["Higher Mass diMu Pair","mass1","M1",76,3.5,80.5,"GeV",False],
 ["Same Sign diMu Pair","sameMass","M0",80,0,80,"GeV",True],
 ["dR Between Lower Mass diMu","dRM2","dRM2",100,0,6,"dR",False],
 ["dR Between Higher Mass diMu","dRM1","dRM1",100,0,6,"dR",False],
@@ -197,7 +197,8 @@ for i in range(len(samples)):
 	# Get fake weight if necessary
 	print("Weighting... ",end='',flush=True)
 	data["fakeWeight"] = Fake_weight(data,samples[i])
-	data["eventWeight"] = data["genWeight"]*data["pileupWeight"]*data["fakeWeight"]*data["weight"]
+	print("Avg fake weight: %.2f "%((np.average(data["fakeWeight"][data["selection"]]))),end='',flush=True)
+	data["eventWeight"] = data["genWeight"]*data["pileupWeight"]*data["weight"]#*data["fakeWeight"]
 
 	# Save resulting data
 	print("Saving Results... ",end='',flush=True)

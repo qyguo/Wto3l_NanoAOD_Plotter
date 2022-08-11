@@ -42,6 +42,7 @@ def select(data):
 	data["worstsip3d"] = np.fmax(np.fmax(np.abs(data["sip3dL1"]),np.abs(data["sip3dL2"])),np.abs(data["sip3dL3"]))
 	data["worstip3d"] = np.fmax(np.fmax(np.abs(data["ip3dL1"]),np.abs(data["ip3dL2"])),np.abs(data["ip3dL3"]))
 	data["worstmedId"] = np.fmin(np.fmin(np.abs(data["medIdL1"]),np.abs(data["medIdL2"])),np.abs(data["medIdL3"]))
+	data["worstlooseId"] = np.fmin(np.fmin(np.abs(data["looseIdL1"]),np.abs(data["looseIdL2"])),np.abs(data["looseIdL3"]))
 	data["worstmvaId"] = np.fmin(np.fmin(np.abs(data["mvaIdL1"]),np.abs(data["mvaIdL2"])),np.abs(data["mvaIdL3"]))
 	data["worsttightId"] = np.fmin(np.fmin(np.abs(data["tightIdL1"]),np.abs(data["tightIdL2"])),np.abs(data["tightIdL3"]))
 	data["worstsoftId"] = np.fmin(np.fmin(np.abs(data["softIdL1"]),np.abs(data["softIdL2"])),np.abs(data["softIdL3"]))

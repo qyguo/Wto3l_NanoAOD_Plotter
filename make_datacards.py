@@ -16,6 +16,7 @@ from Skimmer.AnalysisSkimmer import *
 from Skimmer.ZSelector import *
 from Plotter.Plot import *
 from Plotter.Card import *
+from Plotter.Fit  import *
 from Weighter.Fake_weight import *
 from create_datacards import *
 
@@ -33,7 +34,7 @@ error_on_MC = False
 skip_skim=True
 if skip_skim: print("Skipping skim. Using previous skim results")
 
-out_dir = "datacards_RBE_mva_cutIdPre_SigXSNormal"
+out_dir = "datacards_RBE_mva_looseIdPre_NewSig"
 if not os.path.exists("/orange/avery/nikmenendez/Output/%s/"%(out_dir)): os.makedirs("/orange/avery/nikmenendez/Output/%s/"%(out_dir))
 if not os.path.exists("/orange/avery/nikmenendez/Output/pickle/%s/"%(out_dir)): os.makedirs("/orange/avery/nikmenendez/Output/pickle/%s/"%(out_dir))
 
@@ -54,7 +55,7 @@ plots = [
 
 #For Signal Region
 ["3 Mu Invariant Mass","m3l","m3l",42,0,84,"GeV",True],
-["4 Mu Invariant Mass","m4l","m4l",50,0,200,"GeV",True],
+#["4 Mu Invariant Mass","m4l","m4l",50,0,200,"GeV",True],
 ["Same Sign diMu Pair","sameMass","M0",40,0,80,"GeV",True],
 ["dR Between Lower Mass diMu","dRM2","dRM2",50,0,6,"dR",False],
 ["dR Between Higher Mass diMu","dRM1","dRM1",50,0,6,"dR",False],
@@ -164,6 +165,12 @@ for i in range(len(samples)):
 	data["fakeWeight"] = Fake_weight(data,samples[i])
 	data["eventWeight"] = data["genWeight"]*data["pileupWeight"]*data["fakeWeight"]*data["weight"]
 
+	data["Acceptance"] = data["inAcceptance"][-1]/sumW[samples[i]]
+	data["SelectionEfficiency"] = np.count_nonzero(data["selection"])/data["inAcceptance"][-1]
+	#print(data["Acceptance"])
+	#print(data["SelectionEfficiency"])
+	#print("\nAcceptance = %.4f, Selection Efficiency = %f"%(data["Acceptance"],data["SelectionEfficiency"])) 
+
 	# Save resulting data
 	print("Saving Results... ",end='',flush=True)
 	with open("/orange/avery/nikmenendez/Output/pickle/%s/%s.p"%(out_dir,samples[i]),'wb') as handle:
@@ -215,9 +222,18 @@ for p in tqdm(plots):
 	else:
 		plot(data,p,samples,error_on_MC,out_dir,False,False)
 
+#print("Counting signal yields")
+#SigFit(data,samples)
+
+AccEff = {}
+for s in samples:
+	if "Wto3l" in s:
+		AccEff[s] = [data[s]["Acceptance"],data[s]["SelectionEfficiency"]]
 print("Making datacards")
-#exec(open("create_datacards.py").read())
-create_datacards("/orange/avery/nikmenendez/Output/%s/"%(out_dir),xs_sig)
+create_datacards("/orange/avery/nikmenendez/Output/%s/"%(out_dir),xs_sig,xs_err,AccEff)
+
+print("Plotting Sig Yields")
+SigFit(data,samples,out_dir)
 
 print('\a')
 print("Uploading plots to web")
