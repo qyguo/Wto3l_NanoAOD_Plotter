@@ -5,12 +5,14 @@ def Fake_weight(data,s,fwb,fwe,pt_bins):
 	#if "fake" not in s:
 	#	return [1] * len(data["etaL3"])
 
-	barrel = np.abs(data["etaL3"]) <= 1.4
-	endcap = np.abs(data["etaL3"]) >= 1.4
+	barrel = np.abs(data["etaL3"]) <= 1.2
+	endcap = np.abs(data["etaL3"]) >= 1.2
 
 	pTbin = [0]*len(fwb)
 	for i in range(len(pTbin)):
-		pTbin[i] = (data["pTL3"] >= pt_bins[i]) & (data["pTL3"] < pt_bins[i+1])
+		#pTbin[i] = (data["pTL3"] >= pt_bins[i]) & (data["pTL3"] < pt_bins[i+1]) & (data["IsoL3"]<0.3)
+		pTbin[i] = (data["pTL3"] >= pt_bins[i]) & (data["pTL3"] < pt_bins[i+1]) & (data["mvaIdL3"]<=1)
+		#pTbin[i] = (data["pTL3"] >= pt_bins[i]) & (data["pTL3"] < pt_bins[i+1]) & ((data["IsoL3"]<0.3) | (data["sip3dL3"]<4))
 
 	fwb_final, fwe_final = 0,0
 	for i in range(len(fwb)):

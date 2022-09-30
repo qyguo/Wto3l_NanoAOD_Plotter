@@ -17,25 +17,25 @@ from Skimmer.ZSelector import *
 from Plotter.Plot import *
 
 #Define parameters from plotting
-samples = background_samples + data_samples[:-1]
+samples = background_samples + ["data"]
 files = combFiles(signal_samples, background_samples, data_samples, signal_files, background_files, data_files)
 
 lumi = 41.4*1000
 error_on_MC = False
 
-out_dir = "2e1F"
-if not os.path.exists("/home/nikmenendez/Output/%s/"%(out_dir)): os.makedirs("/home/nikmenendez/Output/%s/"%(out_dir))
-if not os.path.exists("/home/nikmenendez/Output/pickle/%s/"%(out_dir)): os.makedirs("/home/nikmenendez/Output/pickle/%s/"%(out_dir))
+out_dir = "2e_ptCheck_allId"
+if not os.path.exists("/orange/avery/nikmenendez/Output/%s/"%(out_dir)): os.makedirs("/orange/avery/nikmenendez/Output/%s/"%(out_dir))
+if not os.path.exists("/orange/avery/nikmenendez/Output/pickle/%s/"%(out_dir)): os.makedirs("/orange/avery/nikmenendez/Output/pickle/%s/"%(out_dir))
 
 plots = [
 
 # 1D Plots
 #[Title,save name,variable plotted,nBins,low,high,unit,plot data]
-["3 Lep Invariant Mass","m3l","m3l",100,0,200,"GeV",True],
-["3 Lep + MET Transverse Mass","mt","mt",100,0,300,"GeV",True],
-["Electron Pair Mass","mass1","M1",100,0,200,"GeV",True],
-["Leading e pT","pTL1","pTL1",100,0,100,"GeV",True],
-["Subleading e pT","pTL2","pTL2",100,0,100,"GeV",True],
+["3 Lep Invariant Mass","m3l","m3l",50,0,200,"GeV",True],
+["3 Lep + MET Transverse Mass","mt","mt",50,0,300,"GeV",True],
+["Electron Pair Mass","mass1","M1",50,0,200,"GeV",True],
+["Leading e pT","pTL1","pTL1",50,0,100,"GeV",True],
+["Subleading e pT","pTL2","pTL2",50,0,100,"GeV",True],
 ["Muon pT","pTL3","pTL3",30,0,60,"GeV",True],
 ["Leading e eta","etaL1","etaL1",60,-3.,3.,"eta",True],
 ["Subleading e eta","etaL2","etaL2",60,-3.,3.,"eta",True],
@@ -43,9 +43,9 @@ plots = [
 ["Leading e phi","phiL1","phiL1",40,-4.,4.,"phi",True],
 ["Subleading e phi","phiL2","phiL2",40,-4.,4.,"phi",True],
 ["Muon phi","phiL3","phiL3",40,-4.,4.,"phi",True],
-["Leading e Isolation","IsoL1","IsoL1",50,0.,0.2,"pfRelIso03_all",True],
-["Subleading e Isolation","IsoL2","IsoL2",50,0.,0.2,"pfRelIso03_all",True],
-["Muon Isolation","IsoL3","IsoL3",50,0.,0.2,"pfRelIso03_all",True],
+["Leading e Isolation","IsoL1","IsoL1",50,0.,1.0,"pfRelIso03_all",True],
+["Subleading e Isolation","IsoL2","IsoL2",50,0.,1.0,"pfRelIso03_all",True],
+["Muon Isolation","IsoL3","IsoL3",50,0.,1.0,"pfRelIso03_all",True],
 ["Leading e 3D Impact Parameter","ip3dL1","ip3dL1",25,0.,0.05,"IP3D",True],
 ["Subleading e 3D Impact Parameter","ip3dL2","ip3dL2",25,0.,0.05,"IP3D",True],
 ["Muon 3D Impact Parameter","ip3dL3","ip3dL3",25,0.,0.05,"IP3D",True],
@@ -58,7 +58,10 @@ plots = [
 ["dR Between Leading e and Muon","dR13","dR13",100,0,6,"dR",True],
 ["dR Between Subleading e and Muon","dR23","dR23",100,0,6,"dR",True],
 ["Muon MediumId","medIdL3","medIdL3",2,0,2,"Fail/Pass",True],
+["Muon mvaId","mvaIdL3","mvaIdL3",6,0,6,"ID",True],
+["Muon softId","softIdL3","softIdL3",2,0,2,"ID",True],
 ["Number of Good Muons","nGoodMuons","nGoodMuons",5,0,5,"n",True],
+["Number of Leptons","nLeptons","nLeptons",7,0,7,"n",True],
 ["Number of b jets","nbJets","nbJets",5,0,5,"n",True],
 
 # 2D Plots
@@ -96,15 +99,15 @@ for i in range(len(samples)):
 	data = select(data)
 
 	# Perform Cuts
-	data["selection"],effs[samples[i]] = skim(data)
+	data["selection"],effs[samples[i]],data["selection_fail"],data["selection_pass"] = skim(data)
 
 	# Save resulting data
-	with open("/home/nikmenendez/Output/pickle/%s/%s.p"%(out_dir,samples[i]),'wb') as handle:
+	with open("/orange/avery/nikmenendez/Output/pickle/%s/%s.p"%(out_dir,samples[i]),'wb') as handle:
 		pickle.dump(data, handle)
 
 data = {}
 for i in range(len(samples)):
-	with open("/home/nikmenendez/Output/pickle/%s/%s.p"%(out_dir,samples[i]),'rb') as handle:
+	with open("/orange/avery/nikmenendez/Output/pickle/%s/%s.p"%(out_dir,samples[i]),'rb') as handle:
 		data[samples[i]] = pickle.load(handle)
 
 print("Efficiencies of each cut:")
@@ -117,7 +120,7 @@ for key in effs:
 	for key2 in effs[key]:
 		row.append("%.2f%%"%(effs[key][key2]))
 	x.add_row(row)
-table = open("/home/nikmenendez/Output/%s/Efficiency_Table.txt"%(out_dir),"w")
+table = open("/orange/avery/nikmenendez/Output/%s/Efficiency_Table.txt"%(out_dir),"w")
 table.write(x.get_string())
 table.close()
 print(x)
@@ -126,9 +129,13 @@ print(x)
 # Make Plots
 print("Generating Plots")
 for p in tqdm(plots):
-	plot(data,p,samples,error_on_MC,out_dir)
+	if "data" in samples:
+		plot(data,p,samples,error_on_MC,out_dir,True)
+	else:
+		plot(data,p,samples,error_on_MC,out_dir,False)
 
 print('\a')
 print("Uploading plots to web")
 import subprocess
-subprocess.run(["scp","-r","/home/nikmenendez/Output/%s/"%(out_dir),"nimenend@lxplus.cern.ch:/eos/user/n/nimenend/www/Wto3l/SR_Selection/ZpX/"])
+print("scp -r /orange/avery/nikmenendez/Output/%s/ nimenend@lxplus.cern.ch:/eos/user/n/nimenend/www/Wto3l/SR_Selection/ZpX/UL/"%(out_dir))
+subprocess.run(["scp","-r","/orange/avery/nikmenendez/Output/%s/"%(out_dir),"nimenend@lxplus.cern.ch:/eos/user/n/nimenend/www/Wto3l/SR_Selection/ZpX/UL/"])
