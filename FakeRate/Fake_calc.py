@@ -30,15 +30,17 @@ def fake_calc(data,s,nbins,out):
 		#weight_arr_fail = sam["weight"][failes]*sam["genWeight"][failes]*sam["pileupWeight"][failes]
 
 		#Calculate Errors
-		t_pass,binEdges = np.histogram(pass_pt,bins=nbins,range=(nbins[0],nbins[-1]))
-		t_fail,binEdges = np.histogram(fail_pt,bins=nbins,range=(nbins[0],nbins[-1]))
-		er_pass = np.sqrt(np.abs(t_pass))*sam["weight"]
-		er_fail = np.sqrt(np.abs(t_fail))*sam["weight"]
+		#t_pass,binEdges = np.histogram(pass_pt,bins=nbins,range=(nbins[0],nbins[-1]))
+		#t_fail,binEdges = np.histogram(fail_pt,bins=nbins,range=(nbins[0],nbins[-1]))
+		#er_pass = np.sqrt(np.abs(t_pass))*sam["weight"]
+		#er_fail = np.sqrt(np.abs(t_fail))*sam["weight"]
 		#er_totl = np.sqrt(np.abs(t_pass)+np.abs(t_fail))*sam["weight"]
 
 		t_pass,binEdges_pass = np.histogram(pass_pt,bins=nbins,range=(nbins[0],nbins[-1]),weights=weight_arr_pass)
 		t_fail,binEdges_fail = np.histogram(fail_pt,bins=nbins,range=(nbins[0],nbins[-1]),weights=weight_arr_fail)
-
+		er_pass = np.sqrt(np.histogram(pass_pt,bins=nbins,range=(nbins[0],nbins[-1]),weights=weight_arr_pass**2)[0])
+		er_fail = np.sqrt(np.histogram(fail_pt,bins=nbins,range=(nbins[0],nbins[-1]),weights=weight_arr_fail**2)[0])
+		
 		if s[i]=="data":
 			y_pass += t_pass
 			y_fail += t_fail
@@ -83,13 +85,15 @@ def fake_calc(data,s,nbins,out):
 		weight_arr_fail = sam["weight"]*sam["genWeight"][failes]*sam["pileupWeight"][failes]
 
 		#Calculate Errors
-		t_pass,binEdges = np.histogram(pass_pt,bins=nbins,range=(nbins[0],nbins[-1]))
-		t_fail,binEdges = np.histogram(fail_pt,bins=nbins,range=(nbins[0],nbins[-1]))
-		er_pass = np.sqrt(np.abs(t_pass))*sam["weight"]
-		er_fail = np.sqrt(np.abs(t_fail))*sam["weight"]
+		#t_pass,binEdges = np.histogram(pass_pt,bins=nbins,range=(nbins[0],nbins[-1]))
+		#t_fail,binEdges = np.histogram(fail_pt,bins=nbins,range=(nbins[0],nbins[-1]))
+		#er_pass = np.sqrt(np.abs(t_pass))*sam["weight"]
+		#er_fail = np.sqrt(np.abs(t_fail))*sam["weight"]
 
 		t_pass,binEdges_pass = np.histogram(pass_pt,bins=nbins,range=(nbins[0],nbins[-1]),weights=weight_arr_pass)
 		t_fail,binEdges_fail = np.histogram(fail_pt,bins=nbins,range=(nbins[0],nbins[-1]),weights=weight_arr_fail)
+		er_pass = np.sqrt(np.histogram(pass_pt,bins=nbins,range=(nbins[0],nbins[-1]),weights=weight_arr_pass**2)[0])
+		er_fail = np.sqrt(np.histogram(fail_pt,bins=nbins,range=(nbins[0],nbins[-1]),weights=weight_arr_fail**2)[0])
 
 		if s[i]=="data":
 			y_pass += t_pass

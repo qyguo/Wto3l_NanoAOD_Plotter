@@ -48,34 +48,45 @@ def plot(data,p,s,e,out,pRatio):
 			weight_arr = data[s[i]]["weight"]*data[s[i]]["genWeight"][data[s[i]]["selection_fail"]]*data[s[i]]["pileupWeight"][data[s[i]]["selection_fail"]]
 
 
-		y,binEdges = np.histogram(to_plot,bins=p[3],range=(p[4],p[5]))
-		hidden_error = np.sqrt(np.abs(y))*data[s[i]]["weight"]
-		if e or data[s[i]]["sType"]=="data":
-			error = hidden_error
-			count = len(weight_arr)
-			tot_data = np.sum(weight_arr)
-			count_err = np.sqrt(count)
-			err_data = np.sqrt(tot_data)
-		elif data[s[i]]["sType"]=="MC": 
-			error = 0
-			if not ("fake" in s[i]):
-				count = len(weight_arr)*data[s[i]]["weight"]
-				count_w = np.sum(weight_arr)
-				tot_MC += np.sum(weight_arr)
-				if len(weight_arr)>0:
-					count_err = np.sqrt(len(weight_arr))*np.average(weight_arr)
-				else:
-					count_err = 0
-				count_err_w = np.sqrt(np.sum(weight_arr))
-				#err_MC += np.sqrt(np.sum(weight_arr))
-				err_MC += count_err
-		else:
-			error = 0
-			count_w = np.sum(weight_arr)
-			count_err = np.sqrt(len(weight_arr))*np.average(weight_arr)
+		#y,binEdges = np.histogram(to_plot,bins=p[3],range=(p[4],p[5]))
+		#hidden_error = np.sqrt(np.abs(y))*data[s[i]]["weight"]
+		#if e or data[s[i]]["sType"]=="data":
+		#	error = hidden_error
+		#	count = len(weight_arr)
+		#	tot_data = np.sum(weight_arr)
+		#	count_err = np.sqrt(count)
+		#	err_data = np.sqrt(tot_data)
+		#elif data[s[i]]["sType"]=="MC": 
+		#	error = 0
+		#	if not ("fake" in s[i]):
+		#		count = len(weight_arr)*data[s[i]]["weight"]
+		#		count_w = np.sum(weight_arr)
+		#		tot_MC += np.sum(weight_arr)
+		#		if len(weight_arr)>0:
+		#			count_err = np.sqrt(len(weight_arr))*np.average(weight_arr)
+		#		else:
+		#			count_err = 0
+		#		count_err_w = np.sqrt(np.sum(weight_arr))
+		#		#err_MC += np.sqrt(np.sum(weight_arr))
+		#		err_MC += count_err
+		#else:
+		#	error = 0
+		#	count_w = np.sum(weight_arr)
+		#	count_err = np.sqrt(len(weight_arr))*np.average(weight_arr)
 			
 		y,binEdges = np.histogram(to_plot,bins=p[3],range=(p[4],p[5]),weights=weight_arr)
 		bincenters = 0.5*(binEdges[1:]+binEdges[:-1])
+		err = np.sqrt(np.histogram(to_plot,bins=p[3],range=(p[4],p[5]),weights=weight_arr**2)[0])
+		hidden_error = err
+		count_w = np.sum(y)
+		count_err = np.sqrt(np.sum(np.square(err)))
+		if data[s[i]]["sType"]=="data":
+			tot_data = count_w
+			error = err
+			err_data = err
+		elif data[s[i]]["sType"]=="MC":
+			tot_MC += count_w
+			error = 0
 
 		# Fake reweighting with WZ and ZZ
 		if "fake" in s[i]:

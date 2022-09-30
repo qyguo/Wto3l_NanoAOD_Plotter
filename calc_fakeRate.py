@@ -37,7 +37,7 @@ error_on_MC = False
 pt_bins = [5,8,10,12,15,20,30,60,100]
 #pt_bins = [5,10,20,30,45,80]
 
-out_dir = "FakeRate_mvaIso_loosePre_weightTest"
+out_dir = "FakeRate_mvaIso_loosePre_weightTest_newErrs"
 if not os.path.exists("/orange/avery/nikmenendez/Output/%s/"%(out_dir)): os.makedirs("/orange/avery/nikmenendez/Output/%s/"%(out_dir))
 if not os.path.exists("/orange/avery/nikmenendez/pickle/%s/"%(out_dir)): os.makedirs("/orange/avery/nikmenendez/pickle/%s/"%(out_dir))
 
