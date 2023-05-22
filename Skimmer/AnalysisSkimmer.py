@@ -18,17 +18,17 @@ def skim(data,s):
 	
 	selection = data['nMuons'] > -1
 
-	#selection, eff["diMu Mass > 1.1"] 	= cut((data["M1"] > 1.1) & (data["M2"] > 1.1), selection)
+	selection, eff["diMu Mass > 1.1"] 	= cut((data["M1"] > 1.1) & (data["M2"] > 1.1), selection)
 	selection, eff["diMu Mass > 4.0"] 	= cut((data["M1"] >= 4.0) & (data["M2"] >= 4.0), selection)
 	selection, eff["M1 Upsilon Veto"]	= cut((data["M1"] < 9.0) | (data["M1"] > 11.), selection)
 	selection, eff["M2 Upsilon Veto"]	= cut((data["M2"] < 9.0) | (data["M2"] > 11.), selection)
-	#selection, eff["M1 J/Psi Veto"]		= cut((data["M1"] < 2.9) | (data["M1"] > 3.9), selection)
-	#selection, eff["M2 J/Psi Veto"]		= cut((data["M2"] < 2.9) | (data["M2"] > 3.9), selection)
-	#seleciton, eff["pTL1 > 12"]		 	= cut(data['pTL1'] > 12, selection)
-	#selection, eff["pTL2 > 10"]			= cut(data['pTL2'] > 10, selection)
-	#selection, eff["pTL3 > 5"]			= cut(data['pTL3'] > 5 , selection)
-	#selection, eff["Iso < 0.6"]			= cut((data['IsoL1'] < 0.6)  & (data['IsoL2'] < 0.6)  & (data['IsoL3'] < 0.6), selection)
-	#selection, eff["medId True"]		= cut((data['medIdL1'] == 1) & (data['medIdL2'] == 1) & (data['medIdL3'] == 1), selection)
+	selection, eff["M1 J/Psi Veto"]		= cut((data["M1"] < 2.9) | (data["M1"] > 3.9), selection)
+	selection, eff["M2 J/Psi Veto"]		= cut((data["M2"] < 2.9) | (data["M2"] > 3.9), selection)
+	seleciton, eff["pTL1 > 12"]		 	= cut(data['pTL1'] > 12, selection)
+	selection, eff["pTL2 > 10"]			= cut(data['pTL2'] > 10, selection)
+	selection, eff["pTL3 > 5"]			= cut(data['pTL3'] > 5 , selection)
+	selection, eff["Iso < 0.6"]			= cut((data['IsoL1'] < 0.6)  & (data['IsoL2'] < 0.6)  & (data['IsoL3'] < 0.6), selection)
+	selection, eff["medId True"]		= cut((data['medIdL1'] == 1) & (data['medIdL2'] == 1) & (data['medIdL3'] == 1), selection)
 
 	selection, eff["m3l < 83 GeV"]		= cut((data["m3l"] < 83), selection)
 
