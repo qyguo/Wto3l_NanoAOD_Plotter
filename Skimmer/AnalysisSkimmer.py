@@ -33,6 +33,8 @@ def skim(data):
 	selection, eff["e/mu sep"]		 	= cut(((data["dR13"]>0.1)&(data["dR23"]>0.1)), selection)
 	selection, eff["M1 Around Z"]		= cut((data["M1"]>(91-Z_diff))&(data["M1"]<(91+Z_diff)),selection)
 
+	#selection, eff["bd Fake"]			= cut((data["sourceL3"]==4), selection)
+
 	# General Tight Cuts
 	#selection, eff["SIP3D <= 3.2"]		= cut((data["sip3dL3"]<=3.2), selection)
 	#selection, eff["dxy <= 0.02"]		= cut((data["dxyL3"]<=0.02), selection)
@@ -65,11 +67,14 @@ def skim(data):
 	#selection, eff["medId True"]		= cut((data['medIdL3'] == 1), selection)
 	selection, eff["looseId True"]		= cut((data['looseIdL3'] == 1), selection)
 	#selection, eff["mvaId loose"]		= cut(data["mvaIdL3"]>0, selection)
-	passes = ((data["mvaIdL3"]>1)&(data["IsoL3"]<0.3))*selection
-	fail =   ((data["mvaIdL3"]<2)|(data["IsoL3"]>0.3))*selection
+	#passes = ((data["mvaIdL3"]>1)&(data["IsoL3"]<0.3))*selection
+	#fail =   ((data["mvaIdL3"]<2)|(data["IsoL3"]>0.3))*selection
 	#selection, eff["notTight"] 			= cut(((data["mvaIdL3"]<2)|(data["IsoL3"]>0.3)), selection)
 	#selection, eff["Tight"]		 			= cut(((data["mvaIdL3"]>1)&(data["IsoL3"]<0.3)), selection)
 	#selection, eff["mvaId med"]			= cut(data["mvaIdL3"]>1, selection)
+
+	passes = ((data["tightIdL3"]==1)&(data["IsoL3"]<0.3))*selection
+	fail =   ((data["tightIdL3"]==0)|(data["IsoL3"]>0.3))*selection
 
 	if np.count_nonzero(selection)!=0:
 		eff["Overall"] = np.count_nonzero(selection)/len(data['nMuons'])*100

@@ -39,13 +39,13 @@ def plot(data,p,s,e,out,pRatio):
 		if (not p[7]) and ("data" in s[i]): continue
 		if len(p)<9 or p[8]=="none":
 			to_plot = data[s[i]][p[2]][data[s[i]]["selection"]]
-			weight_arr = data[s[i]]["weight"]*data[s[i]]["genWeight"][data[s[i]]["selection"]]*data[s[i]]["pileupWeight"][data[s[i]]["selection"]]
+			weight_arr = data[s[i]]["weight"][data[s[i]]["selection"]]*data[s[i]]["genWeight"][data[s[i]]["selection"]]*data[s[i]]["pileupWeight"][data[s[i]]["selection"]]
 		elif p[8]=="pass":
 			to_plot = data[s[i]][p[2]][data[s[i]]["selection_pass"]]
-			weight_arr = data[s[i]]["weight"]*data[s[i]]["genWeight"][data[s[i]]["selection_pass"]]*data[s[i]]["pileupWeight"][data[s[i]]["selection_pass"]]
+			weight_arr = data[s[i]]["weight"][data[s[i]]["selection_pass"]]*data[s[i]]["genWeight"][data[s[i]]["selection_pass"]]*data[s[i]]["pileupWeight"][data[s[i]]["selection_pass"]]
 		elif p[8]=="fail":
 			to_plot = data[s[i]][p[2]][data[s[i]]["selection_fail"]]
-			weight_arr = data[s[i]]["weight"]*data[s[i]]["genWeight"][data[s[i]]["selection_fail"]]*data[s[i]]["pileupWeight"][data[s[i]]["selection_fail"]]
+			weight_arr = data[s[i]]["weight"][data[s[i]]["selection_fail"]]*data[s[i]]["genWeight"][data[s[i]]["selection_fail"]]*data[s[i]]["pileupWeight"][data[s[i]]["selection_fail"]]
 
 
 		#y,binEdges = np.histogram(to_plot,bins=p[3],range=(p[4],p[5]))
@@ -80,11 +80,11 @@ def plot(data,p,s,e,out,pRatio):
 		hidden_error = err
 		count_w = np.sum(y)
 		count_err = np.sqrt(np.sum(np.square(err)))
-		if data[s[i]]["sType"]=="data":
+		if data[s[i]]["sType"][0]=="data":
 			tot_data = count_w
 			error = err
-			err_data = err
-		elif data[s[i]]["sType"]=="MC":
+			err_data = np.sqrt(tot_data)
+		elif data[s[i]]["sType"][0]=="MC":
 			tot_MC += count_w
 			error = 0
 
@@ -129,11 +129,11 @@ def plot(data,p,s,e,out,pRatio):
 			tot_MC += count_w
 			err_MC += count_err
 
-		if data[s[i]]["sType"]=="MC":
+		if data[s[i]]["sType"][0]=="MC":
 			ax1.bar(bincenters,y,yerr=error,bottom=last,width=binEdges[1]-binEdges[0],label='%s: %.2f +- %.2f'%(s[i],count_w,count_err))
 			last += y
 			MC_error += hidden_error
-		elif data[s[i]]["sType"]=="sig":
+		elif data[s[i]]["sType"][0]=="sig":
 			ax1.errorbar(bincenters,y,yerr=error,drawstyle='steps-mid',label='%s: %.2f +- %.2f'%(s[i],count_w,count_err))
 		else:
 			ax1.errorbar(bincenters,y,yerr=error,drawstyle='steps-mid',fmt="o",color='black',label='%s: %i +- %.2f'%(s[i],tot_data,err_data))

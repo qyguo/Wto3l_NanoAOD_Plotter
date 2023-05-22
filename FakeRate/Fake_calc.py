@@ -24,10 +24,10 @@ def fake_calc(data,s,nbins,out):
 		fail_pt = sam["pTL3"][failes]
 
 		#Calculate Weights
-		weight_arr_pass = sam["weight"]*sam["genWeight"][passes]*sam["pileupWeight"][passes]
-		weight_arr_fail = sam["weight"]*sam["genWeight"][failes]*sam["pileupWeight"][failes]
-		#weight_arr_pass = sam["weight"][passes]*sam["genWeight"][passes]*sam["pileupWeight"][passes]
-		#weight_arr_fail = sam["weight"][failes]*sam["genWeight"][failes]*sam["pileupWeight"][failes]
+		#weight_arr_pass = sam["weight"]*sam["genWeight"][passes]*sam["pileupWeight"][passes]
+		#weight_arr_fail = sam["weight"]*sam["genWeight"][failes]*sam["pileupWeight"][failes]
+		weight_arr_pass = sam["weight"][passes]*sam["genWeight"][passes]*sam["pileupWeight"][passes]
+		weight_arr_fail = sam["weight"][failes]*sam["genWeight"][failes]*sam["pileupWeight"][failes]
 
 		#Calculate Errors
 		#t_pass,binEdges = np.histogram(pass_pt,bins=nbins,range=(nbins[0],nbins[-1]))
@@ -81,8 +81,10 @@ def fake_calc(data,s,nbins,out):
 		fail_pt = sam["pTL3"][failes]
 
 		#Calculate Weights
-		weight_arr_pass = sam["weight"]*sam["genWeight"][passes]*sam["pileupWeight"][passes]
-		weight_arr_fail = sam["weight"]*sam["genWeight"][failes]*sam["pileupWeight"][failes]
+		#weight_arr_pass = sam["weight"]*sam["genWeight"][passes]*sam["pileupWeight"][passes]
+		#weight_arr_fail = sam["weight"]*sam["genWeight"][failes]*sam["pileupWeight"][failes]
+		weight_arr_pass = sam["weight"][passes]*sam["genWeight"][passes]*sam["pileupWeight"][passes]
+		weight_arr_fail = sam["weight"][failes]*sam["genWeight"][failes]*sam["pileupWeight"][failes]
 
 		#Calculate Errors
 		#t_pass,binEdges = np.histogram(pass_pt,bins=nbins,range=(nbins[0],nbins[-1]))
@@ -119,7 +121,7 @@ def fake_calc(data,s,nbins,out):
 	bincenters = 0.5*(binEdges_pass[1:]+binEdges_pass[:-1])
 	plt.errorbar(bincenters,ratio1_b,yerr=err1_b,xerr=errx,marker='o',ls='',label='barrel')
 	plt.errorbar(bincenters,ratio1_e,yerr=err1_e,xerr=errx,marker='o',ls='',label='endcap')
-	plt.ylim(bottom=0,top=.3)
+	plt.ylim(bottom=0,top=.4)
 	#plt.xlim(left=nbins[0],right=nbins[-1])
 	plt.xlim(left=0,right=nbins[-1])
 	plt.title("Fake Rate")
@@ -132,7 +134,7 @@ def fake_calc(data,s,nbins,out):
 	bincenters = 0.5*(binEdges_pass[1:]+binEdges_pass[:-1])
 	plt.errorbar(bincenters,ratio2_b,yerr=err2_b,xerr=errx,marker='o',ls='',label='barrel')
 	plt.errorbar(bincenters,ratio2_e,yerr=err2_e,xerr=errx,marker='o',ls='',label='endcap')
-	plt.ylim(bottom=0,top=.3)
+	plt.ylim(bottom=0,top=.4)
 	#plt.xlim(left=nbins[0],right=nbins[-1])
 	plt.xlim(left=0,right=nbins[-1])
 	plt.title("Fake Weight")

@@ -28,6 +28,9 @@ samples = background_samples + ["data"]#data_samples
 #samples = ["ZZTo4L","WZTo3LNu","DYJetsToLL_M0To1","data"]
 files = combFiles(signal_samples, background_samples, data_samples, signal_files, background_files, data_files)
 
+if "data" in samples: MC_measure = False
+else: MC_measure = True
+
 lumi = 41.4*1000
 error_on_MC = False
 #pt_bins = [5,10,15,20,30,60]
@@ -37,7 +40,7 @@ error_on_MC = False
 pt_bins = [5,8,10,12,15,20,30,60,100]
 #pt_bins = [5,10,20,30,45,80]
 
-out_dir = "FakeRate_mvaIso_loosePre_weightTest_newErrs"
+out_dir = "FakeRate_tightIdIso_loosePre"
 if not os.path.exists("/orange/avery/nikmenendez/Output/%s/"%(out_dir)): os.makedirs("/orange/avery/nikmenendez/Output/%s/"%(out_dir))
 if not os.path.exists("/orange/avery/nikmenendez/pickle/%s/"%(out_dir)): os.makedirs("/orange/avery/nikmenendez/pickle/%s/"%(out_dir))
 
@@ -141,8 +144,8 @@ for i in range(len(samples)):
 	data = {}
 	for key in temp: data[key.decode("utf-8")] = temp[key]
 	del temp
-	data["weight"] = weight
-	data["sType"] = sType
+	data["weight"] = np.array([weight]*len(data["nMuons"]))
+	data["sType"] = np.array([sType]*len(data["nMuons"]))
 	if "data" not in samples[i]:
 		data["pileupWeight"] = data["pileupWeight"]/32
 	#print("Processing %s with %i events"%(samples[i],len(data["nMuons"])))
@@ -162,12 +165,20 @@ for i in range(len(samples)):
 	print("Saving Results... ",end='',flush=True)
 	all_vars = data.keys()
 	if MC_measure:
-		if samples[i] not in ["ZZTo4L","WZTo3LNu","DYJetsToLL_M0To1"]:
-			with open("/orange/avery/nikmenendez/pickle/%s/%s.p"%(out_dir,"data"),'ab') as handle:
-				pickle.dump(data, handle)
-		else:
-			with open("/orange/avery/nikmenendez/pickle/%s/%s.p"%(out_dir,samples[i]),'wb') as handle:
-				pickle.dump(data, handle)
+		#if samples[i] not in ["ZZTo4L","WZTo3LNu","DYJetsToLL_M0To1"]:
+		#	with open("/orange/avery/nikmenendez/pickle/%s/%s.p"%(out_dir,"data"),'ab') as handle:
+		#		pickle.dump(data, handle)
+		#else:
+		#	with open("/orange/avery/nikmenendez/pickle/%s/%s.p"%(out_dir,samples[i]),'wb') as handle:
+		#		pickle.dump(data, handle)
+		#	with open("/orange/avery/nikmenendez/pickle/%s/%s.p"%(out_dir,"data"),'ab') as handle:
+		#		pickle.dump(data, handle)
+		with open("/orange/avery/nikmenendez/pickle/%s/%s.p"%(out_dir,samples[i]),'wb') as handle:
+			pickle.dump(data, handle)
+
+		data["sType"] = np.array(["data"]*len(data["nMuons"]))
+		with open("/orange/avery/nikmenendez/pickle/%s/%s.p"%(out_dir,"data"),'ab') as handle:
+			pickle.dump(data, handle)
 	else:
 		with open("/orange/avery/nikmenendez/pickle/%s/%s.p"%(out_dir,samples[i]),'wb') as handle:
 			pickle.dump(data, handle)
@@ -182,8 +193,10 @@ for i in range(len(samples)):
 print("Combining Samples...")
 data = {}
 if MC_measure:
-	samples2 = ["ZZTo4L","WZTo3LNu","DYJetsToLL_M0To1","data"]
+	#samples2 = ["ZZTo4L","WZTo3LNu","DYJetsToLL_M0To1","data"]
+	samples2 = samples + ["data"]
 	for s in samples2:
+		print("Opening %s"%(s))
 		if s!="data":
 			with open("/orange/avery/nikmenendez/pickle/%s/%s.p"%(out_dir,s),'rb') as handle:
 				data[s] = pickle.load(handle)
@@ -193,7 +206,7 @@ if MC_measure:
 				data[s][v] = np.array([])
 			with open("/orange/avery/nikmenendez/pickle/%s/%s.p"%(out_dir,s),'rb') as handle:
 				for q in samples:
-					if q in samples2: continue
+					#if q in samples2: continue
 
 					temp = pickle.load(handle)
 					for v in all_vars:
@@ -201,6 +214,8 @@ if MC_measure:
 						if "selection" in v:
 							temp2 = temp2==1
 						data[s][v] = temp2
+			print(v)
+			print(data[s][v])
 else:
 	for i in range(len(samples)):
 		with open("/orange/avery/nikmenendez/pickle/%s/%s.p"%(out_dir,samples[i]),'rb') as handle:
