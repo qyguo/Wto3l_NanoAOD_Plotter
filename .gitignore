@@ -1,2 +1,6 @@
 __*
 Output/pickle/
+MVA/*.png
+MVA/*.h5
+MVA/*.pkl
+MVA/*.joblib

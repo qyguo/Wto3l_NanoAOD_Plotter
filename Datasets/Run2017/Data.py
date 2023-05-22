@@ -1,4 +1,6 @@
-input_dir = "/cmsuf/data/store/user/t2/users/nikmenendez/skimmed/NanoAOD/2017/data/signal_sel/Eff/"
+#input_dir = "/cmsuf/data/store/user/t2/users/nikmenendez/skimmed/NanoAOD/2017/data/signal_sel/Eff/"
+input_dir = "/cmsuf/data/store/user/t2/users/nikmenendez/skimmed/NanoAOD/2017/data/signal_sel/UL/"
+#input_dir = "/cmsuf/data/store/user/t2/users/nikmenendez/skimmed/NanoAOD/2017/data/Zpeak/Eff/"
 
 data_samples = ["data"]
 data_files = {"data": "%stotal_data_no_dupe.root"%(input_dir)}
@@ -6,7 +8,7 @@ data_files = {"data": "%stotal_data_no_dupe.root"%(input_dir)}
 data_samples.append("fake")
 data_files["fake"] = "%stotal_data_no_dupe.root"%(input_dir)
 
-signal_vars = [
+data_vars = [
 "genWeight",
 "pileupWeight",
 "nMuons",
@@ -46,6 +48,9 @@ signal_vars = [
 "tightIdL1",
 "tightIdL2",
 "tightIdL3",
+"looseIdL1",
+"looseIdL2",
+"looseIdL3",
 "medIdL1",
 "medIdL2",
 "medIdL3",
@@ -66,5 +71,29 @@ signal_vars = [
 "passedDiMu1",
 "passedDiMu2",
 "passedTriMu",
+"idL4",
+"pTL4",
+"etaL4",
+"phiL4",
+"massL4",
+"dxyL4",
+"dzL4",
+"IsoL4",
+"ip3dL4",
+"sip3dL4",
+"tightIdL4",
+"medIdL4",
+"mvaIdL4",
+"softIdL1",
+"softIdL2",
+"softIdL3",
+"softIdL4",
+"inAcceptance",
+#"gen_dPtL1",
+#"gen_dPtL2",
+#"gen_dPtL3",
+#"gen_dRL1",
+#"gen_dRL2",
+#"gen_dRL3",
 ]
 
