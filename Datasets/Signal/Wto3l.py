@@ -1,5 +1,6 @@
 #input_dir = "/cmsuf/data/store/user/t2/users/nikmenendez/skimmed/NanoAOD/2017/signal/signal_sel/Eff/"
-input_dir = "/cmsuf/data/store/user/t2/users/nikmenendez/skimmed/NanoAOD/2017/signal/signal_sel/UL/"
+#input_dir = "/cmsuf/data/store/user/t2/users/nikmenendez/skimmed/NanoAOD/2017/signal/signal_sel/UL/"
+input_dir = "/publicfs/cms/data/hzz/guoqy/Zprime/nikmenendez/2017/signal/signal_sel/UL/"
 masses = [4,5,15,30,45,60]
 #xs_sig = {	"Wto3l_M4":  7.474,
 #		"Wto3l_M5":  5.453,

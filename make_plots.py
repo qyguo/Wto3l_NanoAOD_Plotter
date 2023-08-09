@@ -1,7 +1,9 @@
 from __future__ import division
+import sys
+#sys.path.append('/afs/ihep.ac.cn/users/q/qyguo/.local/lib/python3.8/site-packages')
+#sys.path.append('')
 import numpy as np
 import uproot
-import sys
 import matplotlib.pyplot as plt
 import os
 import pickle
@@ -16,6 +18,7 @@ from Skimmer.AnalysisSkimmer import *
 from Skimmer.ZSelector import *
 from Plotter.Plot import *
 
+
 #Define parameters from plotting
 samples = background_samples + ["data"]
 files = combFiles(signal_samples, background_samples, data_samples, signal_files, background_files, data_files)
@@ -24,8 +27,10 @@ lumi = 41.4*1000
 error_on_MC = False
 
 out_dir = "2e_ptCheck_allId"
-if not os.path.exists("/orange/avery/nikmenendez/Output/%s/"%(out_dir)): os.makedirs("/orange/avery/nikmenendez/Output/%s/"%(out_dir))
-if not os.path.exists("/orange/avery/nikmenendez/Output/pickle/%s/"%(out_dir)): os.makedirs("/orange/avery/nikmenendez/Output/pickle/%s/"%(out_dir))
+#if not os.path.exists("/orange/avery/nikmenendez/Output/%s/"%(out_dir)): os.makedirs("/orange/avery/nikmenendez/Output/%s/"%(out_dir))
+#if not os.path.exists("/orange/avery/nikmenendez/Output/pickle/%s/"%(out_dir)): os.makedirs("/orange/avery/nikmenendez/Output/pickle/%s/"%(out_dir))
+if not os.path.exists("/publicfs/cms/data/hzz/guoqy/Zprime/results/Output/%s/"%(out_dir)): os.makedirs("/publicfs/cms/data/hzz/guoqy/Zprime/results/Output/%s/"%(out_dir))
+if not os.path.exists("/publicfs/cms/data/hzz/guoqy/Zprime/results/pickle/%s/"%(out_dir)): os.makedirs("/publicfs/cms/data/hzz/guoqy/Zprime/results/pickle/%s/"%(out_dir))
 
 plots = [
 
@@ -87,10 +92,13 @@ for i in range(len(samples)):
 	temp = events.arrays(vars_in)
 
 	data = {}
-	for key in temp: data[key.decode("utf-8")] = temp[key]
+	data = events.arrays(vars_in, library="np")
+	#for key in temp: data[key.decode("utf-8")] = temp[key]
 	del temp
-	data["weight"] = weight
-	data["sType"] = sType
+	#data["weight"] = weight
+	#data["sType"] = sType
+	data["weight"] = np.array([weight]*len(data["nMuons"]))
+	data["sType"] = np.array([sType]*len(data["nMuons"]))
 	if "data" not in samples[i]:
 		data["pileupWeight"] = data["pileupWeight"]/32
 	print("Processing %s with %i events"%(samples[i],len(data["nMuons"])))
@@ -102,12 +110,14 @@ for i in range(len(samples)):
 	data["selection"],effs[samples[i]],data["selection_fail"],data["selection_pass"] = skim(data)
 
 	# Save resulting data
-	with open("/orange/avery/nikmenendez/Output/pickle/%s/%s.p"%(out_dir,samples[i]),'wb') as handle:
+	#with open("/orange/avery/nikmenendez/Output/pickle/%s/%s.p"%(out_dir,samples[i]),'wb') as handle:
+	with open("/publicfs/cms/data/hzz/guoqy/Zprime/results/pickle/%s/%s.p"%(out_dir,samples[i]),'wb') as handle:
 		pickle.dump(data, handle)
 
 data = {}
 for i in range(len(samples)):
-	with open("/orange/avery/nikmenendez/Output/pickle/%s/%s.p"%(out_dir,samples[i]),'rb') as handle:
+	#with open("/orange/avery/nikmenendez/Output/pickle/%s/%s.p"%(out_dir,samples[i]),'rb') as handle:
+	with open("/publicfs/cms/data/hzz/guoqy/Zprime/results/pickle/%s/%s.p"%(out_dir,samples[i]),'rb') as handle:
 		data[samples[i]] = pickle.load(handle)
 
 print("Efficiencies of each cut:")
@@ -120,7 +130,8 @@ for key in effs:
 	for key2 in effs[key]:
 		row.append("%.2f%%"%(effs[key][key2]))
 	x.add_row(row)
-table = open("/orange/avery/nikmenendez/Output/%s/Efficiency_Table.txt"%(out_dir),"w")
+#table = open("/orange/avery/nikmenendez/Output/%s/Efficiency_Table.txt"%(out_dir),"w")
+table = open("/publicfs/cms/data/hzz/guoqy/Zprime/results/Output/%s/Efficiency_Table.txt"%(out_dir),"w")
 table.write(x.get_string())
 table.close()
 print(x)
@@ -137,5 +148,7 @@ for p in tqdm(plots):
 print('\a')
 print("Uploading plots to web")
 import subprocess
-print("scp -r /orange/avery/nikmenendez/Output/%s/ nimenend@lxplus.cern.ch:/eos/user/n/nimenend/www/Wto3l/SR_Selection/ZpX/UL/"%(out_dir))
-subprocess.run(["scp","-r","/orange/avery/nikmenendez/Output/%s/"%(out_dir),"nimenend@lxplus.cern.ch:/eos/user/n/nimenend/www/Wto3l/SR_Selection/ZpX/UL/"])
+#print("scp -r /orange/avery/nikmenendez/Output/%s/ nimenend@lxplus.cern.ch:/eos/user/n/nimenend/www/Wto3l/SR_Selection/ZpX/UL/"%(out_dir))
+print("scp -r /publicfs/cms/data/hzz/guoqy/Zprime/results/Output/%s/ qguo@lxplus.cern.ch:/eos/user/q/qguo/www/Zprime/Wto3l/SR_Selection/ZpX/UL/"%(out_dir))
+#subprocess.run(["scp","-r","/orange/avery/nikmenendez/Output/%s/"%(out_dir),"nimenend@lxplus.cern.ch:/eos/user/n/nimenend/www/Wto3l/SR_Selection/ZpX/UL/"])
+subprocess.run(["scp","-r","/publicfs/cms/data/hzz/guoqy/Zprime/results/Output/%s/"%(out_dir),"qguo@lxplus.cern.ch:/eos/user/q/qguo/www/Zprime/Wto3l/SR_Selection/ZpX/UL/"])

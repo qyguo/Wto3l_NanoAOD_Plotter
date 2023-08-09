@@ -17,7 +17,8 @@ def skim(data):
 	
 	iso_pre = 2.0
 	iso_cut = 0.3
-	Z_diff = 7
+	#Z_diff = 7
+	Z_diff = 10
 
 	selection = data['nMuons'] > -1
 
@@ -28,22 +29,38 @@ def skim(data):
 
 	selection, eff["No b Jets"]			= cut((data["nbJets"]==0), selection)
 	selection, eff[">=1 Good Muon"]		= cut((data["nGoodMuons"]>=1), selection)
-	selection, eff["MET < 25"]          = cut((data["met"]<25), selection)
+#	selection, eff["MET < 25"]          = cut((data["met"]<25), selection)
+	selection, eff["MET < 40"]          = cut((data["met"]<40), selection)
 	selection, eff["Only 3 leptons"]	= cut((data["nLeptons"]==3), selection)
-	selection, eff["e/mu sep"]		 	= cut(((data["dR13"]>0.1)&(data["dR23"]>0.1)), selection)
+#	selection, eff["e/mu sep"]		 	= cut(((data["dR13"]>0.1)&(data["dR23"]>0.1)), selection)
 	selection, eff["M1 Around Z"]		= cut((data["M1"]>(91-Z_diff))&(data["M1"]<(91+Z_diff)),selection)
 
 	#selection, eff["bd Fake"]			= cut((data["sourceL3"]==4), selection)
 
+#	# cut on OS ele
+	selection, eff["SIP3D lep1 <= 4.0"]		= cut((data["sip3dL1"]<=4.0), selection)
+	selection, eff["dxy lep1 <= 0.05"]		= cut((data["dxyL1"]<=0.05), selection)
+	selection, eff["dz lep1 <= 0.1"]		= cut((data["dzL1"]<=0.1), selection)
+	selection, eff["Iso lep1 <= 0.1"]		= cut((data["IsoL1"]<=0.1), selection)
+	selection, eff["TightID lep1"]			= cut((data["tightIdL1"]==1), selection)
+
+	selection, eff["SIP3D lep2 <= 4.0"]		= cut((data["sip3dL2"]<=4.0), selection)
+	selection, eff["dxy lep2 <= 0.05"]		= cut((data["dxyL2"]<=0.05), selection)
+	selection, eff["dz lep2 <= 0.1"]		= cut((data["dzL2"]<=0.1), selection)
+	selection, eff["Iso lep2 <= 0.1"]		= cut((data["IsoL2"]<=0.1), selection)
+	selection, eff["TightID lep2"]			= cut((data["tightIdL2"]==1), selection)
+
 	# General Tight Cuts
-	#selection, eff["SIP3D <= 3.2"]		= cut((data["sip3dL3"]<=3.2), selection)
-	#selection, eff["dxy <= 0.02"]		= cut((data["dxyL3"]<=0.02), selection)
-	#selection, eff["dz <= 0.02"]		= cut((data["dzL3"]<=0.02), selection)
+	selection, eff["SIP3D <= 3.2"]		= cut((data["sip3dL3"]<=3.2), selection)
+	selection, eff["dxy <= 0.02"]		= cut((data["dxyL3"]<=0.02), selection)
+	selection, eff["dz <= 0.02"]		= cut((data["dzL3"]<=0.02), selection)
+#
+	selection, eff["pT lep3 >=5 "]               = cut((data["pTL3"]>=5), selection)
 
 	# General Loose Cuts
-	selection, eff["SIP3D <= 4.0"]		= cut((data["sip3dL3"]<=4.0), selection)
-	selection, eff["dxy <= 0.05"]		= cut((data["dxyL3"]<=0.05), selection)
-	selection, eff["dz <= 0.1"]			= cut((data["dzL3"]<=0.1), selection)
+#	selection, eff["SIP3D <= 4.0"]		= cut((data["sip3dL3"]<=4.0), selection)
+#	selection, eff["dxy <= 0.05"]		= cut((data["dxyL3"]<=0.05), selection)
+#	selection, eff["dz <= 0.1"]			= cut((data["dzL3"]<=0.1), selection)
 
 	#selection, eff["muPt < 15"]			= cut((data["pTL3"]<15), selection)
 
@@ -64,17 +81,25 @@ def skim(data):
 
 	# For MVA Selection
 	#selection, eff["Isolation < 0.3"]	= cut((data["IsoL3"]<0.3), selection)
-	#selection, eff["medId True"]		= cut((data['medIdL3'] == 1), selection)
-	selection, eff["looseId True"]		= cut((data['looseIdL3'] == 1), selection)
+	selection, eff["medId True"]		= cut((data['medIdL3'] == 1), selection)
+#	selection, eff["looseId True"]		= cut((data['looseIdL3'] == 1), selection)
 	#selection, eff["mvaId loose"]		= cut(data["mvaIdL3"]>0, selection)
 	#passes = ((data["mvaIdL3"]>1)&(data["IsoL3"]<0.3))*selection
 	#fail =   ((data["mvaIdL3"]<2)|(data["IsoL3"]>0.3))*selection
 	#selection, eff["notTight"] 			= cut(((data["mvaIdL3"]<2)|(data["IsoL3"]>0.3)), selection)
 	#selection, eff["Tight"]		 			= cut(((data["mvaIdL3"]>1)&(data["IsoL3"]<0.3)), selection)
 	#selection, eff["mvaId med"]			= cut(data["mvaIdL3"]>1, selection)
+	selection, eff["Iso Lep3 < 2.0"]	= cut((data["IsoL3"]<2.0), selection)
 
 	passes = ((data["tightIdL3"]==1)&(data["IsoL3"]<0.3))*selection
 	fail =   ((data["tightIdL3"]==0)|(data["IsoL3"]>0.3))*selection
+	#passes = (data["IsoL3"]<0.3)*selection
+	#fail   = (data["IsoL3"]>0.3)*selection
+
+	#passes = ((data["mvaIdL3"]>0)&(data["IsoL3"]<2.0))*selection
+	#fail =   ((data["mvaIdL3"]<1)|(data["IsoL3"]>2.0))*selection
+	#passes = ((data['medIdL3'] == 1)&(data["IsoL3"]<2.0))*selection
+	#fail =   ((data['medIdL3'] != 1)|(data["IsoL3"]>2.0))*selection
 
 	if np.count_nonzero(selection)!=0:
 		eff["Overall"] = np.count_nonzero(selection)/len(data['nMuons'])*100

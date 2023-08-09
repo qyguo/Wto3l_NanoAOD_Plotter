@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 def fake_calc(data,s,nbins,out):
 
-	#nbins=[5,10,15,20,30,60]
+        #fake_weight_b, fake_weight_e = fake_calc(data,samples,pt_bins,out_dir)
 	if len(nbins)<2:
 		y_pass, y_fail = np.zeros(nbins), np.zeros(nbins)
 		err_pass, err_fail = np.zeros(nbins), np.zeros(nbins)
@@ -108,6 +108,11 @@ def fake_calc(data,s,nbins,out):
 
 	ratio1_e = y_pass/(y_pass+y_fail)
 	err1_e = ratio1_e*(err_pass/y_pass + (err_pass+err_fail)/(y_pass+y_fail))
+	#print(err1_e)
+	#for i in range(len(err1_e)):
+	#	print(err1_e[i], ratio1_e[i], err_pass[i], y_pass[i], err_pass[i], err_fail[i], y_fail[i], t_pass[i], weight_arr_pass[i])
+	#	if err1_e[i] < 0: err1_e[i]=0
+	#print(err1_e)
 
 	#ratio2_e = ratio1_e/(1-ratio1_e)
 	ratio2_e = y_pass/y_fail
@@ -121,27 +126,32 @@ def fake_calc(data,s,nbins,out):
 	bincenters = 0.5*(binEdges_pass[1:]+binEdges_pass[:-1])
 	plt.errorbar(bincenters,ratio1_b,yerr=err1_b,xerr=errx,marker='o',ls='',label='barrel')
 	plt.errorbar(bincenters,ratio1_e,yerr=err1_e,xerr=errx,marker='o',ls='',label='endcap')
-	plt.ylim(bottom=0,top=.4)
+	#plt.ylim(bottom=0,top=.4)
+	plt.ylim(bottom=0,top=1.0)
 	#plt.xlim(left=nbins[0],right=nbins[-1])
 	plt.xlim(left=0,right=nbins[-1])
 	plt.title("Fake Rate")
 	plt.xlabel("Muon pT (GeV)")
 	plt.ylabel("pass/total")
 	plt.legend(loc='best')
-	plt.savefig("/orange/avery/nikmenendez/Output/%s/%s.png"%(out,"FakeRate_fail_total"))
+	#plt.savefig("/orange/avery/nikmenendez/Output/%s/%s.png"%(out,"FakeRate_fail_total"))
+	plt.savefig("/publicfs/cms/data/hzz/guoqy/Zprime/results/Output/%s/%s.png"%(out,"FakeRate_fail_total"))
 	plt.clf()
+	print("ratio1_b: ", ratio1_b, "ratio1_e: ", ratio1_e)
 
 	bincenters = 0.5*(binEdges_pass[1:]+binEdges_pass[:-1])
 	plt.errorbar(bincenters,ratio2_b,yerr=err2_b,xerr=errx,marker='o',ls='',label='barrel')
 	plt.errorbar(bincenters,ratio2_e,yerr=err2_e,xerr=errx,marker='o',ls='',label='endcap')
-	plt.ylim(bottom=0,top=.4)
+	#plt.ylim(bottom=0,top=.4)
+	plt.ylim(bottom=0,top=1.0)
 	#plt.xlim(left=nbins[0],right=nbins[-1])
 	plt.xlim(left=0,right=nbins[-1])
 	plt.title("Fake Weight")
 	plt.xlabel("Muon pT (GeV)")
 	plt.ylabel("f/(1-f)")
 	plt.legend(loc='best')
-	plt.savefig("/orange/avery/nikmenendez/Output/%s/%s.png"%(out,"FakeRate_pass_fail"))
+	#plt.savefig("/orange/avery/nikmenendez/Output/%s/%s.png"%(out,"FakeRate_pass_fail"))
+	plt.savefig("/publicfs/cms/data/hzz/guoqy/Zprime/results/Output/%s/%s.png"%(out,"FakeRate_pass_fail"))
 	plt.clf()
 
 

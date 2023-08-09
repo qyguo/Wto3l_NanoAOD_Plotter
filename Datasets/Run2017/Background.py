@@ -1,5 +1,6 @@
 #input_dir = "/cmsuf/data/store/user/t2/users/nikmenendez/skimmed/NanoAOD/2017/background/Zpeak/Eff/"
-input_dir = "/cmsuf/data/store/user/t2/users/nikmenendez/skimmed/NanoAOD/2017/background/Zpeak/UL/"
+#input_dir = "/cmsuf/data/store/user/t2/users/nikmenendez/skimmed/NanoAOD/2017/background/Zpeak/UL/"
+input_dir = "/publicfs/cms/data/hzz/guoqy/Zprime/nikmenendez/2017/background/Zpeak/UL/"
 xs_bkg = {}
 sumW_bkg = {}
 

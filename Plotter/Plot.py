@@ -4,7 +4,7 @@ mpl.use('Agg')
 import matplotlib.pyplot as plt
 
 def plot(data,p,s,e,out,pRatio):
-
+	# plot(data,p,samples,error_on_MC,out_dir,True)
 	# Sort Samples by Amount of Statistics
 	stats = []
 	nSig,nData = 0,0
@@ -35,6 +35,7 @@ def plot(data,p,s,e,out,pRatio):
 
 	last, data_made, MC_error, data_error = 0,[],0,0
 	tot_data, tot_MC, err_data, err_MC = 0, 0, 0, 0
+	#weight_arr = {}
 	for i in range(len(s)):
 		if (not p[7]) and ("data" in s[i]): continue
 		if len(p)<9 or p[8]=="none":
@@ -150,6 +151,11 @@ def plot(data,p,s,e,out,pRatio):
 		if len(data_made)>0 and len(last) > 0:
 			ratio = data_made/last
 			ratioErr = ratio*(data_error/data_made + MC_error/last)
+			#print(ratioErr)
+			#for i in range(len(ratioErr)):
+			#	print(ratioErr[i], ratio[i], data_error[i], data_made[i], MC_error[i], last[i])
+			#	if ratioErr[i] < 0: ratioErr[i]=0
+			#print(ratioErr)
 			ax2.errorbar(bincenters,ratio,yerr=ratioErr,drawstyle='steps-mid',fmt="o",color='black')
 
 			#tot_data = np.sum(data_made)
@@ -171,6 +177,7 @@ def plot(data,p,s,e,out,pRatio):
 
 
 	fig.suptitle("%s"%(p[0]),size='xx-large')
-	fig.savefig("/orange/avery/nikmenendez/Output/%s/%s.png"%(out,p[1]))
+	#fig.savefig("/orange/avery/nikmenendez/Output/%s/%s.png"%(out,p[1]))
+	fig.savefig("/publicfs/cms/data/hzz/guoqy/Zprime/results/Output/%s/%s.png"%(out,p[1]))
 	fig.clf()
 	plt.close(fig)

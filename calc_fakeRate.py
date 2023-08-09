@@ -33,16 +33,21 @@ else: MC_measure = True
 
 lumi = 41.4*1000
 error_on_MC = False
-#pt_bins = [5,10,15,20,30,60]
+pt_bins = [5,10,15,20,30,60]
 #pt_bins = [5,10,15,20,30,40,60]
 #pt_bins = [5,10,15,20,30,45,60,80,100]
 #pt_bins = [5,8,10,12,15,20,30,100]
-pt_bins = [5,8,10,12,15,20,30,60,100]
+#pt_bins = [5,8,10,12,15,20,30,60,100]
 #pt_bins = [5,10,20,30,45,80]
 
-out_dir = "FakeRate_tightIdIso_loosePre"
-if not os.path.exists("/orange/avery/nikmenendez/Output/%s/"%(out_dir)): os.makedirs("/orange/avery/nikmenendez/Output/%s/"%(out_dir))
-if not os.path.exists("/orange/avery/nikmenendez/pickle/%s/"%(out_dir)): os.makedirs("/orange/avery/nikmenendez/pickle/%s/"%(out_dir))
+#out_dir = "FakeRate_tightIdIso_loosePre_Zdiff10_MET40_NoDr1312_tightCut"
+#out_dir = "FakeRate_tightIDlooseIso_tightPre_Zdiff10_MET40_NoDr1312_tightCut_tightlep12"
+out_dir = "FakeRate_test2"
+#if not os.path.exists("/orange/avery/nikmenendez/Output/%s/"%(out_dir)): os.makedirs("/orange/avery/nikmenendez/Output/%s/"%(out_dir))
+#if not os.path.exists("/orange/avery/nikmenendez/pickle/%s/"%(out_dir)): os.makedirs("/orange/avery/nikmenendez/pickle/%s/"%(out_dir))
+if not os.path.exists("/publicfs/cms/data/hzz/guoqy/Zprime/results/Output/%s/"%(out_dir)): os.makedirs("/publicfs/cms/data/hzz/guoqy/Zprime/results/Output/%s/"%(out_dir))
+if not os.path.exists("/publicfs/cms/data/hzz/guoqy/Zprime/results/pickle/%s/"%(out_dir)): os.makedirs("/publicfs/cms/data/hzz/guoqy/Zprime/results/pickle/%s/"%(out_dir))
+#if not os.path.exists("/publicfs/cms/data/hzz/guoqy/Zprime/results/pickle/Output/%s/"%(out_dir)): os.makedirs("/publicfs/cms/data/hzz/guoqy/Zprime/results/pickle/Output/%s/"%(out_dir))
 
 # CALCULATE FAKERATE
 
@@ -137,12 +142,23 @@ for i in range(len(samples)):
 	print("Reading in ",end='',flush=True)
 	file = uproot.open(files[samples[i]])
 	events = file["passedEvents"]
+	#events.show()
+	#print(events.keys())
+	#print(events.typenames())
 
 	vars_in = signal_vars
+	#print(vars_in)
 	temp = events.arrays(vars_in)
+	#print(temp)
+	#print(temp["genWeight"])
+	#print(temp["nMuons"])
+	#temp["genWeight"].array(library="np")
+	#print("genWeight", )
 
 	data = {}
-	for key in temp: data[key.decode("utf-8")] = temp[key]
+	data = events.arrays(vars_in, library="np")
+	#for key1 in temp: print(key1)
+	#for key in temp: data[key.decode("utf-8")] = temp[key]
 	del temp
 	data["weight"] = np.array([weight]*len(data["nMuons"]))
 	data["sType"] = np.array([sType]*len(data["nMuons"]))
@@ -173,14 +189,17 @@ for i in range(len(samples)):
 		#		pickle.dump(data, handle)
 		#	with open("/orange/avery/nikmenendez/pickle/%s/%s.p"%(out_dir,"data"),'ab') as handle:
 		#		pickle.dump(data, handle)
-		with open("/orange/avery/nikmenendez/pickle/%s/%s.p"%(out_dir,samples[i]),'wb') as handle:
+		#with open("/orange/avery/nikmenendez/pickle/%s/%s.p"%(out_dir,samples[i]),'wb') as handle:
+		with open("/publicfs/cms/data/hzz/guoqy/Zprime/results/pickle/%s/%s.p"%(out_dir,samples[i]),'wb') as handle:
 			pickle.dump(data, handle)
 
 		data["sType"] = np.array(["data"]*len(data["nMuons"]))
-		with open("/orange/avery/nikmenendez/pickle/%s/%s.p"%(out_dir,"data"),'ab') as handle:
+		#with open("/orange/avery/nikmenendez/pickle/%s/%s.p"%(out_dir,"data"),'ab') as handle:
+		with open("/publicfs/cms/data/hzz/guoqy/Zprime/results/pickle/%s/%s.p"%(out_dir,"data"),'ab') as handle:
 			pickle.dump(data, handle)
 	else:
-		with open("/orange/avery/nikmenendez/pickle/%s/%s.p"%(out_dir,samples[i]),'wb') as handle:
+		#with open("/orange/avery/nikmenendez/pickle/%s/%s.p"%(out_dir,samples[i]),'wb') as handle:
+		with open("/publicfs/cms/data/hzz/guoqy/Zprime/results/pickle/%s/%s.p"%(out_dir,samples[i]),'wb') as handle:
 			pickle.dump(data, handle)
 	print("Done! ",end='',flush=True)
 	toc = time.perf_counter()
@@ -198,13 +217,15 @@ if MC_measure:
 	for s in samples2:
 		print("Opening %s"%(s))
 		if s!="data":
-			with open("/orange/avery/nikmenendez/pickle/%s/%s.p"%(out_dir,s),'rb') as handle:
+			#with open("/orange/avery/nikmenendez/pickle/%s/%s.p"%(out_dir,s),'rb') as handle:
+			with open("/publicfs/cms/data/hzz/guoqy/Zprime/results/pickle/%s/%s.p"%(out_dir,s),'rb') as handle:
 				data[s] = pickle.load(handle)
 		else:
 			data[s] = {}
 			for v in all_vars:
 				data[s][v] = np.array([])
-			with open("/orange/avery/nikmenendez/pickle/%s/%s.p"%(out_dir,s),'rb') as handle:
+			#with open("/orange/avery/nikmenendez/pickle/%s/%s.p"%(out_dir,s),'rb') as handle:
+			with open("/publicfs/cms/data/hzz/guoqy/Zprime/results/pickle/%s/%s.p"%(out_dir,s),'rb') as handle:
 				for q in samples:
 					#if q in samples2: continue
 
@@ -218,7 +239,8 @@ if MC_measure:
 			print(data[s][v])
 else:
 	for i in range(len(samples)):
-		with open("/orange/avery/nikmenendez/pickle/%s/%s.p"%(out_dir,samples[i]),'rb') as handle:
+		#with open("/orange/avery/nikmenendez/pickle/%s/%s.p"%(out_dir,samples[i]),'rb') as handle:
+		with open("/publicfs/cms/data/hzz/guoqy/Zprime/results/pickle/%s/%s.p"%(out_dir,samples[i]),'rb') as handle:
 			data[samples[i]] = pickle.load(handle)
 
 #print(data.keys())
@@ -233,7 +255,8 @@ for key in effs:
 	for key2 in effs[key]:
 		row.append("%.2f%%"%(effs[key][key2]))
 	x.add_row(row)
-table = open("/orange/avery/nikmenendez/Output/%s/Efficiency_Table.txt"%(out_dir),"w")
+#table = open("/orange/avery/nikmenendez/Output/%s/Efficiency_Table.txt"%(out_dir),"w")
+table = open("/publicfs/cms/data/hzz/guoqy/Zprime/results/Output/%s/Efficiency_Table.txt"%(out_dir),"w")
 table.write(x.get_string())
 table.close()
 print(x)
@@ -376,5 +399,10 @@ print("")
 print('\a')
 print("Uploading plots to web")
 import subprocess
-print("scp -r /orange/avery/nikmenendez/Output/%s/ nimenend@lxplus.cern.ch:/eos/user/n/nimenend/www/Wto3l/SR_Selection/ZpX/UL/"%(out_dir))
-subprocess.run(["scp","-r","/orange/avery/nikmenendez/Output/%s/"%(out_dir),"nimenend@lxplus.cern.ch:/eos/user/n/nimenend/www/Wto3l/SR_Selection/ZpX/UL/"])
+#print("scp -r /orange/avery/nikmenendez/Output/%s/ nimenend@lxplus.cern.ch:/eos/user/n/nimenend/www/Wto3l/SR_Selection/ZpX/UL/"%(out_dir))
+#print("scp -r /publicfs/cms/data/hzz/guoqy/Zprime/results/Output/%s/ qguo@lxplus.cern.ch:/eos/user/q/qguo/www/Wto3l/SR_Selection/ZpX/UL/"%(out_dir))
+print("scp -r qyguo@lxslc706.ihep.ac.cn://publicfs/cms/data/hzz/guoqy/Zprime/results/Output/%s/ /eos/user/q/qguo/www/Wto3l/SR_Selection/ZpX/UL/Output/"%(out_dir))
+print("cp /eos/user/q/qguo/www/Wto3l/SR_Selection/ZpX/UL/Output/index.php  /eos/user/q/qguo/www/Wto3l/SR_Selection/ZpX/UL/Output/%s/"%(out_dir))
+#subprocess.run(["scp","-r","/orange/avery/nikmenendez/Output/%s/"%(out_dir),"nimenend@lxplus.cern.ch:/eos/user/n/nimenend/www/Wto3l/SR_Selection/ZpX/UL/"])
+#subprocess.run(["scp","-r","/orange/avery/nikmenendez/Output/%s/"%(out_dir),"nimenend@lxplus.cern.ch:/eos/user/n/nimenend/www/Wto3l/SR_Selection/ZpX/UL/"])
+#subprocess.run(["scp","-r","/publicfs/cms/data/hzz/guoqy/Zprime/results/Output/%s/"%(out_dir),"qguo@lxplus.cern.ch:/eos/user/q/qguo/www/Zprime/Wto3l/SR_Selection/ZpX/UL/"])
