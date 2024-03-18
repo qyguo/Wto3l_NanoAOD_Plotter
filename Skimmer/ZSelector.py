@@ -1,16 +1,17 @@
 import numpy as np
-import uproot_methods
-import pandas as pd
-import joblib
+#import uproot_methods
+import uproot3_methods
+####import pandas as pd
+####import joblib
 #from tensorflow.keras.models import load_model
 #from tensorflow.keras.backend import clear_session
 #from sklearn.ensemble import RandomForestClassifier
 
 def select(data):
 
-	Lep1 = uproot_methods.classes.TLorentzVector.PtEtaPhiMassLorentzVectorArray(data['pTL1'],data['etaL1'],data['phiL1'],data['massL1'])
-	Lep2 = uproot_methods.classes.TLorentzVector.PtEtaPhiMassLorentzVectorArray(data['pTL2'],data['etaL2'],data['phiL2'],data['massL2'])
-	Lep3 = uproot_methods.classes.TLorentzVector.PtEtaPhiMassLorentzVectorArray(data['pTL3'],data['etaL3'],data['phiL3'],data['massL3'])
+	Lep1 = uproot3_methods.classes.TLorentzVector.PtEtaPhiMassLorentzVectorArray(data['pTL1'],data['etaL1'],data['phiL1'],data['massL1'])
+	Lep2 = uproot3_methods.classes.TLorentzVector.PtEtaPhiMassLorentzVectorArray(data['pTL2'],data['etaL2'],data['phiL2'],data['massL2'])
+	Lep3 = uproot3_methods.classes.TLorentzVector.PtEtaPhiMassLorentzVectorArray(data['pTL3'],data['etaL3'],data['phiL3'],data['massL3'])
 
 	data["m3l_pt"] = (Lep1 + Lep2 + Lep3).pt
 

@@ -11,7 +11,7 @@ def card(data,p,s,e,out,pRatio,datacard):
 	m_4 = np.arange(55,70.1,.2)
 	masses = np.concatenate((m_1,m_2,m_3,m_4),axis=None)
 
-	data_out = open("DataCards/data_out_%s.txt"%(p[1]),"w")
+	data_out = open("/publicfs/cms/data/hzz/guoqy/Zprime/results/Output/pickle/%s/DataCards/data_out_%s.txt"%(out,p[1]),"w")
 	
 	data_out.write("mass")
 	for m in masses:

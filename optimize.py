@@ -25,13 +25,17 @@ samples = background_samples + signal_samples
 files = combFiles(signal_samples, background_samples, data_samples, signal_files, background_files, data_files)
 sig_masses = [4,5,15,30,45,60]
 
-lumi = 41.4*1000
+#lumi = 41.4*1000
+lumi = 59.8*1000
 error_on_MC = False
 
 out_dir = "to_opt"
-if not os.path.exists("/orange/avery/nikmenendez/Output/Optimize5/"): os.makedirs("/orange/avery/nikmenendez/Output/Optimize5/")
-if not os.path.exists("/orange/avery/nikmenendez/Output/Optimize5/%s/"%(out_dir)): os.makedirs("/orange/avery/nikmenendez/Output/Optimize5/%s/"%(out_dir))
-if not os.path.exists("/orange/avery/nikmenendez/Output/pickle/%s/"%(out_dir)): os.makedirs("/orange/avery/nikmenendez/Output/pickle/%s/"%(out_dir))
+#if not os.path.exists("/orange/avery/nikmenendez/Output/Optimize5/"): os.makedirs("/orange/avery/nikmenendez/Output/Optimize5/")
+#if not os.path.exists("/orange/avery/nikmenendez/Output/Optimize5/%s/"%(out_dir)): os.makedirs("/orange/avery/nikmenendez/Output/Optimize5/%s/"%(out_dir))
+#if not os.path.exists("/orange/avery/nikmenendez/Output/pickle/%s/"%(out_dir)): os.makedirs("/orange/avery/nikmenendez/Output/pickle/%s/"%(out_dir))
+if not os.path.exists("/publicfs/cms/data/hzz/guoqy/Zprime/results/Output/Optimize5/"): os.makedirs("/publicfs/cms/data/hzz/guoqy/Zprime/results/Output/Optimize5/")
+if not os.path.exists("/publicfs/cms/data/hzz/guoqy/Zprime/results/Output/Optimize5/%s/"%(out_dir)): os.makedirs("/publicfs/cms/data/hzz/guoqy/Zprime/results/Output/Optimize5/%s/"%(out_dir))
+if not os.path.exists("/publicfs/cms/data/hzz/guoqy/Zprime/results/Output/pickle/%s/"%(out_dir)): os.makedirs("/publicfs/cms/data/hzz/guoqy/Zprime/results/Output/pickle/%s/"%(out_dir))
 
 plots = [
 
@@ -157,7 +161,8 @@ for i in range(len(samples)):
 	temp = events.arrays(vars_in)
 
 	data = {}
-	for key in temp: data[key.decode("utf-8")] = temp[key]
+	data = events.arrays(vars_in, library="np")
+	#for key in temp: data[key.decode("utf-8")] = temp[key]
 	del temp
 	data["weight"] = weight
 	data["sType"] = sType
@@ -177,6 +182,8 @@ for i in range(len(samples)):
 
 	print("Weighting... ",end='',flush=True)
 	data["fake_weight"] = Fake_weight(data,samples[i])
+	data["eventWeight"] = data["genWeight"]*data["pileupWeight"]*data["fake_weight"]*data["weight"]
+	#data["eventWeight"] = data["genWeight"]*data["pileupWeight"]*data["fakeWeight"]*data["weight"]
 	if "fake" in samples[i]:
 		data["genWeight"] = data["genWeight"]*data["fake_weight"]*data["fail"] + data["genWeight"]*data["fake_weight"]*data["fail2"]
 
@@ -203,7 +210,8 @@ for i in range(len(samples)):
 	elif sType == "sig":
 		sig[samples[i]] = selected
 
-	with open("/orange/avery/nikmenendez/Output/pickle/%s/%s.p"%(out_dir,samples[i]),'wb') as handle:
+	#with open("/orange/avery/nikmenendez/Output/pickle/%s/%s.p"%(out_dir,samples[i]),'wb') as handle:
+	with open("/publicfs/cms/data/hzz/guoqy/Zprime/results/Output/pickle/%s/%s.p"%(out_dir,samples[i]),'wb') as handle:
 		pickle.dump(data, handle)
 	print("Done!")
 
@@ -223,7 +231,8 @@ for m in tqdm(sig_masses):
 
 		effs2 = copy.deepcopy(effs)
 		for i in range(len(samples)):
-			with open("/orange/avery/nikmenendez/Output/pickle/%s/%s.p"%(out_dir,samples[i]),'rb') as handle:
+			#with open("/orange/avery/nikmenendez/Output/pickle/%s/%s.p"%(out_dir,samples[i]),'rb') as handle:
+			with open("/publicfs/cms/data/hzz/guoqy/Zprime/results/Output/pickle/%s/%s.p"%(out_dir,samples[i]),'rb') as handle:
 				data[samples[i]] = pickle.load(handle)
 
 			selection2 = (data[samples[i]][c[2]] <= best_cut["%i_%s<"%(m,c[1])]) * data[samples[i]]["selection"]
@@ -236,7 +245,8 @@ for m in tqdm(sig_masses):
 
 		effs3 = copy.deepcopy(effs)
 		for i in range(len(samples)):
-			with open("/orange/avery/nikmenendez/Output/pickle/%s/%s.p"%(out_dir,samples[i]),'rb') as handle:
+			#with open("/orange/avery/nikmenendez/Output/pickle/%s/%s.p"%(out_dir,samples[i]),'rb') as handle:
+			with open("/publicfs/cms/data/hzz/guoqy/Zprime/results/Output/pickle/%s/%s.p"%(out_dir,samples[i]),'rb') as handle:
 				data[samples[i]] = pickle.load(handle)
 
 			selection3 = (data[samples[i]][c[2]] >= best_cut["%i_%s>"%(m,c[1])]) * data[samples[i]]["selection"]
@@ -256,7 +266,8 @@ for m in tqdm(sig_masses):
 			for key2 in effs2[key]:
 				row.append("%.2f%%"%(effs2[key][key2]))
 			x.add_row(row)
-		table = open("/orange/avery/nikmenendez/Output/Optimize5/Wto3l_M%i/%s</Efficiency_Table.txt"%(m,c[1]),"w")
+		#table = open("/orange/avery/nikmenendez/Output/Optimize5/Wto3l_M%i/%s</Efficiency_Table.txt"%(m,c[1]),"w")
+		table = open("/publicfs/cms/data/hzz/guoqy/Zprime/results/Output/Optimize5/Wto3l_M%i/%s</Efficiency_Table.txt"%(m,c[1]),"w")
 		table.write(x.get_string())
 		table.close()
 
@@ -269,7 +280,8 @@ for m in tqdm(sig_masses):
 			for key2 in effs3[key]:
 				row.append("%.2f%%"%(effs3[key][key2]))
 			x.add_row(row)
-		table = open("/orange/avery/nikmenendez/Output/Optimize5/Wto3l_M%i/%s>/Efficiency_Table.txt"%(m,c[1]),"w")
+		#table = open("/orange/avery/nikmenendez/Output/Optimize5/Wto3l_M%i/%s>/Efficiency_Table.txt"%(m,c[1]),"w")
+		table = open("/publicfs/cms/data/hzz/guoqy/Zprime/results/Output/Optimize5/Wto3l_M%i/%s>/Efficiency_Table.txt"%(m,c[1]),"w")
 		table.write(x.get_string())
 		table.close()
 
@@ -317,7 +329,8 @@ for c in tqdm(cuts):
 	plt.xlabel("Signal Mass (GeV)")
 	plt.ylabel("%s (%s)"%(c[0],c[6]))
 	plt.title("Cut Improvements for <= %s per Signal Mass"%(c[0]))
-	plt.savefig("/orange/avery/nikmenendez/Output/Optimize5/to_opt/%s<.png"%(c[1]))
+	#plt.savefig("/orange/avery/nikmenendez/Output/Optimize5/to_opt/%s<.png"%(c[1]))
+	plt.savefig("/publicfs/cms/data/hzz/guoqy/Zprime/results/Output/Optimize5/to_opt/%s<.png"%(c[1]))
 	plt.clf()
 
 	sam_vals, cut_vals, weights = [], [], []
@@ -333,11 +346,15 @@ for c in tqdm(cuts):
 	plt.xlabel("Signal Mass (GeV)")
 	plt.ylabel("%s (%s)"%(c[0],c[6]))
 	plt.title("Cut Improvements for >= %s per Signal Mass"%(c[0]))
-	plt.savefig("/orange/avery/nikmenendez/Output/Optimize5/to_opt/%s>.png"%(c[1]))
+	#plt.savefig("/orange/avery/nikmenendez/Output/Optimize5/to_opt/%s>.png"%(c[1]))
+	plt.savefig("/publicfs/cms/data/hzz/guoqy/Zprime/results/Output/Optimize5/to_opt/%s>.png"%(c[1]))
 	plt.clf()
 
 
 print('\a')
 print("Uploading plots to web")
-import subprocess
-subprocess.run(["scp","-r","/orange/avery/nikmenendez/Output/Optimize5/","nimenend@lxplus.cern.ch:/eos/user/n/nimenend/www/Wto3l/SR_Selection/Optimizer/"])
+#print("scp -r /publicfs/cms/data/hzz/guoqy/Zprime/results/Output/Optimize5/%s/ qguo@lxplus.cern.ch:/eos/user/q/qguo/www/Wto3l/SR_Selection/Optimize5/"%(out_dir))
+print("scp -r qyguo@lxslc7.ihep.ac.cn://publicfs/cms/data/hzz/guoqy/Zprime/results/Output/Optimize5/%s/ /eos/user/q/qguo/www/Wto3l/SR_Selection/Optimize5/"%(out_dir))
+print("cp /eos/user/q/qguo/www/Wto3l/SR_Selection/ZpX/UL/Output/index.php  /eos/user/q/qguo/www/Wto3l/SR_Selection/Optimize5/%s/"%(out_dir))
+#import subprocess
+#subprocess.run(["scp","-r","/orange/avery/nikmenendez/Output/Optimize5/","nimenend@lxplus.cern.ch:/eos/user/n/nimenend/www/Wto3l/SR_Selection/Optimizer/"])

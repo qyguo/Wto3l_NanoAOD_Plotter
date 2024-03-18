@@ -1,7 +1,8 @@
 #input_dir = "/cmsuf/data/store/user/t2/users/nikmenendez/skimmed/NanoAOD/2017/signal/signal_sel/Eff/"
 #input_dir = "/cmsuf/data/store/user/t2/users/nikmenendez/skimmed/NanoAOD/2017/signal/signal_sel/UL/"
 #masses = [4,5,15,30,45,60]
-input_dir = "/publicfs/cms/data/hzz/guoqy/Zprime/nikmenendez/skimmed/NanoAOD/2017/signal/signal_sel/UL/"
+#input_dir = "/publicfs/cms/data/hzz/guoqy/Zprime/nikmenendez/skimmed/NanoAOD/2017/signal/signal_sel/UL/"
+input_dir = "/publicfs/cms/data/hzz/guoqy/Zprime/UL/2018/Ntuple/signal_sel/UL/"
 
 #masses = [5,15,30,40,45,60,70]
 #xs_sig = {	"Wto3l_M4":  7.474,
@@ -31,7 +32,9 @@ input_dir = "/publicfs/cms/data/hzz/guoqy/Zprime/nikmenendez/skimmed/NanoAOD/201
 #		"Wto3l_M70": 184381,}
 ##		"Wto3l_M1":  100000}
 
-masses = [4, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75]
+#masses = [4, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75]
+masses = [4, 5, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75]
+#masses = [15,30,40,45,60,70]
 xs_sig_new = {	"m4":  4.398,     "p4":  5.68,
 				"m5":  3.255,     "p5":  4.17,
 				"m10": 1.367,     "p10": 1.741,

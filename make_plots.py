@@ -9,9 +9,12 @@ from tqdm import tqdm
 from prettytable import PrettyTable
 
 from Utils.combXS import *
-from Datasets.Signal.Wto3l import *
-from Datasets.Run2017.Data import *
-from Datasets.Run2017.Background import *
+#from Datasets.Signal.Wto3l import *
+#from Datasets.Run2017.Data import *
+#from Datasets.Run2017.Background import *
+from Datasets.Signal.Wto3l_UL18 import *
+from Datasets.Run2018.Data import *
+from Datasets.Run2018.Background import *
 from Skimmer.AnalysisSkimmer import *
 from Skimmer.ZSelector import *
 from Plotter.Plot import *
@@ -34,13 +37,16 @@ samples = background_samples + ["data"]
 
 files = combFiles(signal_samples, background_samples, data_samples, signal_files, background_files, data_files)
 
-lumi = 41.4*1000
+#lumi = 41.4*1000
+lumi = 59.8*1000
 error_on_MC = False
 skip_skim=False
 
-out_dir = "3mu_MC_D_mva_noIdPre_2P1F"
-if not os.path.exists("/orange/avery/nikmenendez/Output/%s/"%(out_dir)): os.makedirs("/orange/avery/nikmenendez/Output/%s/"%(out_dir))
-if not os.path.exists("/orange/avery/nikmenendez/Output/pickle/%s/"%(out_dir)): os.makedirs("/orange/avery/nikmenendez/Output/pickle/%s/"%(out_dir))
+out_dir = "3mu_MC_D_mva_noIdPre_2P1F_UL18_DY_M1To10_old_UL17Sub2"
+#if not os.path.exists("/orange/avery/nikmenendez/Output/%s/"%(out_dir)): os.makedirs("/orange/avery/nikmenendez/Output/%s/"%(out_dir))
+#if not os.path.exists("/orange/avery/nikmenendez/Output/pickle/%s/"%(out_dir)): os.makedirs("/orange/avery/nikmenendez/Output/pickle/%s/"%(out_dir))
+if not os.path.exists("/publicfs/cms/data/hzz/guoqy/Zprime/results/Output/%s/"%(out_dir)): os.makedirs("/publicfs/cms/data/hzz/guoqy/Zprime/results/Output/%s/"%(out_dir))
+if not os.path.exists("/publicfs/cms/data/hzz/guoqy/Zprime/results/Output/pickle/%s/"%(out_dir)): os.makedirs("/publicfs/cms/data/hzz/guoqy/Zprime/results/Output/pickle/%s/"%(out_dir))
 
 plots = [
 
@@ -172,7 +178,8 @@ for i in range(len(samples)):
 	temp = events.arrays(vars_in)
 
 	data = {}
-	for key in temp: data[key.decode("utf-8")] = temp[key]
+	data = events.arrays(vars_in, library="np")
+	#for key in temp: data[key.decode("utf-8")] = temp[key]
 	del temp
 	data["weight"] = weight
 	data["sType"] = sType
@@ -191,6 +198,7 @@ for i in range(len(samples)):
 	# Perform Cuts
 	print("Skimming... ",end='',flush=True)
 	data["selection"],effs[samples[i]],data["fail"],data["fail2"] = skim(data,samples[i])
+	#data["selection"],effs[samples[i]],data["fail"],data["fail2"] = skim_opt(data,samples[i])
 	#if sType == "MC":
 	#	data["selection"] = ((data["sourceL1"]!=2) & (data["sourceL2"]!=2) & (data["sourceL3"]!=2))*data["selection"]
 
@@ -202,7 +210,8 @@ for i in range(len(samples)):
 
 	# Save resulting data
 	print("Saving Results... ",end='',flush=True)
-	with open("/orange/avery/nikmenendez/Output/pickle/%s/%s.p"%(out_dir,samples[i]),'wb') as handle:
+	#with open("/orange/avery/nikmenendez/Output/pickle/%s/%s.p"%(out_dir,samples[i]),'wb') as handle:
+	with open("/publicfs/cms/data/hzz/guoqy/Zprime/results/Output/pickle/%s/%s.p"%(out_dir,samples[i]),'wb') as handle:
 		pickle.dump(data, handle)
 	del data
 	print("Done! ",end='',flush=True)
@@ -216,7 +225,8 @@ for i in range(len(samples)):
 print("Combining samples")
 data = {}
 for i in range(len(samples)):
-	with open("/orange/avery/nikmenendez/Output/pickle/%s/%s.p"%(out_dir,samples[i]),'rb') as handle:
+	#with open("/orange/avery/nikmenendez/Output/pickle/%s/%s.p"%(out_dir,samples[i]),'rb') as handle:
+	with open("/publicfs/cms/data/hzz/guoqy/Zprime/results/Output/pickle/%s/%s.p"%(out_dir,samples[i]),'rb') as handle:
 		data[samples[i]] = pickle.load(handle)
 
 if not skip_skim:
@@ -230,7 +240,8 @@ if not skip_skim:
 		for key2 in effs[key]:
 			row.append("%.2f%%"%(effs[key][key2]))
 		x.add_row(row)
-	table = open("/orange/avery/nikmenendez/Output/%s/Efficiency_Table.txt"%(out_dir),"w")
+	#table = open("/orange/avery/nikmenendez/Output/%s/Efficiency_Table.txt"%(out_dir),"w")
+	table = open("/publicfs/cms/data/hzz/guoqy/Zprime/results/Output/%s/Efficiency_Table.txt"%(out_dir),"w")
 	table.write(x.get_string())
 	table.close()
 	print(x)
@@ -247,6 +258,9 @@ for p in tqdm(plots):
 
 print('\a')
 print("Uploading plots to web")
-print("scp -r /orange/avery/nikmenendez/Output/%s/ nimenend@lxplus.cern.ch:/eos/user/n/nimenend/www/Wto3l/SR_Selection/UL/"%(out_dir))
-import subprocess
-subprocess.run(["scp","-r","/orange/avery/nikmenendez/Output/%s/"%(out_dir),"nimenend@lxplus.cern.ch:/eos/user/n/nimenend/www/Wto3l/SR_Selection/UL/"])
+#print("scp -r /orange/avery/nikmenendez/Output/%s/ nimenend@lxplus.cern.ch:/eos/user/n/nimenend/www/Wto3l/SR_Selection/UL/"%(out_dir))
+#print("scp -r /publicfs/cms/data/hzz/guoqy/Zprime/results/Output/%s/ qguo@lxplus.cern.ch:/eos/user/q/qguo/www/Wto3l/SR_Selection/ZpX/UL/Output/"%(out_dir))
+print("scp -r qyguo@lxslc7.ihep.ac.cn://publicfs/cms/data/hzz/guoqy/Zprime/results/Output/%s/ /eos/user/q/qguo/www/Wto3l/SR_Selection/ZpX/UL/Output/"%(out_dir))
+print("cp /eos/user/q/qguo/www/Wto3l/SR_Selection/ZpX/UL/Output/index.php  /eos/user/q/qguo/www/Wto3l/SR_Selection/ZpX/UL/Output/%s/"%(out_dir))
+#import subprocess
+#subprocess.run(["scp","-r","/orange/avery/nikmenendez/Output/%s/"%(out_dir),"nimenend@lxplus.cern.ch:/eos/user/n/nimenend/www/Wto3l/SR_Selection/UL/"])

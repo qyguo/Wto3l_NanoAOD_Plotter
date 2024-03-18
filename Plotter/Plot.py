@@ -3,7 +3,7 @@ import matplotlib as mpl
 mpl.use('Agg')
 import matplotlib.pyplot as plt
 
-def plot(data,p,s,e,out,pRatio,datacard):
+def plot(data,p,s,e,out,pRatio,datacard=False):
 
 	# Sort Samples by Amount of Statistics
 	stats = []
@@ -33,7 +33,7 @@ def plot(data,p,s,e,out,pRatio,datacard):
 		ax1 = fig.add_subplot()
 		
 
-	if datacard: data_out = open("DataCards/data_out_%s.txt"%(p[1]),"w")
+	if datacard: data_out = open("/publicfs/cms/data/hzz/guoqy/Zprime/results/Output/pickle/%s/DataCards/data_out_%s.txt"%(out,p[1]),"w")
 	last, data_made, MC_error, data_error = 0,[],0,0
 	tot_data, tot_MC, err_data, err_MC = 0, 0, 0, 0
 	for i in range(len(s)):
@@ -111,7 +111,9 @@ def plot(data,p,s,e,out,pRatio,datacard):
 
 			#For 3P0F Validation
 			y = y - yWZ - yZZ - yDY - y2 + yWZ2 + yZZ2 + yDY2
+			#print("y_1: ", y)
 			y = [0 if x<0 else x for x in y]
+			#print("y_2: ", y)
 			count_w = np.sum(weight_arr) - np.sum(WZ_weight) - np.sum(ZZ_weight) - np.sum(DY_weight) - np.sum(to_weight2) + np.sum(WZ_weight2) + np.sum(ZZ_weight2) + np.sum(DY_weight2)
 			count_err += np.sqrt(len(weight_arr))*np.average(weight_arr) + np.sqrt(len(WZ_weight))*np.average(WZ_weight) + np.sqrt(len(ZZ_weight))*np.average(ZZ_weight) + np.sqrt(len(DY_weight))*np.average(DY_weight) + np.sqrt(len(to_weight2))*np.average(to_weight2) + np.sqrt(len(WZ_weight2))*np.average(WZ_weight2) + np.sqrt(len(ZZ_weight2))*np.average(ZZ_weight2) + np.sqrt(len(DY_weight2))*np.average(DY_weight2)
 
@@ -125,6 +127,10 @@ def plot(data,p,s,e,out,pRatio,datacard):
 
 		if data[s[i]]["sType"]=="MC":
 			ax1.bar(bincenters,y,yerr=error,bottom=last,width=binEdges[1]-binEdges[0],label='%s: %.2f +- %.2f'%(s[i],count_w,count_err))
+			#print("last", last)
+			#print("y:", y)
+			#tmp_check=isinstance(y, list)
+			#print("checking the y type: is it a list or not:", tmp_check)
 			last += y
 			MC_error += hidden_error
 			ys = [str(j) for j in y]
@@ -153,13 +159,18 @@ def plot(data,p,s,e,out,pRatio,datacard):
 		if len(data_made)>0 and len(last) > 0:
 			ratio = data_made/last
 			ratioErr = ratio*(data_error/data_made + MC_error/last)
+			#print(ratioErr)
+			for i in range(len(ratioErr)):
+				#print(ratioErr[i], ratio[i], data_error[i], data_made[i], MC_error[i], last[i])
+				if ratioErr[i] < 0: ratioErr[i]=0
+			#print(ratioErr)
 			ax2.errorbar(bincenters,ratio,yerr=ratioErr,drawstyle='steps-mid',fmt="o",color='black')
 
 			#tot_data = np.sum(data_made)
 			#tot_MC = np.sum(last)
 			dataMCratio = tot_data/tot_MC
 			dataMCerror = dataMCratio*(err_MC/tot_MC + err_data/tot_data)
-			ax1.text(0.0,1.0,'2017, Data/Pred = %.2f +- %.2f'%(dataMCratio,dataMCerror),size=15,transform = ax1.transAxes)
+			ax1.text(0.0,1.0,'2018, Data/Pred = %.2f +- %.2f'%(dataMCratio,dataMCerror),size=15,transform = ax1.transAxes)
 			
 
 		ax2.set_xlabel("%s (%s)"%(p[0],p[6]),size='x-large')
@@ -170,10 +181,11 @@ def plot(data,p,s,e,out,pRatio,datacard):
 		ax2.yaxis.set_ticks(np.arange(start, end, 0.25))
 		ax2.grid()
 	else:
-		ax1.text(0.0,1.0,'2017',size=15,transform = ax1.transAxes)
+		ax1.text(0.0,1.0,'2018',size=15,transform = ax1.transAxes)
 
 
 	fig.suptitle("%s"%(p[0]),size='xx-large')
-	fig.savefig("/orange/avery/nikmenendez/Output/%s/%s.png"%(out,p[1]))
+	#fig.savefig("/orange/avery/nikmenendez/Output/%s/%s.png"%(out,p[1]))
+	fig.savefig("/publicfs/cms/data/hzz/guoqy/Zprime/results/Output/%s/%s.png"%(out,p[1]))
 	fig.clf()
 	plt.close(fig)

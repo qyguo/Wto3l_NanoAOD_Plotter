@@ -1,13 +1,18 @@
 #input_dir = "/cmsuf/data/store/user/t2/users/nikmenendez/skimmed/NanoAOD/2017/data/signal_sel/Eff/"
 ##input_dir = "/cmsuf/data/store/user/t2/users/nikmenendez/skimmed/NanoAOD/2017/data/signal_sel/UL/"
 #input_dir = "/cmsuf/data/store/user/t2/users/nikmenendez/skimmed/NanoAOD/2017/data/Zpeak/Eff/"
-input_dir = "/publicfs/cms/data/hzz/guoqy/Zprime/nikmenendez/skimmed/NanoAOD/2017/data/signal_sel/UL/"
+#input_dir = "/publicfs/cms/data/hzz/guoqy/Zprime/nikmenendez/skimmed/NanoAOD/2017/data/signal_sel/UL/"
+input_dir = "/publicfs/cms/data/hzz/guoqy/Zprime/UL/2018/Ntuple/Data/signal_sel/UL/"
 
 data_samples = ["data"]
-data_files = {"data": "%stotal_data_no_dupe.root"%(input_dir)}
+#data_files = {"data": "%stotal_data_no_dupe.root"%(input_dir)}
+#data_files = {"data": "%sData_UL18_DoubleMuon_MuonEG_noDuplicates.root"%(input_dir)}
+data_files = {"data": "%sDoubleMuon_2018_noDuplicates.root"%(input_dir)}
 
 data_samples.append("fake")
-data_files["fake"] = "%stotal_data_no_dupe.root"%(input_dir)
+#data_files["fake"] = "%stotal_data_no_dupe.root"%(input_dir)
+#data_files["fake"] = "%sData_UL18_DoubleMuon_MuonEG_noDuplicates.root"%(input_dir)
+data_files["fake"] = "%sDoubleMuon_2018_noDuplicates.root"%(input_dir)
 
 data_vars = [
 "genWeight",

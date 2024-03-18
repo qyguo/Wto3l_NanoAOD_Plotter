@@ -1,4 +1,7 @@
 import numpy as np
+import sys
+#sys.path.append('/afs/ihep.ac.cn/users/q/qyguo/.local/lib/python3.8/site-packages')
+sys.path.append('/workfs2/cms/qyguo/.local/lib/python3.8/site-packages')
 from scipy.optimize import curve_fit
 import os
 import matplotlib
@@ -7,7 +10,8 @@ import matplotlib.pyplot as plt
 
 def SigFit(data,sample,output):
 
-	if not os.path.exists("/orange/avery/nikmenendez/Output/%s/sig_yields/"%(output)): os.makedirs("/orange/avery/nikmenendez/Output/%s/sig_yields/"%(output))
+	#if not os.path.exists("/orange/avery/nikmenendez/Output/%s/sig_yields/"%(output)): os.makedirs("/orange/avery/nikmenendez/Output/%s/sig_yields/"%(output))
+	if not os.path.exists("/publicfs/cms/data/hzz/guoqy/Zprime/results/Output/%s/sig_yields/"%(output)): os.makedirs("/publicfs/cms/data/hzz/guoqy/Zprime/results/Output/%s/sig_yields/"%(output))
 
 	def Gauss(x, A, mu, sigma):
 		return A*np.exp(-(x-mu)**2/(2*sigma**2))
@@ -22,6 +26,8 @@ def SigFit(data,sample,output):
 		split = 40
 
 		mass = float(s.partition("_M")[2])
+		if mass<5:	continue
+		if mass==10:	continue
 		fit_min = mass - mass*fit_window
 		fit_max = mass + mass*fit_window
 			
@@ -39,6 +45,11 @@ def SigFit(data,sample,output):
 		x = np.arange(fit_min,fit_max,steps)
 
 		p0 = [2500/mass, mass, mass*.01]
+		print("Sample:", s)
+		print("x:", x)
+		print("y:", y)
+		print("p0:", p0)
+		print("fit_weight:", fit_weight)
 		params, covs = curve_fit(Gauss, x, y, p0)
 		A[s], mu[s], sigma[s] = params
 
@@ -49,7 +60,8 @@ def SigFit(data,sample,output):
 		plt.xlabel("OS Di-Muon Mass (GeV)")
 		plt.ylabel("Event Yield")
 		plt.ylim(bottom=0)
-		plt.savefig("/orange/avery/nikmenendez/Output/%s/sig_yields/sig_yields_M%i.png"%(output,mass))
+		#plt.savefig("/orange/avery/nikmenendez/Output/%s/sig_yields/sig_yields_M%i.png"%(output,mass))
+		plt.savefig("/publicfs/cms/data/hzz/guoqy/Zprime/results/Output/%s/sig_yields/sig_yields_M%i.png"%(output,mass))
 		plt.clf()
 		
 		A_list.append(A[s])
@@ -83,7 +95,8 @@ def SigFit(data,sample,output):
 	plt.legend(loc='best')
 	plt.xlabel("Z' Mass (GeV)")
 	plt.ylabel("Z' Peak Amplitude")
-	plt.savefig("/orange/avery/nikmenendez/Output/%s/sig_yields/Fit_Amplitudes.png"%(output))
+	#plt.savefig("/orange/avery/nikmenendez/Output/%s/sig_yields/Fit_Amplitudes.png"%(output))
+	plt.savefig("/publicfs/cms/data/hzz/guoqy/Zprime/results/Output/%s/sig_yields/Fit_Amplitudes.png"%(output))
 	plt.clf()
 
 	mufit = linear(x, mum, mut)
@@ -92,7 +105,8 @@ def SigFit(data,sample,output):
 	plt.legend(loc='best')
 	plt.xlabel("Z' Mass (GeV)")
 	plt.ylabel("Z' Peak Center")
-	plt.savefig("/orange/avery/nikmenendez/Output/%s/sig_yields/Fit_Centers.png"%(output))
+	#plt.savefig("/orange/avery/nikmenendez/Output/%s/sig_yields/Fit_Centers.png"%(output))
+	plt.savefig("/publicfs/cms/data/hzz/guoqy/Zprime/results/Output/%s/sig_yields/Fit_Centers.png"%(output))
 	plt.clf()
 	
 	sigmafit = linear(x, sigmam, sigmat)
@@ -101,7 +115,8 @@ def SigFit(data,sample,output):
 	plt.legend(loc='best')
 	plt.xlabel("Z' Mass (GeV)")
 	plt.ylabel("Z' Peak Width")
-	plt.savefig("/orange/avery/nikmenendez/Output/%s/sig_yields/Fit_Width.png"%(output))
+	#plt.savefig("/orange/avery/nikmenendez/Output/%s/sig_yields/Fit_Width.png"%(output))
+	plt.savefig("/publicfs/cms/data/hzz/guoqy/Zprime/results/Output/%s/sig_yields/Fit_Width.png"%(output))
 	plt.clf()
 
 	rel_sigma = []
@@ -119,6 +134,7 @@ def SigFit(data,sample,output):
 	plt.legend(loc='best')
 	plt.xlabel("Z' Mass (GeV)")
 	plt.ylabel("Relative Z' Peak Width")
-	plt.savefig("/orange/avery/nikmenendez/Output/%s/sig_yields/Fit_Width_Relative.png"%(output))
+	#plt.savefig("/orange/avery/nikmenendez/Output/%s/sig_yields/Fit_Width_Relative.png"%(output))
+	plt.savefig("/publicfs/cms/data/hzz/guoqy/Zprime/results/Output/%s/sig_yields/Fit_Width_Relative.png"%(output))
 	plt.clf()
 

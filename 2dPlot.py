@@ -3,16 +3,19 @@ import numpy as np
 import uproot
 import sys
 from tqdm import tqdm
-import uproot_methods
+#import uproot_methods
+import uproot3_methods
 import matplotlib.pyplot as plt
 from Dataset.Signal import Wto3l
 
-input_dir = "/cmsuf/data/store/user/t2/users/nikmenendez/skimmed/NanoAOD/2017/signal/signal_sel/Eff/"
+#input_dir = "/cmsuf/data/store/user/t2/users/nikmenendez/skimmed/NanoAOD/2017/signal/signal_sel/Eff/"
+input_dir = "/publicfs/cms/data/hzz/guoqy/Zprime/nikmenendez/skimmed/NanoAOD/2017/signal/signal_sel/Eff/"
 masses = [4,5,10,15,30,60]
 masses = [4]
 xs = {"ZpM4": 7.474}
 sumW = {"ZpM4": 100000}
-lumi = 41.4*1000
+#lumi = 41.4*1000
+lumi = 59.8*1000
 
 for m in masses:
 	weight = (xs["ZpM%i"%(m)]*.01)/sumW["ZpM%i"%(m)]*lumi
@@ -23,9 +26,9 @@ for m in masses:
 	vars_in = ["pTL1","pTL2","pTL3","etaL1","etaL2","etaL3","phiL1","phiL2","phiL3","massL1","massL2","massL3","idL1","idL2","idL3","dR12","dR13","dR23","m3l","IsoL1","IsoL2","IsoL3","medIdL1","medIdL2","medIdL3"]
 	data = events.arrays(vars_in)
 
-	Lep1 = uproot_methods.classes.TLorentzVector.PtEtaPhiMassLorentzVectorArray(data[b'pTL1'],data[b'etaL1'],data[b'phiL1'],data[b'massL1'])
-	Lep2 = uproot_methods.classes.TLorentzVector.PtEtaPhiMassLorentzVectorArray(data[b'pTL2'],data[b'etaL2'],data[b'phiL2'],data[b'massL2'])
-	Lep3 = uproot_methods.classes.TLorentzVector.PtEtaPhiMassLorentzVectorArray(data[b'pTL3'],data[b'etaL3'],data[b'phiL3'],data[b'massL3'])
+	Lep1 = uproot3_methods.classes.TLorentzVector.PtEtaPhiMassLorentzVectorArray(data[b'pTL1'],data[b'etaL1'],data[b'phiL1'],data[b'massL1'])
+	Lep2 = uproot3_methods.classes.TLorentzVector.PtEtaPhiMassLorentzVectorArray(data[b'pTL2'],data[b'etaL2'],data[b'phiL2'],data[b'massL2'])
+	Lep3 = uproot3_methods.classes.TLorentzVector.PtEtaPhiMassLorentzVectorArray(data[b'pTL3'],data[b'etaL3'],data[b'phiL3'],data[b'massL3'])
 
 	# Define 3 possible Zp combinations
 	P1 = Lep1 + Lep2

@@ -7,10 +7,11 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 def create_datacards(output,xs_sig,xs_err,AccEff):
-	file_M1 = open("DataCards/data_out_mass1.txt","r")
+	output_D=output.replace("Output/","Output/pickle/")
+	file_M1 = open("%s/DataCards/data_out_mass1.txt"%(output_D),"r")
 	data_M1 = list(csv.reader(file_M1,delimiter=","))
 	file_M1.close()
-	file_M2 = open("DataCards/data_out_mass2.txt","r")
+	file_M2 = open("%s/DataCards/data_out_mass2.txt"%(output_D),"r")
 	data_M2 = list(csv.reader(file_M2,delimiter=","))
 	file_M2.close()
 	
@@ -21,7 +22,8 @@ def create_datacards(output,xs_sig,xs_err,AccEff):
 	split = 40
 	M1fit = "exp2"
 	M2fit = "exp2"
-	year = 2017
+	#year = 2017
+	year = 2018
 	
 	#sig_yields = {}
 	#sig_slots = {}
@@ -220,7 +222,7 @@ def create_datacards(output,xs_sig,xs_err,AccEff):
 	for j in range(1,len(data_M2[0])):
 	
 		mass = float(data_M2[0][j]) #(80-4)/76*(j-1) + 4 # (Max Mass - Low Mass)/nBins + Low Mass
-		datacard = open("DataCards/datacard_M%.2f.txt"%(mass),"w")
+		datacard = open("%s/DataCards/datacard_M%.2f.txt"%(output_D,mass),"w")
 	
 		if mass<split:
 			data = data_M2

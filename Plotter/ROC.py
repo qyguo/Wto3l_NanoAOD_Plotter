@@ -7,7 +7,8 @@ import matplotlib.pyplot as plt
 #[Title,save name,variable plotted,nBins,low,high,unit,plot data]
 
 def ROC(bkg,sig,c,out,plots,m):
-	if not os.path.exists("/orange/avery/nikmenendez/Output/Optimize5/%s/"%(out)): os.makedirs("/orange/avery/nikmenendez/Output/Optimize5/%s/"%(out))
+	#if not os.path.exists("/orange/avery/nikmenendez/Output/Optimize5/%s/"%(out)): os.makedirs("/orange/avery/nikmenendez/Output/Optimize5/%s/"%(out))
+	if not os.path.exists("/publicfs/cms/data/hzz/guoqy/Zprime/results/Output/Optimize5/%s/"%(out)): os.makedirs("/publicfs/cms/data/hzz/guoqy/Zprime/results/Output/Optimize5/%s/"%(out))
 
 	#if m < 30:
 	#	selection_bkg = ((bkg["M2"] <= m+(m*1.02)) & (bkg["M2"] >= m-(m*1.02)))
@@ -29,7 +30,8 @@ def ROC(bkg,sig,c,out,plots,m):
 	og_ratio = tot_sig/np.sqrt(tot_bkg)
 
 	# Less than cut
-	if not os.path.exists("/orange/avery/nikmenendez/Output/Optimize5/%s/%s</"%(out,c[1])): os.makedirs("/orange/avery/nikmenendez/Output/Optimize5/%s/%s</"%(out,c[1]))
+	#if not os.path.exists("/orange/avery/nikmenendez/Output/Optimize5/%s/%s</"%(out,c[1])): os.makedirs("/orange/avery/nikmenendez/Output/Optimize5/%s/%s</"%(out,c[1]))
+	if not os.path.exists("/publicfs/cms/data/hzz/guoqy/Zprime/results/Output/Optimize5/%s/%s</"%(out,c[1])): os.makedirs("/publicfs/cms/data/hzz/guoqy/Zprime/results/Output/Optimize5/%s/%s</"%(out,c[1]))
 	best_ratio = og_ratio
 	best_cut = c[5]
 	best_count, count = c[3]-1,0
@@ -65,14 +67,16 @@ def ROC(bkg,sig,c,out,plots,m):
 	plt.ylim(0,2)
 	plt.legend(loc='best',fontsize='x-small')
 	plt.title("Signal Separation for %s <= Cut"%(c[0]))
-	plt.savefig("/orange/avery/nikmenendez/Output/Optimize5/%s/%s</cut_calc.png"%(out,c[1]))
+	#plt.savefig("/orange/avery/nikmenendez/Output/Optimize5/%s/%s</cut_calc.png"%(out,c[1]))
+	plt.savefig("/publicfs/cms/data/hzz/guoqy/Zprime/results/Output/Optimize5/%s/%s</cut_calc.png"%(out,c[1]))
 	plt.clf()
 
 	best_cut_lt = best_cut
 	nRatio_lt = nRatio
 
 	# Greater than cut
-	if not os.path.exists("/orange/avery/nikmenendez/Output/Optimize5/%s/%s>/"%(out,c[1])): os.makedirs("/orange/avery/nikmenendez/Output/Optimize5/%s/%s>/"%(out,c[1]))
+	#if not os.path.exists("/orange/avery/nikmenendez/Output/Optimize5/%s/%s>/"%(out,c[1])): os.makedirs("/orange/avery/nikmenendez/Output/Optimize5/%s/%s>/"%(out,c[1]))
+	if not os.path.exists("/publicfs/cms/data/hzz/guoqy/Zprime/results/Output/Optimize5/%s/%s>/"%(out,c[1])): os.makedirs("/publicfs/cms/data/hzz/guoqy/Zprime/results/Output/Optimize5/%s/%s>/"%(out,c[1]))
 	best_ratio = og_ratio
 	best_cut = c[4]
 	best_count, count = 0,0
@@ -108,7 +112,8 @@ def ROC(bkg,sig,c,out,plots,m):
 	plt.ylim(0,2)
 	plt.legend(loc='best',fontsize='x-small')
 	plt.title("Signal Separation for %s >= Cut"%(c[0]))
-	plt.savefig("/orange/avery/nikmenendez/Output/Optimize5/%s/%s>/cut_calc.png"%(out,c[1]))
+	#plt.savefig("/orange/avery/nikmenendez/Output/Optimize5/%s/%s>/cut_calc.png"%(out,c[1]))
+	plt.savefig("/publicfs/cms/data/hzz/guoqy/Zprime/results/Output/Optimize5/%s/%s>/cut_calc.png"%(out,c[1]))
 	plt.clf()
 	
 	best_cut_gt = best_cut

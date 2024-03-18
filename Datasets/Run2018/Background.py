@@ -2,7 +2,8 @@
 #input_dir = "/cmsuf/data/store/user/t2/users/nikmenendez/skimmed/NanoAOD/2017/background/signal_sel/UL/"
 #input_dir = "/cmsuf/data/store/user/t2/users/nikmenendez/skimmed/NanoAOD/2017/background/Zpeak/Eff/"
 #input_dir = "/publicfs/cms/data/hzz/guoqy/Zprime/nikmenendez/2017/background/Zpeak/UL/"
-input_dir = "/publicfs/cms/data/hzz/guoqy/Zprime/nikmenendez/skimmed/NanoAOD/2017/background/signal_sel/UL/"
+#input_dir = "/publicfs/cms/data/hzz/guoqy/Zprime/nikmenendez/skimmed/NanoAOD/2017/background/signal_sel/UL/"
+input_dir = "/publicfs/cms/data/hzz/guoqy/Zprime/UL/2018/Ntuple/BKG/signal_sel/UL/"
 xs_bkg = {}
 sumW_bkg = {}
 
@@ -18,10 +19,11 @@ def read_sumW(sumW_file):
 
 sam = "DYJetsToLL_M1To10"
 #background_samples.append(sam)
-background_files[sam] = "%s%s.root"%(input_dir,sam)
+#background_files[sam] = "%s%s_UL17_Sub2.root"%(input_dir,sam)
+background_files[sam] = "%s%s_old_UL17.root"%(input_dir,sam)
 xs_bkg[sam] = 2037.0
 #sumW_bkg[sam] = 24227000.0
-sumW_bkg[sam] = read_sumW("%ssumW/%s.txt"%(input_dir,sam))
+sumW_bkg[sam] = read_sumW("%ssumW/%s_old_UL17.txt"%(input_dir,sam))
 
 sam = "DYJetsToLL_M10To50"
 #background_samples.append(sam)
@@ -30,19 +32,42 @@ xs_bkg[sam] = 18610.0
 #sumW_bkg[sam] = 68480179.0 #78994955.0
 sumW_bkg[sam] = read_sumW("%ssumW/%s.txt"%(input_dir,sam))
 
+#sam = "DYJetsToLL_M50"
+##background_samples.append(sam)
+#background_files[sam] = "%s%s.root"%(input_dir,sam)
+#xs_bkg[sam] = 6077.22
+##sumW_bkg[sam] = 201650476.0 #3782668437151.0
+#sumW_bkg[sam] = read_sumW("%ssumW/%s.txt"%(input_dir,sam))
+#
+#sam = "DYJetsToLL_M0To1"
+##background_samples.append(sam)
+#background_files[sam] = "%sDYJetsToLL_M50_M0To1.root"%(input_dir)
+#xs_bkg[sam] = 6077.22
+##sumW_bkg[sam] = 201650476.0 #3782668437151.0
+#sumW_bkg[sam] = read_sumW("%ssumW/DYJetsToLL_M50_M0To1.txt"%(input_dir))
+
+
 sam = "DYJetsToLL_M50"
 #background_samples.append(sam)
-background_files[sam] = "%s%s.root"%(input_dir,sam)
+background_files[sam] = "%s%s_madgraphMLM.root"%(input_dir,sam)
 xs_bkg[sam] = 6077.22
 #sumW_bkg[sam] = 201650476.0 #3782668437151.0
-sumW_bkg[sam] = read_sumW("%ssumW/%s.txt"%(input_dir,sam))
+sumW_bkg[sam] = read_sumW("%ssumW/%s_madgraphMLM.txt"%(input_dir,sam))
 
 sam = "DYJetsToLL_M0To1"
 #background_samples.append(sam)
-background_files[sam] = "%sDYJetsToLL_M50_M0To1.root"%(input_dir)
+background_files[sam] = "%sDYJetsToLL_M50_madgraphMLM_M0To1.root"%(input_dir)
 xs_bkg[sam] = 6077.22
 #sumW_bkg[sam] = 201650476.0 #3782668437151.0
-sumW_bkg[sam] = read_sumW("%ssumW/DYJetsToLL_M50_M0To1.txt"%(input_dir))
+sumW_bkg[sam] = read_sumW("%ssumW/DYJetsToLL_M50_madgraphMLM_M0To1.txt"%(input_dir))
+
+
+#sam = "DYJetsToLL_M0To1"
+##background_samples.append(sam)
+#background_files[sam] = "%sDYJetsToLL_M50_M0To1.root"%(input_dir)
+#xs_bkg[sam] = 6077.22
+##sumW_bkg[sam] = 201650476.0 #3782668437151.0
+#sumW_bkg[sam] = read_sumW("%ssumW/DYJetsToLL_M50_M0To1.txt"%(input_dir))
 
 sam = "TTJets_DiLept"
 #background_samples.append(sam)
@@ -86,8 +111,10 @@ xs_bkg[sam] = 12.178
 #sumW_bkg[sam] = 78687950.0 #22155848.0
 sumW_bkg[sam] = read_sumW("%ssumW/%s.txt"%(input_dir,sam))
 
+#good 
 background_samples = ["ZZTo4L","WZTo3LNu","TTJets_DiLept","DYJetsToLL_M50","DYJetsToLL_M10To50","DYJetsToLL_M1To10","WJetsToLNu","WWTo2L2Nu","DYJetsToLL_M0To1"]
 #background_samples = ["ZZTo4L_M1Toinf","WZTo3LNu","TTJets_DiLept","DYJetsToLL_M50","DYJetsToLL_M10To50","DYJetsToLL_M1To10","WJetsToLNu","WWTo2L2Nu"]
+#background_samples = ["ZZTo4L","WZTo3LNu","TTJets_DiLept","DYJetsToLL_M50","DYJetsToLL_M10To50","DYJetsToLL_M1To10","WJetsToLNu","WWTo2L2Nu"]
 
 background_vars = [
 "genWeight",
